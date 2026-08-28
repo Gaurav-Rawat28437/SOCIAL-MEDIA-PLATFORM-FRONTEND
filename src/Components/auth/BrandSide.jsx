@@ -30,7 +30,7 @@ function BrandSide() {
                 </h1>
 
                 <p className="text-xs text-[#D0B8A8] mt-1">
-                    move the world
+                    Make Your Muuv
                 </p>
             </div>
 

@@ -1,3 +1,5 @@
+import axios from "axios"
+
 const API_URL = import.meta.env.VITE_API_URL
 
 export const sendOtp = async (email) => {
@@ -76,13 +78,66 @@ export const loginUser = async (email, password, username) => {
       username
     })
   })
-  
+
 
   const data = await response.json()
-  
+
   if (!response.ok) {
     throw new Error(data.msg || "Login failed")
   }
 
   return data
+}
+
+
+export const getUserData = async () => {
+
+  try {
+    const res = await axios.get(import.meta.env.VITE_API_URL + "/auth/get-user-data", {
+      withCredentials: true
+    })
+
+    return res.data
+
+  }
+  catch (error) {
+    return {
+      messsage: error.msg
+    }
+  }
+
+}
+
+export const logout = async () => {
+  try {
+    const res = await axios.post(import.meta.env.VITE_API_URL + "/auth/logout", {}, { withCredentials: true })
+    const data = res.data
+    return data
+  }
+  catch (error) {
+    return {
+      messsage: error.msg
+    }
+  }
+}
+
+
+export const completeProfile = async (userData) => {
+  
+    const res = await axios.put(`${import.meta.env.VITE_API_URL}/profile/completeProfile`, userData, { withCredentials: true })
+    return res.data
+  
+}
+
+
+export const editProfile= async(updatedUserData)=>{
+  const res=await axios.patch(
+          `${import.meta.env.VITE_API_URL}/profile/update`,
+          updatedUserData,
+          {
+            withCredentials: true
+          }
+        )
+
+        return res.data
 }

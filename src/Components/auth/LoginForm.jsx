@@ -2,10 +2,10 @@ import React, { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 import validator from "validator"
-import { loginUser } from "../../services/authService"
+import { getUserData, loginUser } from "../../services/authService"
 import { useDispatch } from "react-redux"
 import { Eye, EyeOff } from "lucide-react"
-import { login } from "../../Utils/usersSlice"
+import { addUserData } from "../../Utils/usersSlice"
 
 function LoginForm() {
   const nav = useNavigate()
@@ -23,6 +23,8 @@ function LoginForm() {
     if (loading) return
 
     try {
+      setIdentifier("")
+      setPassword("")
       setLoading(true)
 
       const isEmail = validator.isEmail(identifier)
@@ -34,10 +36,11 @@ function LoginForm() {
       )
 
       if (response.success) {
-        console.log(response)
-        dispatch(login(response))
-        toast.success("Login successful")
-        nav("/home")
+ 
+          dispatch(addUserData(response.data))
+          toast.success("Login successful")
+          nav("/home")
+   
       }
     } catch (error) {
       console.log(error)

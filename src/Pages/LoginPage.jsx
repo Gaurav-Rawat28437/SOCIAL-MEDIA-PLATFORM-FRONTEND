@@ -1,5 +1,5 @@
 import BrandSide from "../Components/auth/BrandSide"
-import LoginForm from "../components/auth/LoginForm"
+import LoginForm from "../Components/auth/LoginForm"
 
 const LoginPage = () => {
   return (

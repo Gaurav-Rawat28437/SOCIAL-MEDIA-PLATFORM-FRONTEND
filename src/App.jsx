@@ -4,7 +4,11 @@ import { Routes, Route } from 'react-router-dom'
 import RegisterPage from './Pages/RegisterPage'
 import { Toaster } from "react-hot-toast"
 import HomePage from './Pages/HomePage'
-// import ProtectedRoutes from './services/ProtectedRoutes'
+import ProtectedRoutes from './routes/ProtectedRoutes'
+import ProfilePage from './Pages/ProfilePage'
+import CompleteProfile from './Pages/CompleteProfile'
+
+
 
 
 function App() {
@@ -14,16 +18,21 @@ function App() {
       <Toaster />
 
       <Routes>
-        <Route path="/" element={<LoginPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/register" element={<RegisterPage />}></Route>
 
 
 
-        {/* <Route  element={<ProtectedRoutes authentication={isLoggedIn} />}> */}
-          < Route path="/home" element={<HomePage />} />
+        <Route  element={<ProtectedRoutes/>}>
 
-        {/* </Route> */}
+          <Route path="/" element={<HomePage />}></Route>
+          < Route path="/home" element={<HomePage />} />
+          < Route path="/profile" element={<ProfilePage />} />
+          <Route path="/complete-profile" element={<CompleteProfile />} />
+
+        </Route>
+
+        <Route path="*" element={<LoginPage/>}></Route>
       </Routes>
 
     </>

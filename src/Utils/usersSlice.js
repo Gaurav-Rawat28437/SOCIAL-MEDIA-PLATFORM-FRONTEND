@@ -1,29 +1,38 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { loginUser } from "../services/authService"
+
+export const userSliceThunk=createAsyncThunk("get-user-date",async(email,password,username)=>{
+    
+    const data=loginUser(email,password,username)
+    console.log(data)
+    return data
+})
 
 
 const userReducer=createSlice({
     name:"User",
     initialState:{
-        data:null,
+        data:{},
         isLogin:false
     },
     reducers:{
-        login:(state,action)=>{
+        addUserData:(state,action)=>{
         return{
             ...state,
             data:action.payload,
             isLogin:true
         }},
 
-        logout:(state,action)=>{
+        removeUserData:(state,action)=>{
             return{
                  ...state,
-            data:null,
+            data:{},
             isLogin:false
             }
         }
-    }
+    },
+
 })
 
-export const {login,logout}=userReducer.actions
+export const {addUserData,removeUserData}=userReducer.actions
 export default userReducer.reducer
