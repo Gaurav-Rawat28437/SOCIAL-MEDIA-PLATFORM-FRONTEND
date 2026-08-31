@@ -4,7 +4,8 @@ import toast from "react-hot-toast"
 import { X, Trash2 } from "lucide-react"
 import { uploadImage } from "../../services/cloudinaryService"
 import { addUserData } from "../../Utils/usersSlice"
-import { editProfile } from "../../services/authService"
+import { editProfile } from "../../services/profileService"
+import { useEffect } from "react"
 
 function EditProfileModal({ setShowEdit }) {
 
@@ -16,6 +17,14 @@ function EditProfileModal({ setShowEdit }) {
     const [username, setUsername] = useState(userData.username || "")
     const [bio, setBio] = useState(userData.bio || "")
     const [gender, setGender] = useState(userData.gender || "")
+
+    useEffect(() => {
+        document.body.style.overflow = "hidden"
+
+        return () => {
+            document.body.style.overflow = ""
+        }
+    }, [])
 
     const [displayPicture, setDisplayPicture] = useState(
         userData.displayPicture || ""
@@ -109,7 +118,7 @@ function EditProfileModal({ setShowEdit }) {
             let finalDisplayPicture = displayPicture
             let finalCoverPicture = coverPicture
 
-            
+
             const uploads = []
 
             if (pictureFile) {

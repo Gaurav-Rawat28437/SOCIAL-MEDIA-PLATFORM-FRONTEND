@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { useSelector } from "react-redux"
 import { Calendar } from "lucide-react"
 import EditProfileModal from "./EditProfileModal"
+import PostContent from "../post/PostContent"
 
 function ProfileContent() {
 
@@ -114,115 +115,7 @@ function ProfileContent() {
 
             </div>
 
-            <div className="border-t border-[#D0B8A8]">
-
-                <div className="flex border-b border-[#D0B8A8]">
-
-                    <button
-                        type="button"
-                        className="px-6 py-4 text-sm font-semibold text-[#4E220F] border-b-2 border-[#9D6638]"
-                    >
-                        Posts
-                    </button>
-
-                    <button
-                        type="button"
-                        className="px-6 py-4 text-sm font-semibold text-[#8B6F61] hover:text-[#4E220F]"
-                    >
-                        Replies
-                    </button>
-
-                    <button
-                        type="button"
-                        className="px-6 py-4 text-sm font-semibold text-[#8B6F61] hover:text-[#4E220F]"
-                    >
-                        Media
-                    </button>
-
-                    <button
-                        type="button"
-                        className="px-6 py-4 text-sm font-semibold text-[#8B6F61] hover:text-[#4E220F]"
-                    >
-                        Likes
-                    </button>
-
-                </div>
-
-                <div className="p-6 space-y-4">
-
-                    <div className="bg-white border border-[#D0B8A8] rounded-2xl p-5">
-
-                        <div className="flex items-center gap-3">
-
-                            <div className="w-11 h-11 rounded-full bg-[#4E220F] flex items-center justify-center text-[#F7F1DE] font-semibold">
-                                {firstName?.charAt(0)?.toUpperCase() || "U"}
-                            </div>
-
-                            <div>
-
-                                <p className="font-semibold text-[#4E220F]">
-                                    {firstName || "User"}
-                                </p>
-
-                                <p className="text-xs text-[#8B6F61]">
-                                    3h
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <p className="mt-4 text-[#4A352C]">
-                            Morning run through the park, best way to start the day.
-                        </p>
-
-                        <div className="flex gap-6 mt-4 text-sm text-[#9D6638]">
-                            <span>💬 12</span>
-                            <span>🔁 4</span>
-                            <span>❤️ 38</span>
-                            <span>↗</span>
-                        </div>
-
-                    </div>
-
-                    <div className="bg-white border border-[#D0B8A8] rounded-2xl p-5">
-
-                        <div className="flex items-center gap-3">
-
-                            <div className="w-11 h-11 rounded-full bg-[#9D6638] flex items-center justify-center text-[#F7F1DE] font-semibold">
-                                {firstName?.charAt(0)?.toUpperCase() || "U"}
-                            </div>
-
-                            <div>
-
-                                <p className="font-semibold text-[#4E220F]">
-                                    {firstName || "User"}
-                                </p>
-
-                                <p className="text-xs text-[#8B6F61]">
-                                    1d
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <p className="mt-4 text-[#4A352C]">
-                            Building something new with Muuv 🚀
-                        </p>
-
-                        <div className="flex gap-6 mt-4 text-sm text-[#9D6638]">
-                            <span>💬 6</span>
-                            <span>🔁 1</span>
-                            <span>❤️ 21</span>
-                            <span>↗</span>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
+             <PostContent userData={userData} />
 
             {showEdit && (
                 <EditProfileModal setShowEdit={setShowEdit} />

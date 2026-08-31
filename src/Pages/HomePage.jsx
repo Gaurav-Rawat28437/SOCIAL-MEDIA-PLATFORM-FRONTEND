@@ -3,22 +3,27 @@ import Navbar from "../Components/common/Navbar"
 import Sidebar from "../Components/common/Sidebar"
 import HomeContent from "../Components/home/homeContent"
 
+
 function HomePage() {
-  return (
-    <div className="min-h-screen bg-[#F8EDE3]">
+    return (
+        <div className="min-h-screen bg-[#F1F2E6]">
 
-      <Navbar />
+            <Navbar />
 
-      <Sidebar />
+            <Sidebar />
 
-      <main className="pt-16 ml-20 p-8">
+            <main className="pt-20 ml-[336px] mr-5">
 
-        <HomeContent />
+                <div className="w-[700px]">
 
-      </main>
+                    <HomeContent />
 
-    </div>
-  )
+                </div>
+
+            </main>
+
+        </div>
+    )
 }
 
 export default HomePage

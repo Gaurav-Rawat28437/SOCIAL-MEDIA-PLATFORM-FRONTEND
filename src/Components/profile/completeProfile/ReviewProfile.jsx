@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import toast from "react-hot-toast"
 import { useDispatch, useSelector } from "react-redux"
-import { completeProfile } from "../../../services/authService"
+import { completeProfile } from "../../../services/profileService"
 import { useNavigate } from "react-router-dom"
 import { addUserData } from "../../../Utils/usersSlice"
 import {uploadImage} from "../../../services/cloudinaryService"
