@@ -1,6 +1,6 @@
 import React from "react"
 
-function PostCard({ post, userData ,setSelectedPost}) {
+function PostCard({ post, userData, setSelectedPost }) {
 
     const {
         firstName,
@@ -9,17 +9,35 @@ function PostCard({ post, userData ,setSelectedPost}) {
         displayPicture
     } = userData
 
+    const isVideo =
+        post.imgUrl?.includes("/video/upload/") ||
+        /\.(mp4|webm|mov|m4v|avi|mkv)(\?|$)/i.test(post.imgUrl || "")
+
     return (
-        <div 
-            onClick={() => setSelectedPost(post)}
-            className="bg-white border border-[#D0B8A8] rounded-xl overflow-hidden">
+        <div
+            onClick={() => setSelectedPost(post._id)}
+            className="bg-white border border-[#D0B8A8] rounded-xl overflow-hidden cursor-pointer hover:border-[#8D493A] transition"
+        >
 
             {post.imgUrl && (
-                <img
-                    src={post.imgUrl}
-                    alt="Post"
-                    className="w-full h-48 object-cover"
-                />
+                <div className="w-full h-48 bg-[#1A120B] overflow-hidden">
+
+                    {isVideo ? (
+                        <video
+                            src={post.imgUrl}
+                            muted
+                            playsInline
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <img
+                            src={post.imgUrl}
+                            alt="Post"
+                            className="w-full h-full object-cover"
+                        />
+                    )}
+
+                </div>
             )}
 
             <div className="p-3">

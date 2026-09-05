@@ -1,5 +1,5 @@
 import React from "react"
-import { Home, Compass, Heart, User, LogOut, MessageCircle } from "lucide-react"
+import { Home,User, LogOut, MessageCircle } from "lucide-react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { logout } from "../../services/authService"
 import toast from "react-hot-toast"
@@ -24,7 +24,7 @@ function Sidebar() {
 
   return (
     <aside
-      className="group fixed top-16 left-0 w-20 hover:w-64 h-[calc(100vh-4rem)] border-r border-[#5A382A] bg-[#432A20] p-3 transition-all duration-300 overflow-hidden flex flex-col z-40"
+      className="group fixed top-16 left-0 w-20 hover:w-64 h-[calc(100vh-4rem)] border-r border-[#5A382A] bg-[#E5E5CB] p-3 transition-all duration-300 overflow-hidden flex flex-col z-40"
     >
 
       <div className="space-y-2">
@@ -32,30 +32,30 @@ function Sidebar() {
         <NavLink
           to="/home"
           className={({ isActive }) =>
-            `w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[#F7F1DE] font-semibold transition whitespace-nowrap ${
+            `w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[#1A120B] font-semibold transition whitespace-nowrap ${
               isActive
-                ? "bg-[#9D6638]"
-                : "hover:bg-[#5A382A]"
+                ? "bg-[#3C2A21] text-[#D5CEA3] "
+                : "text-[#1A120B]"
             }`
           }
         >
-          <Home size={24} className="shrink-0" />
+          <Home size={24} className="shrink-0 ml-1" />
           <span className="hidden group-hover:block">
             Home
           </span>
         </NavLink>
 
         <NavLink
-          to="/home"
+          to="/"
           className={({ isActive }) =>
-            `w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[#F7F1DE] transition whitespace-nowrap ${
+            `w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[#1A120B] transition whitespace-nowrap ${
               isActive
-                ? "bg-[#9D6638]"
-                : "hover:bg-[#5A382A]"
+                ? "bg-[#3C2A21] text-[#D5CEA3] "
+                : " text-[#1A120B]"
             }`
           }
         >
-          <MessageCircle size={24} className="shrink-0" />
+          <MessageCircle size={24} className="shrink-0 ml-1" />
           <span className="hidden group-hover:block">
             Chat
           </span>
@@ -65,14 +65,14 @@ function Sidebar() {
         <NavLink
           to="/profile"
           className={({ isActive }) =>
-            `w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[#F7F1DE] transition whitespace-nowrap ${
+            `w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[#1A120B] transition whitespace-nowrap ${
               isActive
-                ? "bg-[#9D6638]"
-                : "hover:bg-[#5A382A]"
+                ? " bg-[#3C2A21] text-[#D5CEA3] "
+                : "text-[#1A120B]"
             }`
           }
         >
-          <User size={24} className="shrink-0" />
+          <User size={24} className="shrink-0 ml-1" />
           <span className="hidden group-hover:block">
             Profile
           </span>
@@ -87,8 +87,9 @@ function Sidebar() {
         className="
           w-full flex items-center gap-3
           px-3 py-3 rounded-xl
-          text-[#F7F1DE]
-          hover:bg-[#5A382A]
+          hover:bg-[#1A120B]
+          hover:text-[#E5E5CB]
+          text-[#1A120B]
           transition whitespace-nowrap
           mt-auto
         "

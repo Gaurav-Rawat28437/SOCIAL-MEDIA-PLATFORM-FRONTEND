@@ -54,7 +54,7 @@ function ProfileContent() {
                     <button
                         onClick={() => setShowEdit(true)}
                         type="button"
-                        className="mt-4 px-5 py-2 rounded-full border-2 border-[#9D6638] text-[#9D6638] font-semibold hover:bg-[#9D6638] hover:text-white transition"
+                        className="mt-4 px-5 py-2 rounded-full border-2 border-[#3C2A21] text-[#3C2A21] font-semibold hover:bg-[#3C2A21] hover:border-2 hover:border-[#D5CEA3] hover:text-white transition"
                     >
                         Edit Profile
                     </button>

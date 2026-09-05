@@ -30,7 +30,7 @@ function BrandSide() {
                 </h1>
 
                 <p className="text-xs text-[#D0B8A8] mt-1">
-                    Make Your Muuv
+                    your move, your feed
                 </p>
             </div>
 
@@ -58,7 +58,7 @@ function BrandSide() {
 
                 <div className="bg-[#4A352C] text-[#F8EDE3] p-4 rounded-2xl rounded-bl-sm w-[85%]">
                     <p className="text-xs text-[#D0B8A8] mb-1">
-                        MIRA
+                        Uv
                     </p>
 
                     <p className="text-sm">
@@ -77,7 +77,7 @@ function BrandSide() {
 
 
             <div className="mt-6 flex justify-between border-t border-[#D0B8A8]/30 pt-[18px] font-mono text-[11px] text-[#D0B8A8]">
-                <span >Move. Post. Repeat.</span>
+                <span >show up. post up.</span>
 
                 <span>{time}</span>
             </div>

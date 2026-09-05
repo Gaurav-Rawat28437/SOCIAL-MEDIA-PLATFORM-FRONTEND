@@ -58,3 +58,4 @@ export const getFeedPosts = async (page = 1, limit = 18) => {
 
     return response.data
 }
+

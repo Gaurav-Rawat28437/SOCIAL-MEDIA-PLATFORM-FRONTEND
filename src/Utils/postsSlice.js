@@ -6,13 +6,15 @@ const postsSlice = createSlice({
     initialState: {
         posts: [],
         hasMore: false,
-        page: 1
+        page: 1,
+        loaded: false
     },
 
     reducers: {
 
         setPosts: (state, action) => {
             state.posts = action.payload
+            state.loaded = true
         },
 
         addPosts: (state, action) => {
@@ -45,6 +47,20 @@ const postsSlice = createSlice({
                     : post
             )
 
+        },
+        updateLike: (state, action) => {
+
+            const { postId, isLiked, likesCount } = action.payload
+
+            state.posts = state.posts.map(post =>
+                post._id === postId
+                    ? {
+                        ...post,
+                        isLiked,
+                        likesCount
+                    }
+                    : post
+            )
         }
 
     }
@@ -57,7 +73,8 @@ export const {
     setHasMore,
     setPage,
     removePost,
-    updatePost
+    updatePost,
+    updateLike
 } = postsSlice.actions
 
 export default postsSlice.reducer

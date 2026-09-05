@@ -106,8 +106,8 @@ function EditProfileModal({ setShowEdit }) {
             return
         }
 
-        if (username.length > 12) {
-            toast.error("Username cannot be more than 12 characters")
+        if (username.length < 2  || username.length > 20) {
+            toast.error("Username cannot be less then 2 and more than 20 characters")
             return
         }
 

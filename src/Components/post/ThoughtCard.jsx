@@ -1,15 +1,19 @@
-import React, { useState } from "react"
-import { Heart, MessageCircle, MoreVertical, Pencil, Trash2, X } from "lucide-react"
+import React, { useEffect, useState } from "react"
+import { Bookmark, Heart, MessageCircle, MoreVertical, Pencil, Share, Trash2, X } from "lucide-react"
 import { useDispatch } from "react-redux"
 import toast from "react-hot-toast"
 import { deletePost, editPost } from "../../services/postServices"
-import { removeThought, updateThought } from "../../Utils/thoughtsSlice"
+import { removeThought, updateThought, updateThoughtLike } from "../../Utils/thoughtsSlice"
+import { likePost, unlikePost } from "../../services/likeServices"
 
 function ThoughtCard({ thought, userData }) {
 
     const dispatch = useDispatch()
 
-    const [isLiked, setIsLiked] = useState(false)
+    const [isShare, setShare] = useState(false)
+    const [isBookmarked, setIsBookmarked] = useState(false)
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+    const [deleting, setDeleting] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
     const [showEdit, setShowEdit] = useState(false)
     const [content, setContent] = useState(thought.content)
@@ -34,7 +38,7 @@ function ThoughtCard({ thought, userData }) {
 
         try {
 
-            setLoading(true)
+            setDeleting(true)
 
             const response = await deletePost(thought._id)
 
@@ -63,6 +67,7 @@ function ThoughtCard({ thought, userData }) {
             setLoading(false)
 
         }
+
     }
 
     const handleUpdate = async (e) => {
@@ -110,15 +115,47 @@ function ThoughtCard({ thought, userData }) {
             setLoading(false)
 
         }
+
     }
+
+    const handleLike = async () => {
+
+    try {
+
+        const response = thought.isLiked
+            ? await unlikePost(thought._id)
+            : await likePost(thought._id)
+
+        if (response.success) {
+
+            dispatch(
+                updateThoughtLike({
+                    postId: thought._id,
+                    isLiked: !thought.isLiked,
+                    likesCount: response.likesCount
+                })
+            )
+        }
+
+    } catch (error) {
+
+        console.log(error)
+
+        toast.error(
+            error.response?.data?.msg ||
+            error.message ||
+            "Unable to update like"
+        )
+    }
+}
 
     return (
         <>
-            <div className="relative bg-white border border-[#D0B8A8] rounded-xl p-5">
+            <div className="relative bg-white border border-[#D0B8A8] rounded-xl p-3">
 
                 <div className="flex items-start justify-between">
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 min-w-0">
 
                         <img
                             src={
@@ -126,16 +163,16 @@ function ThoughtCard({ thought, userData }) {
                                 "/muuv_pfp_dark.svg"
                             }
                             alt="Profile"
-                            className="w-10 h-10 rounded-full object-cover border border-[#D0B8A8]"
+                            className="w-8 h-8 rounded-full object-cover border border-[#D0B8A8] shrink-0"
                         />
 
-                        <div>
+                        <div className="min-w-0">
 
-                            <p className="font-semibold text-[#4E220F]">
+                            <p className="font-semibold text-sm text-[#4E220F] truncate">
                                 {firstName} {lastName}
                             </p>
 
-                            <p className="text-sm text-[#8B6F61]">
+                            <p className="text-xs text-[#8B6F61] truncate">
                                 @{username}
                             </p>
 
@@ -143,7 +180,7 @@ function ThoughtCard({ thought, userData }) {
 
                     </div>
 
-                    <div className="relative">
+                    <div className="relative shrink-0">
 
                         <button
                             type="button"
@@ -151,28 +188,30 @@ function ThoughtCard({ thought, userData }) {
                             onClick={() => setShowMenu(!showMenu)}
                             className="p-1 text-[#8B6F61] hover:text-[#4E220F] transition"
                         >
-                            <MoreVertical size={20} />
+                            <MoreVertical size={18} />
                         </button>
 
                         {showMenu && (
-                            <div className="absolute right-0 top-8 z-20 w-32 bg-white border border-[#D0B8A8] rounded-lg shadow-lg overflow-hidden">
+                            <div className="absolute right-0 top-7 z-20 w-28 bg-white border border-[#D0B8A8] rounded-lg shadow-lg overflow-hidden">
 
                                 <button
                                     type="button"
                                     onClick={handleEdit}
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#4E220F] hover:bg-[#F8EDE3] transition"
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[#4E220F] hover:bg-[#F8EDE3] transition"
                                 >
-                                    <Pencil size={15} />
+                                    <Pencil size={14} />
                                     Edit
                                 </button>
 
                                 <button
                                     type="button"
                                     disabled={loading}
-                                    onClick={handleDelete}
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition"
+                                    onClick={()=>{
+                                        setShowDeleteConfirm(true)
+                                    }}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-500 hover:bg-red-50 transition"
                                 >
-                                    <Trash2 size={15} />
+                                    <Trash2 size={14} />
                                     Delete
                                 </button>
 
@@ -183,11 +222,11 @@ function ThoughtCard({ thought, userData }) {
 
                 </div>
 
-                <p className="mt-4 text-[#4A352C] whitespace-pre-wrap break-words">
+                <p className="mt-2 text-sm text-[#4A352C] whitespace-pre-wrap break-words line-clamp-4">
                     {thought.content}
                 </p>
 
-                <p className="mt-3 text-xs text-[#8B6F61]">
+                <p className="mt-2 text-[11px] text-[#8B6F61]">
                     {new Date(thought.createdAt).toLocaleDateString(
                         "en-US",
                         {
@@ -197,38 +236,139 @@ function ThoughtCard({ thought, userData }) {
                     )}
                 </p>
 
-                <div className="flex gap-5 mt-3 pt-3 border-t border-[#D0B8A8]">
+                <div
+                    className="
+                        flex
+                        items-center
+                        justify-between
+                        mt-2
+                        pt-2
+                        border-t
+                        border-[#D0B8A8]
+                    "
+                >
 
                     <button
                         type="button"
-                        onClick={() => setIsLiked(!isLiked)}
-                        className="relative w-7 h-7"
+                        onClick={handleLike}
+                        className="
+                            flex
+                            items-center
+                            justify-center
+                            gap-1
+                            min-w-[40px]
+                            h-7
+                            px-1.5
+                            rounded-full
+                            border
+                            border-transparent
+                            text-[#1A120B]
+                            hover:bg-[#D5CEA3]
+                            hover:border-[#1A120B]
+                            transition-all
+                        "
                     >
 
-                        <i
-                            className={`fa-solid fa-heart text-[23px] mt-[1px] ${
-                                isLiked
-                                    ? "text-red-500"
-                                    : "text-white"
-                            }`}
-                        ></i>
-
                         <Heart
-                            size={27}
-                            className={`absolute bottom-[1px] right-0 ${
-                                isLiked
-                                    ? "text-red-500"
-                                    : "text-[#9D6638] hover:text-[#4E220F]"
-                            }`}
+                            size={16}
+                            className="shrink-0 text-[#1A120B]"
+                            fill={thought.isLiked ? "currentColor" : "none"}
                         />
+
+                        <span className="text-[11px] text-[#1A120B]">
+                            {thought.likesCount || 0}
+                        </span>
 
                     </button>
 
                     <button
                         type="button"
-                        className="text-[#9D6638] hover:text-[#4E220F] transition"
+                        className="
+                            flex
+                            items-center
+                            justify-center
+                            gap-1
+                            min-w-[40px]
+                            h-7
+                            px-1.5
+                            rounded-full
+                            text-[#1A120B]
+                            border
+                            border-transparent
+                            hover:bg-[#D5CEA3]
+                            hover:border-[#1A120B]
+                            transition-all
+                        "
                     >
-                        <MessageCircle size={24} />
+
+                        <MessageCircle
+                            size={16}
+                            className="shrink-0"
+                        />
+
+                        <span className="text-[11px]">
+                            {thought.commentsCount || 0}
+                        </span>
+
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => setShare(!isShare)}
+                        className="
+                            flex
+                            items-center
+                            justify-center
+                            gap-1
+                            min-w-[40px]
+                            h-7
+                            px-1.5
+                            rounded-full
+                            border
+                            border-transparent
+                            text-[#1A120B]
+                            hover:bg-[#D5CEA3]
+                            hover:border-[#1A120B]
+                            transition-all
+                        "
+                    >
+
+                        <Share
+                            size={16}
+                            className="shrink-0 text-[#1A120B]"
+                        />
+
+                        <span className="text-[11px] text-[#1A120B]">
+                            {thought.repostsCount || 0}
+                        </span>
+
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => setIsBookmarked(!isBookmarked)}
+                        className="
+                            w-7
+                            h-7
+                            flex
+                            items-center
+                            justify-center
+                            rounded-full
+                            border
+                            border-transparent
+                            text-[#1A120B]
+                            hover:bg-[#D5CEA3]
+                            hover:border-[#1A120B]
+                            transition-all
+                        "
+                    >
+
+                        <Bookmark
+                            size={16}
+                            className="shrink-0 text-[#1A120B]"
+                            fill={isBookmarked ? "#1A120B" : "none"}
+                        />
+
                     </button>
 
                 </div>
@@ -303,8 +443,56 @@ function ThoughtCard({ thought, userData }) {
 
                     </div>
 
+                   
+
                 </div>
             )}
+
+             {showDeleteConfirm && (
+
+                        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4">
+
+                            <div className="bg-white w-full max-w-sm rounded-2xl p-6 shadow-xl">
+
+                                <h3 className="text-lg font-semibold text-[#4E220F]">
+                                    Delete thought?
+                                </h3>
+
+                                <p className="mt-2 text-sm text-[#8B6F61]">
+                                    This action cannot be undone.
+                                </p>
+
+                                <div className="flex justify-end gap-3 mt-6">
+
+                                    <button
+                                        type="button"
+                                        disabled={deleting}
+                                        onClick={() =>
+                                            setShowDeleteConfirm(false)
+                                        }
+                                        className="px-4 py-2 rounded-lg text-sm font-medium text-[#4A352C] hover:bg-[#F8EDE3] transition"
+                                    >
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        disabled={deleting}
+                                        onClick={handleDelete}
+                                        className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                    >
+                                        {deleting
+                                            ? "Deleting..."
+                                            : "Delete"}
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    )}
         </>
     )
 }

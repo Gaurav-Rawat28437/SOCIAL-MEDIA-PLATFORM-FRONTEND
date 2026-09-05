@@ -1,102 +1,116 @@
-import React, { useEffect, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
-
-import { getFeedPosts } from "../../services/postServices"
-
-import {
-    setFeedPosts,
-    addFeedPosts,
-    setFeedPage,
-    setFeedHasMore
-} from "../../Utils/feedSlice"
-
+import React, { useEffect,useRef,useState} from "react"
+import {useDispatch,useSelector} from "react-redux"
+import { getFeedPosts} from "../../services/postServices"
+import { setFeedPosts, addFeedPosts, setFeedPage, setFeedHasMore} from "../../Utils/feedSlice"
 import FeedCard from "./FeedCard"
+import PostComposer from "./PostComposer"
 
 function HomeContent() {
-
     const dispatch = useDispatch()
 
     const posts = useSelector(
         store => store.Feed?.posts || []
     )
 
+    const currentPage = useSelector(
+    store => store.Feed?.page || 1
+)
+
     const hasMore = useSelector(
         store => store.Feed?.hasMore ?? true
     )
 
-    const [loading, setLoading] = useState(true)
-    const [loadingMore, setLoadingMore] = useState(false)
+    const loaded = useSelector(
+        store => store.Feed?.loaded || false
+    )
 
+    const loadingMoreRef = useRef(false)
 
-    
+    const [loading, setLoading] =
+        useState(true)
+
+    const [loadingMore, setLoadingMore] =
+        useState(false)
+
     useEffect(() => {
 
+        if (loaded) {
+            setLoading(false)
+            return
+        }
+
         const fetchFeed = async () => {
-
             try {
-
                 setLoading(true)
 
-                const response = await getFeedPosts(1, 18)
+                const response =
+                    await getFeedPosts(1, 18)
 
                 if (response.success) {
-
-                    dispatch(setFeedPosts(response.data))
-
-                    dispatch(setFeedPage(1))
+                    dispatch(
+                        setFeedPosts(
+                            response.data
+                        )
+                    )
 
                     dispatch(
-                        setFeedHasMore(response.hasMore)
+                        setFeedPage(1)
+                    )
+
+                    dispatch(
+                        setFeedHasMore(
+                            response.hasMore
+                        )
                     )
                 }
-
             } catch (error) {
-
-                console.log("FIRST LOAD ERROR:", error)
-
+                console.log(
+                    "FIRST LOAD ERROR:",
+                    error
+                )
             } finally {
-
                 setLoading(false)
             }
         }
 
         fetchFeed()
-
-    }, [dispatch])
-
+    }, [dispatch,loaded])
 
     useEffect(() => {
-
         const handleScroll = async () => {
-
-            if (loadingMore) {
+            if (
+                loadingMoreRef.current ||
+                !hasMore
+            ) {
                 return
             }
 
-            if (!hasMore) {
-                return
-            }
+            const scrollTop =
+                window.scrollY
 
-            const scrollTop = window.scrollY
-            const windowHeight = window.innerHeight
+            const windowHeight =
+                window.innerHeight
+
             const scrollHeight =
-                document.documentElement.scrollHeight
+                document.documentElement
+                    .scrollHeight
 
             if (
-                scrollTop + windowHeight + 200 <
+                scrollTop +
+                    windowHeight +
+                    200 <
                 scrollHeight
             ) {
                 return
             }
 
+            const nextPage = currentPage + 1
 
-            const nextPage =
-                Math.floor(posts.length / 18) + 1
-
+            loadingMoreRef.current = true
+            setLoadingMore(true)
 
             try {
-
-                setLoadingMore(true)
+                
 
                 const response =
                     await getFeedPosts(
@@ -104,11 +118,11 @@ function HomeContent() {
                         18
                     )
 
-
                 if (response.success) {
-
-                    if (response.data.length > 0) {
-
+                    if (
+                        response.data.length >
+                        0
+                    ) {
                         dispatch(
                             addFeedPosts(
                                 response.data
@@ -128,20 +142,16 @@ function HomeContent() {
                         )
                     )
                 }
-
             } catch (error) {
-
                 console.log(
                     "LOAD MORE ERROR:",
                     error
                 )
-
             } finally {
-
+                loadingMoreRef.current = false
                 setLoadingMore(false)
             }
         }
-
 
         window.addEventListener(
             "scroll",
@@ -149,76 +159,88 @@ function HomeContent() {
         )
 
         return () => {
-
             window.removeEventListener(
                 "scroll",
                 handleScroll
             )
         }
-
     }, [
         posts.length,
         hasMore,
-        loadingMore
+        dispatch
     ])
-
 
     return (
         <div className="w-full">
+            <PostComposer />
 
-            <div className="bg-white border border-[#D0B8A8] rounded-2xl p-5 mb-6">
+            <div className="mt-6">
+                {loading ? (
+                    <div
+                        className="
+                            py-12
+                            text-center
+                            text-[#1A120B]
+                           
+                        "
+                    >
+                        Loading feed...
+                    </div>
+                ) : posts.length===0 ? (
+                    <div
+                        className="
+                            bg-[#D5CEA3]
+                            rounded-2xl
+                            border
+                            border-[#3C2A21]
+                            py-12
+                            text-center
+                            text-[#1A120B]
+                            shadow-[0_3px_12px_rgba(141,73,58,0.07)]
+                        "
+                    >
+                        No posts yet
+                    </div>
+                ) : (
+                    <div className="flex flex-col gap-5">
+                        {posts.map(post => (
+                            <FeedCard
+                                key={post._id}
+                                post={post}
+                            />
+                        ))}
+                    </div>
+                )}
 
-                <h1 className="text-2xl font-semibold text-[#4A352C]">
-                    Welcome to Muuv
-                </h1>
 
-                <p className="mt-1 text-[#8B6F61]">
-                    Discover what people are sharing.
-                </p>
+
+
+                {loadingMore && (
+                    <div
+                        className="
+                            py-6
+                            text-center
+                            text-[#1A120B]
+                        "
+                    >
+                        Loading more...
+                    </div>
+                )}
+
+                {!hasMore &&
+                    posts.length > 0 && (
+                        <div
+                            className="
+                                py-6
+                                text-center
+                                text-[#1A120B]
+                            "
+                        >
+                            No more posts
+                        </div>
+                    )}
 
             </div>
-
-
-            {loading ? (
-
-                <div className="bg-white rounded-2xl border border-[#D0B8A8] py-12 text-center text-[#8B6F61]">
-                    Loading feed...
-                </div>
-
-            ) : posts.length === 0 ? (
-
-                <div className="bg-white rounded-2xl border border-[#D0B8A8] py-12 text-center text-[#8B6F61]">
-                    No posts yet
-                </div>
-
-            ) : (
-
-                <div className="flex flex-col gap-5">
-
-                    {posts.map(post => (
-                        <FeedCard
-                            key={post._id}
-                            post={post}
-                        />
-                    ))}
-
-                </div>
-            )}
-
-
-            {loadingMore && (
-                <div className="py-6 text-center text-[#8B6F61]">
-                    Loading more...
-                </div>
-            )}
-
-
-            {!hasMore && posts.length > 0 && (
-                <div className="py-6 text-center text-[#8B6F61]">
-                    No more posts
-                </div>
-            )}
-
         </div>
     )
 }

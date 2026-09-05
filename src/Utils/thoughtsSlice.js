@@ -42,6 +42,17 @@ const thoughtsSlice = createSlice({
                     ? action.payload
                     : thought
             )
+        },
+
+        updateThoughtLike: (state, action) => {
+            const thought = state.thoughts.find(
+                thought => thought._id === action.payload.postId
+            )
+
+            if (thought) {
+                thought.isLiked = action.payload.isLiked
+                thought.likesCount = action.payload.likesCount
+            }
         }
 
     }
@@ -54,7 +65,8 @@ export const {
     setHasMore,
     setPage,
     removeThought,
-    updateThought
+    updateThought,
+    updateThoughtLike
 } = thoughtsSlice.actions
 
 export default thoughtsSlice.reducer
