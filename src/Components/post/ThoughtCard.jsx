@@ -5,6 +5,7 @@ import toast from "react-hot-toast"
 import { deletePost, editPost } from "../../services/postServices"
 import { removeThought, updateThought, updateThoughtLike } from "../../Utils/thoughtsSlice"
 import { likePost, unlikePost } from "../../services/likeServices"
+import { updateFeedPostLike } from "../../Utils/feedSlice"
 
 function ThoughtCard({ thought, userData }) {
 
@@ -125,7 +126,7 @@ function ThoughtCard({ thought, userData }) {
         if (likeLoading) return
 
         try {
-             setLikeLoading(true)
+            setLikeLoading(true)
 
             const response = thought.isLiked
                 ? await unlikePost(thought._id)
@@ -133,13 +134,24 @@ function ThoughtCard({ thought, userData }) {
 
             if (response.success) {
 
+                const isLiked = !thought.isLiked
+
                 dispatch(
-                    updateThoughtLike({
+                    updateFeedPostLike({
                         postId: thought._id,
-                        isLiked: !thought.isLiked,
+                        isLiked,
                         likesCount: response.likesCount
                     })
                 )
+
+                dispatch(
+                    updateThoughtLike({
+                        postId: thought._id,
+                        isLiked,
+                        likesCount: response.likesCount
+                    })
+                )
+
             }
 
         } catch (error) {
@@ -151,11 +163,12 @@ function ThoughtCard({ thought, userData }) {
                 error.message ||
                 "Unable to update like"
             )
-        }
-        finally {
 
-        setLikeLoading(false)
-    }
+        } finally {
+
+            setLikeLoading(false)
+
+        }
     }
 
     return (
@@ -262,33 +275,33 @@ function ThoughtCard({ thought, userData }) {
                         disabled={likeLoading}
                         onClick={handleLike}
                         className="
-                            flex
-                            items-center
-                            justify-center
-                            gap-1
-                            min-w-[40px]
-                            h-7
-                            px-1.5
-                            rounded-full
-                            border
-                            border-transparent
-                            text-[#1A120B]
-                            hover:bg-[#D5CEA3]
-                            hover:border-[#1A120B]
-                            transition-all
-                        "
+                                flex
+                                items-center
+                                justify-center
+                                gap-2
+                                min-w-[70px]
+                                h-10
+                                px-3
+                                rounded-full
+                                border
+                                border-transparent
+                                text-[#1A120B]
+                                hover:bg-[#D5CEA3]
+                                hover:border-[#1A120B]
+                                transition-all
+                                disabled:opacity-50
+                                disabled:cursor-not-allowed
+                            "
                     >
-
                         <Heart
-                            size={16}
+                            size={20}
                             className="shrink-0 text-[#1A120B]"
                             fill={thought.isLiked ? "currentColor" : "none"}
                         />
 
-                        <span className="text-[11px] text-[#1A120B]">
+                        <span className="text-sm text-[#1A120B]">
                             {thought.likesCount || 0}
                         </span>
-
                     </button>
 
                     <button

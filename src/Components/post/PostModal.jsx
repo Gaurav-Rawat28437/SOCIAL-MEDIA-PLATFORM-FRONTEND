@@ -17,6 +17,7 @@ import { deletePost } from "../../services/postServices"
 import { removePost, updateLike } from "../../Utils/postsSlice"
 import EditPostModal from "./EditPostModal"
 import { likePost, unlikePost } from "../../services/likeServices"
+import { updateFeedPostLike } from "../../Utils/feedSlice"
 
 
 function PostModal({ post, userData, setSelectedPost }) {
@@ -138,11 +139,20 @@ function PostModal({ post, userData, setSelectedPost }) {
                 : await likePost(post._id)
 
             if (response.success) {
+                const isLiked = !post.isLiked
+
+                dispatch(
+                    updateFeedPostLike({
+                        postId: post._id,
+                        isLiked,
+                        likesCount: response.likesCount
+                    })
+                )
 
                 dispatch(
                     updateLike({
                         postId: post._id,
-                        isLiked: !post.isLiked,
+                        isLiked,
                         likesCount: response.likesCount
                     })
                 )
@@ -429,23 +439,25 @@ function PostModal({ post, userData, setSelectedPost }) {
                         <button
                             type="button"
                             disabled={likeLoading}
-                            onClick={() => handleLike()}
+                            onClick={handleLike}
                             className="
-                               flex
-                               items-center
-                               justify-center
-                               gap-2
-                               min-w-[70px]
-                               h-10
-                               px-3
-                               rounded-full
-                               border
-                               border-transparent
-                               text-[#1A120B]
-                               hover:bg-[#D5CEA3]
-                               hover:border-[#1A120B]
-                               transition-all
-                               "
+                                     flex
+                                     items-center
+                                     justify-center
+                                     gap-2
+                                     min-w-[70px]
+                                     h-10
+                                     px-3
+                                     rounded-full
+                                     border
+                                     border-transparent
+                                     text-[#1A120B]
+                                     hover:bg-[#D5CEA3]
+                                     hover:border-[#1A120B]
+                                     transition-all
+                                     disabled:opacity-50
+                                     disabled:cursor-not-allowed
+                                 "
                         >
                             <Heart
                                 size={20}
@@ -456,7 +468,6 @@ function PostModal({ post, userData, setSelectedPost }) {
                             <span className="text-sm text-[#1A120B]">
                                 {post.likesCount || 0}
                             </span>
-
                         </button>
 
                         <button

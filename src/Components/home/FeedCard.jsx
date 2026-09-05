@@ -14,6 +14,8 @@ import { useDispatch } from "react-redux"
 import { likePost, unlikePost } from "../../services/likeServices"
 import { updateFeedPostLike } from "../../Utils/feedSlice"
 import toast from "react-hot-toast"
+import { updateThoughtLike } from "../../Utils/thoughtsSlice"
+import { updateLike } from "../../Utils/postsSlice"
 
 function FeedCard({ post }) {
 
@@ -41,77 +43,94 @@ function FeedCard({ post }) {
     }
 
     const toggleMute = () => {
-    if (!videoRef.current) return
+        if (!videoRef.current) return
 
-    if (videoRef.current.muted || videoRef.current.volume === 0) {
-        const newVolume = volume === 0 ? 1 : volume
+        if (videoRef.current.muted || videoRef.current.volume === 0) {
+            const newVolume = volume === 0 ? 1 : volume
 
-        videoRef.current.volume = newVolume
-        videoRef.current.muted = false
-        setVolume(newVolume)
-        setIsMuted(false)
-    } else {
-        videoRef.current.muted = true
-        videoRef.current.volume = 0
-        setVolume(0)
-        setIsMuted(true)
+            videoRef.current.volume = newVolume
+            videoRef.current.muted = false
+            setVolume(newVolume)
+            setIsMuted(false)
+        } else {
+            videoRef.current.muted = true
+            videoRef.current.volume = 0
+            setVolume(0)
+            setIsMuted(true)
+        }
     }
-}
 
-const handleVolume = (e) => {
-    const value = Number(e.target.value)
+    const handleVolume = (e) => {
+        const value = Number(e.target.value)
 
-    setVolume(value)
+        setVolume(value)
 
-    if (videoRef.current) {
-        videoRef.current.volume = value
-        videoRef.current.muted = value === 0
-        setIsMuted(value === 0)
+        if (videoRef.current) {
+            videoRef.current.volume = value
+            videoRef.current.muted = value === 0
+            setIsMuted(value === 0)
+        }
     }
-}
 
 
-const dispatch = useDispatch()
+    const dispatch = useDispatch()
 
-const [likeLoading, setLikeLoading] = useState(false)
+    const [likeLoading, setLikeLoading] = useState(false)
 
-const handleLike = async () => {
-    if (likeLoading) return
+    const handleLike = async () => {
+        if (likeLoading) return
 
-    try {
+        try {
 
-        setLikeLoading(true)
+            setLikeLoading(true)
 
-        const response = post.isLiked
-            ? await unlikePost(post._id)
-            : await likePost(post._id)
+            const response = post.isLiked
+                ? await unlikePost(post._id)
+                : await likePost(post._id)
 
-        if (response.success) {
+            if (response.success) {
+                const isLiked = !post.isLiked
 
-            dispatch(
-                updateFeedPostLike({
-                    postId: post._id,
-                    isLiked: !post.isLiked,
-                    likesCount: response.likesCount
-                })
+                dispatch(
+                    updateFeedPostLike({
+                        postId: post._id,
+                        isLiked,
+                        likesCount: response.likesCount
+                    })
+                )
+
+                dispatch(
+                    updateLike({
+                        postId: post._id,
+                        isLiked,
+                        likesCount: response.likesCount
+                    })
+                )
+
+                dispatch(
+                    updateThoughtLike({
+                        postId: post._id,
+                        isLiked,
+                        likesCount: response.likesCount
+                    })
+                )
+            }
+
+        } catch (error) {
+
+            console.log(error)
+
+            toast.error(
+                error.response?.data?.msg ||
+                error.message ||
+                "Unable to update like"
             )
         }
+        finally {
 
-    } catch (error) {
-
-        console.log(error)
-
-        toast.error(
-            error.response?.data?.msg ||
-            error.message ||
-            "Unable to update like"
-        )
+            setLikeLoading(false)
+        }
     }
-    finally {
-
-        setLikeLoading(false)
-    }
-}
 
     return (
         <article
@@ -247,11 +266,10 @@ const handleLike = async () => {
                         text-[#1A120B]
                         whitespace-pre-wrap
                         break-words
-                        ${
-                            isThought
+                        ${isThought
                                 ? "text-[17px] leading-7"
                                 : "text-[16px] leading-6"
-                        }
+                            }
                         `}
                     >
                         {post.content}
@@ -418,21 +436,23 @@ const handleLike = async () => {
                         disabled={likeLoading}
                         onClick={handleLike}
                         className="
-                        flex
-                        items-center
-                        justify-center
-                        gap-2
-                        min-w-[70px]
-                        h-10
-                        px-3
-                        rounded-full
-                        border
-                        border-transparent
-                        text-[#1A120B]
-                        hover:bg-[#D5CEA3]
-                        hover:border-[#1A120B]
-                        transition-all
-                        "
+                               flex
+                               items-center
+                               justify-center
+                               gap-2
+                               min-w-[70px]
+                               h-10
+                               px-3
+                               rounded-full
+                               border
+                               border-transparent
+                               text-[#1A120B]
+                               hover:bg-[#D5CEA3]
+                               hover:border-[#1A120B]
+                               transition-all
+                               disabled:opacity-50
+                               disabled:cursor-not-allowed
+                           "
                     >
                         <Heart
                             size={20}
@@ -443,7 +463,6 @@ const handleLike = async () => {
                         <span className="text-sm text-[#1A120B]">
                             {post.likesCount || 0}
                         </span>
-
                     </button>
 
                     <button
