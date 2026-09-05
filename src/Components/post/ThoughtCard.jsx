@@ -118,36 +118,45 @@ function ThoughtCard({ thought, userData }) {
 
     }
 
+    const [likeLoading, setLikeLoading] = useState(false)
+
     const handleLike = async () => {
 
-    try {
+        if (likeLoading) return
 
-        const response = thought.isLiked
-            ? await unlikePost(thought._id)
-            : await likePost(thought._id)
+        try {
+             setLikeLoading(true)
 
-        if (response.success) {
+            const response = thought.isLiked
+                ? await unlikePost(thought._id)
+                : await likePost(thought._id)
 
-            dispatch(
-                updateThoughtLike({
-                    postId: thought._id,
-                    isLiked: !thought.isLiked,
-                    likesCount: response.likesCount
-                })
+            if (response.success) {
+
+                dispatch(
+                    updateThoughtLike({
+                        postId: thought._id,
+                        isLiked: !thought.isLiked,
+                        likesCount: response.likesCount
+                    })
+                )
+            }
+
+        } catch (error) {
+
+            console.log(error)
+
+            toast.error(
+                error.response?.data?.msg ||
+                error.message ||
+                "Unable to update like"
             )
         }
+        finally {
 
-    } catch (error) {
-
-        console.log(error)
-
-        toast.error(
-            error.response?.data?.msg ||
-            error.message ||
-            "Unable to update like"
-        )
+        setLikeLoading(false)
     }
-}
+    }
 
     return (
         <>
@@ -206,7 +215,7 @@ function ThoughtCard({ thought, userData }) {
                                 <button
                                     type="button"
                                     disabled={loading}
-                                    onClick={()=>{
+                                    onClick={() => {
                                         setShowDeleteConfirm(true)
                                     }}
                                     className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-500 hover:bg-red-50 transition"
@@ -250,6 +259,7 @@ function ThoughtCard({ thought, userData }) {
 
                     <button
                         type="button"
+                        disabled={likeLoading}
                         onClick={handleLike}
                         className="
                             flex
@@ -443,56 +453,56 @@ function ThoughtCard({ thought, userData }) {
 
                     </div>
 
-                   
+
 
                 </div>
             )}
 
-             {showDeleteConfirm && (
+            {showDeleteConfirm && (
 
-                        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4">
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4">
 
-                            <div className="bg-white w-full max-w-sm rounded-2xl p-6 shadow-xl">
+                    <div className="bg-white w-full max-w-sm rounded-2xl p-6 shadow-xl">
 
-                                <h3 className="text-lg font-semibold text-[#4E220F]">
-                                    Delete thought?
-                                </h3>
+                        <h3 className="text-lg font-semibold text-[#4E220F]">
+                            Delete thought?
+                        </h3>
 
-                                <p className="mt-2 text-sm text-[#8B6F61]">
-                                    This action cannot be undone.
-                                </p>
+                        <p className="mt-2 text-sm text-[#8B6F61]">
+                            This action cannot be undone.
+                        </p>
 
-                                <div className="flex justify-end gap-3 mt-6">
+                        <div className="flex justify-end gap-3 mt-6">
 
-                                    <button
-                                        type="button"
-                                        disabled={deleting}
-                                        onClick={() =>
-                                            setShowDeleteConfirm(false)
-                                        }
-                                        className="px-4 py-2 rounded-lg text-sm font-medium text-[#4A352C] hover:bg-[#F8EDE3] transition"
-                                    >
-                                        Cancel
-                                    </button>
+                            <button
+                                type="button"
+                                disabled={deleting}
+                                onClick={() =>
+                                    setShowDeleteConfirm(false)
+                                }
+                                className="px-4 py-2 rounded-lg text-sm font-medium text-[#4A352C] hover:bg-[#F8EDE3] transition"
+                            >
+                                Cancel
+                            </button>
 
-                                    <button
-                                        type="button"
-                                        disabled={deleting}
-                                        onClick={handleDelete}
-                                        className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
-                                    >
-                                        {deleting
-                                            ? "Deleting..."
-                                            : "Delete"}
-                                    </button>
-
-                                </div>
-
-                            </div>
+                            <button
+                                type="button"
+                                disabled={deleting}
+                                onClick={handleDelete}
+                                className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                            >
+                                {deleting
+                                    ? "Deleting..."
+                                    : "Delete"}
+                            </button>
 
                         </div>
 
-                    )}
+                    </div>
+
+                </div>
+
+            )}
         </>
     )
 }

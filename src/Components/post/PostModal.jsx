@@ -24,7 +24,7 @@ function PostModal({ post, userData, setSelectedPost }) {
     const dispatch = useDispatch()
 
 
-    const [isLiked, setIsLiked] = useState(false)
+
     const [isShare, setShare] = useState(false)
     const [isBookmarked, setIsBookmarked] = useState(false)
     const [showOptions, setShowOptions] = useState(false)
@@ -124,38 +124,28 @@ function PostModal({ post, userData, setSelectedPost }) {
         }
     }
 
+    const [likeLoading, setLikeLoading] = useState(false)
+
     const handleLike = async () => {
 
+        if (likeLoading) return
+
         try {
+            setLikeLoading(true)
 
-            if (post.isLiked) {
+            const response = post.isLiked
+                ? await unlikePost(post._id)
+                : await likePost(post._id)
 
-                const response = await unlikePost(post._id)
+            if (response.success) {
 
-                if (response.success) {
-
-                    dispatch(updateLike({
+                dispatch(
+                    updateLike({
                         postId: post._id,
-                        isLiked: false,
+                        isLiked: !post.isLiked,
                         likesCount: response.likesCount
-                    }))
-
-                }
-
-            } else {
-
-                const response = await likePost(post._id)
-
-                if (response.success) {
-
-                    dispatch(updateLike({
-                        postId: post._id,
-                        isLiked: true,
-                        likesCount: response.likesCount
-                    }))
-
-                }
-
+                    })
+                )
             }
 
         } catch (error) {
@@ -164,11 +154,15 @@ function PostModal({ post, userData, setSelectedPost }) {
 
             toast.error(
                 error.response?.data?.msg ||
+                error.message ||
                 "Unable to update like"
             )
         }
-    }
+        finally {
 
+            setLikeLoading(false)
+        }
+    }
 
     const isVideo = post.imgUrl?.includes("/video/upload/")
 
@@ -434,28 +428,29 @@ function PostModal({ post, userData, setSelectedPost }) {
 
                         <button
                             type="button"
-                            onClick={() => setIsLiked(!isLiked)}
+                            disabled={likeLoading}
+                            onClick={() => handleLike()}
                             className="
-                        flex
-                        items-center
-                        justify-center
-                        gap-2
-                        min-w-[70px]
-                        h-10
-                        px-3
-                        rounded-full
-                        border
-                        border-transparent
-                        text-[#1A120B]
-                        hover:bg-[#D5CEA3]
-                        hover:border-[#1A120B]
-                        transition-all
-                        "
+                               flex
+                               items-center
+                               justify-center
+                               gap-2
+                               min-w-[70px]
+                               h-10
+                               px-3
+                               rounded-full
+                               border
+                               border-transparent
+                               text-[#1A120B]
+                               hover:bg-[#D5CEA3]
+                               hover:border-[#1A120B]
+                               transition-all
+                               "
                         >
                             <Heart
                                 size={20}
                                 className="shrink-0 text-[#1A120B]"
-                                fill={isLiked ? "currentColor" : "none"}
+                                fill={post.isLiked ? "currentColor" : "none"}
                             />
 
                             <span className="text-sm text-[#1A120B]">

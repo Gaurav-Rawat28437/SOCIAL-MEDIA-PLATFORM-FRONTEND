@@ -73,9 +73,14 @@ const handleVolume = (e) => {
 
 const dispatch = useDispatch()
 
+const [likeLoading, setLikeLoading] = useState(false)
+
 const handleLike = async () => {
+    if (likeLoading) return
 
     try {
+
+        setLikeLoading(true)
 
         const response = post.isLiked
             ? await unlikePost(post._id)
@@ -101,6 +106,10 @@ const handleLike = async () => {
             error.message ||
             "Unable to update like"
         )
+    }
+    finally {
+
+        setLikeLoading(false)
     }
 }
 
@@ -406,6 +415,7 @@ const handleLike = async () => {
 
                     <button
                         type="button"
+                        disabled={likeLoading}
                         onClick={handleLike}
                         className="
                         flex
