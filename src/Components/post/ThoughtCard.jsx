@@ -3,9 +3,10 @@ import { Bookmark, Heart, MessageCircle, MoreVertical, Pencil, Share, Trash2, X 
 import { useDispatch } from "react-redux"
 import toast from "react-hot-toast"
 import { deletePost, editPost } from "../../services/postServices"
-import { removeThought, updateThought, updateThoughtLike } from "../../Utils/thoughtsSlice"
+import { removeThought, updateThought, updateThoughtComments, updateThoughtLike } from "../../Utils/thoughtsSlice"
 import { likePost, unlikePost } from "../../services/likeServices"
-import { updateFeedPostLike } from "../../Utils/feedSlice"
+import { updateFeedPostComments, updateFeedPostLike } from "../../Utils/feedSlice"
+import CommentModal from "../comment/CommentModal"
 
 function ThoughtCard({ thought, userData }) {
 
@@ -171,6 +172,24 @@ function ThoughtCard({ thought, userData }) {
         }
     }
 
+
+    const [showComments, setShowComments] = useState(false)
+    const handleCommentAdded = (commentsCount) => {
+        dispatch(
+            updateThoughtComments({
+                postId: thought._id,
+                commentsCount
+            })
+        )
+
+        dispatch(
+            updateFeedPostComments({
+                postId: thought._id,
+                commentsCount
+            })
+        )
+    }
+
     return (
         <>
             <div className="relative bg-white border border-[#D0B8A8] rounded-xl p-3">
@@ -306,33 +325,21 @@ function ThoughtCard({ thought, userData }) {
 
                     <button
                         type="button"
+                        onClick={() => setShowComments(true)}
                         className="
-                            flex
-                            items-center
-                            justify-center
-                            gap-1
-                            min-w-[40px]
-                            h-7
-                            px-1.5
-                            rounded-full
-                            text-[#1A120B]
-                            border
-                            border-transparent
-                            hover:bg-[#D5CEA3]
-                            hover:border-[#1A120B]
-                            transition-all
-                        "
+                                flex items-center justify-center gap-2 min-w-[70px] h-10 px-3
+                                rounded-full border border-transparent text-[#1A120B]
+                                hover:bg-[#D5CEA3] hover:border-[#1A120B] transition-all
+                            "
                     >
-
                         <MessageCircle
-                            size={16}
-                            className="shrink-0"
+                            size={20}
+                            className="shrink-0 text-[#1A120B]"
                         />
 
-                        <span className="text-[11px]">
+                        <span className="text-sm text-[#1A120B]">
                             {thought.commentsCount || 0}
                         </span>
-
                     </button>
 
                     <button
@@ -515,6 +522,14 @@ function ThoughtCard({ thought, userData }) {
 
                 </div>
 
+            )}
+
+            {showComments && (
+                <CommentModal
+                    postId={thought._id}
+                    onClose={() => setShowComments(false)}
+                    onCommentAdded={handleCommentAdded}
+                />
             )}
         </>
     )

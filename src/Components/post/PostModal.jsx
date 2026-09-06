@@ -14,10 +14,11 @@ import {
 import { useDispatch } from "react-redux"
 import toast from "react-hot-toast"
 import { deletePost } from "../../services/postServices"
-import { removePost, updateLike } from "../../Utils/postsSlice"
+import { removePost, updateLike, updatePostComments } from "../../Utils/postsSlice"
 import EditPostModal from "./EditPostModal"
 import { likePost, unlikePost } from "../../services/likeServices"
-import { updateFeedPostLike } from "../../Utils/feedSlice"
+import { updateFeedPostComments, updateFeedPostLike } from "../../Utils/feedSlice"
+import CommentModal from "../comment/CommentModal"
 
 
 function PostModal({ post, userData, setSelectedPost }) {
@@ -174,7 +175,31 @@ function PostModal({ post, userData, setSelectedPost }) {
         }
     }
 
+
     const isVideo = post.imgUrl?.includes("/video/upload/")
+
+
+
+
+    const [showComments, setShowComments] = useState(false)
+    const handleCommentAdded = (commentsCount) => {
+
+        dispatch(
+            updatePostComments({
+                postId: post._id,
+                commentsCount
+            })
+        )
+
+        dispatch(
+            updateFeedPostComments({
+                postId: post._id,
+                commentsCount
+            })
+        )
+
+    }
+
 
     return (
 
@@ -472,22 +497,8 @@ function PostModal({ post, userData, setSelectedPost }) {
 
                         <button
                             type="button"
-                            className="
-                        flex
-                        items-center
-                        justify-center
-                        gap-2
-                        min-w-[70px]
-                        h-10
-                        px-3
-                        rounded-full
-                        text-[#1A120B]
-                        border
-                        border-transparent
-                        hover:bg-[#D5CEA3]
-                        hover:border-[#1A120B]
-                        transition-all
-                        "
+                            onClick={() => setShowComments(true)}
+                            className=" flex items-center justify-center gap-2 min-w-[70px] h-10 px-3 rounded-full text-[#1A120B] border border-transparent hover:bg-[#D5CEA3] hover:border-[#1A120B] transition-all "
                         >
                             <MessageCircle
                                 size={20}
@@ -497,7 +508,6 @@ function PostModal({ post, userData, setSelectedPost }) {
                             <span className="text-sm">
                                 {post.commentsCount || 0}
                             </span>
-
                         </button>
 
                         <button
@@ -616,6 +626,15 @@ function PostModal({ post, userData, setSelectedPost }) {
                     setSelectedPost={setSelectedPost}
                 />
 
+            )}
+
+
+            {showComments && (
+                <CommentModal
+                    postId={post._id}
+                    onClose={() => setShowComments(false)}
+                    onCommentAdded={handleCommentAdded}
+                />
             )}
 
         </div>

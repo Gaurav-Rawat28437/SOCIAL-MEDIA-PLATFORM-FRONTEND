@@ -272,7 +272,7 @@ function EditProfileModal({ setShowEdit }) {
                                 className="h-28 w-28 rounded-full object-cover border-4 border-white bg-[#DFD3C3] group-hover:brightness-75 transition"
                             />
 
-                            <div className="absolute inset-0 rounded-full flex flex-col items-center justify-center gap-1 bg-black/40 opacity-0 group-hover:opacity-100 transition">
+                            <div className="absolute inset-0 rounded-full flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition">
 
                                 <label
                                     htmlFor="profile-img"
@@ -281,17 +281,35 @@ function EditProfileModal({ setShowEdit }) {
                                     Change
                                 </label>
 
-                                {tempPicture && (
-                                    <button
-                                        type="button"
-                                        onClick={handleRemovePicture}
-                                        className="text-white text-xs font-semibold hover:text-red-300"
-                                    >
-                                        Remove
-                                    </button>
-                                )}
-
                             </div>
+
+                            {tempPicture && (
+                                <button
+                                    type="button"
+                                    onClick={handleRemovePicture}
+                                    className="
+                                        absolute
+                                        -right-20
+                                        top-[70%]
+                                        -translate-y-1/2
+                                        flex
+                                        items-center
+                                        gap-1
+                                        bg-red-600
+                                        text-white
+                                        px-3
+                                        py-1.5
+                                        rounded-lg
+                                        text-xs
+                                        font-medium
+                                        hover:bg-red-700
+                                        transition
+                                    "
+                                >
+                                    <Trash2 size={14} />
+                                    Remove
+                                </button>
+                            )}
 
                         </div>
 

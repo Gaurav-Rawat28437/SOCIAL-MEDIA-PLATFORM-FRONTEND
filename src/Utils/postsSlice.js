@@ -61,6 +61,16 @@ const postsSlice = createSlice({
                     }
                     : post
             )
+        },
+        updatePostComments: (state, action) => {
+            state.posts = state.posts.map(post =>
+                post._id === action.payload.postId
+                    ? {
+                        ...post,
+                        commentsCount: action.payload.commentsCount
+                    }
+                    : post
+            )
         }
 
     }
@@ -74,7 +84,8 @@ export const {
     setPage,
     removePost,
     updatePost,
-    updateLike
+    updateLike,
+    updatePostComments
 } = postsSlice.actions
 
 export default postsSlice.reducer

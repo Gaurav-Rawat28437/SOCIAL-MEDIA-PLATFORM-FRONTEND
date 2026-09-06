@@ -14,8 +14,10 @@ import { useDispatch } from "react-redux"
 import { likePost, unlikePost } from "../../services/likeServices"
 import { updateFeedPostLike } from "../../Utils/feedSlice"
 import toast from "react-hot-toast"
-import { updateThoughtLike } from "../../Utils/thoughtsSlice"
-import { updateLike } from "../../Utils/postsSlice"
+import { updateThoughtComments, updateThoughtLike } from "../../Utils/thoughtsSlice"
+import { updateLike, updatePostComments } from "../../Utils/postsSlice"
+import CommentModal from "../comment/CommentModal"
+import { updateFeedPostComments } from "../../Utils/feedSlice"
 
 function FeedCard({ post }) {
 
@@ -130,6 +132,32 @@ function FeedCard({ post }) {
 
             setLikeLoading(false)
         }
+    }
+
+
+    const [showComments, setShowComments] = useState(false)
+
+    const handleCommentAdded = (commentsCount) => {
+        dispatch(
+            updateFeedPostComments({
+                postId: post._id,
+                commentsCount
+            })
+        )
+
+        dispatch(
+            updatePostComments({
+                postId: post._id,
+                commentsCount
+            })
+        )
+
+        dispatch(
+            updateThoughtComments({
+                postId: post._id,
+                commentsCount
+            })
+        )
     }
 
     return (
@@ -467,32 +495,17 @@ function FeedCard({ post }) {
 
                     <button
                         type="button"
-                        className="
-                        flex
-                        items-center
-                        justify-center
-                        gap-2
-                        min-w-[70px]
-                        h-10
-                        px-3
-                        rounded-full
-                        text-[#1A120B]
-                        border
-                        border-transparent
-                        hover:bg-[#D5CEA3]
-                        hover:border-[#1A120B]
-                        transition-all
-                        "
+                        onClick={() => setShowComments(true)}
+                        className=" flex items-center justify-center gap-2 min-w-[70px] h-10 px-3 rounded-full border border-transparent text-[#1A120B] hover:bg-[#D5CEA3] hover:border-[#1A120B] transition-all  "
                     >
                         <MessageCircle
                             size={20}
-                            className="shrink-0"
+                            className="shrink-0 text-[#1A120B]"
                         />
 
-                        <span className="text-sm">
+                        <span className="text-sm text-[#1A120B]">
                             {post.commentsCount || 0}
                         </span>
-
                     </button>
 
                     <button
@@ -554,6 +567,14 @@ function FeedCard({ post }) {
                 </div>
 
             </div>
+
+            {showComments && (
+                <CommentModal
+                    postId={post._id}
+                    onClose={() => setShowComments(false)}
+                    onCommentAdded={handleCommentAdded}
+                />
+            )}
 
         </article>
     )
