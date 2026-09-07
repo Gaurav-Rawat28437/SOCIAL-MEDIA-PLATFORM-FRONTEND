@@ -175,10 +175,7 @@ function PostModal({ post, userData, setSelectedPost }) {
         }
     }
 
-
     const isVideo = post.imgUrl?.includes("/video/upload/")
-
-
 
 
     const [showComments, setShowComments] = useState(false)

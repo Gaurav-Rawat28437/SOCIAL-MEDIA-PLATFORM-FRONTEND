@@ -59,3 +59,13 @@ export const getFeedPosts = async (page = 1, limit = 18) => {
     return response.data
 }
 
+export const getPostById = async (postId) => {
+    const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/post/${postId}`,
+        {
+            withCredentials: true
+        }
+    )
+
+    return response.data
+}

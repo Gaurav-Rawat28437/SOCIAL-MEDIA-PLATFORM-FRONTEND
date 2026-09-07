@@ -5,6 +5,7 @@ import { setPosts, setHasMore, addPosts, setPage } from "../../Utils/postsSlice"
 import PostCard from "./PostCard"
 import PostModal from "./PostModal"
 import ThoughtContent from "./ThoughtContent"
+import ReplyContent from "../comment/ReplyContent"
 
 function PostContent({ userData }) {
 
@@ -120,8 +121,8 @@ function PostContent({ userData }) {
                     type="button"
                     onClick={() => setActiveTab("posts")}
                     className={`px-6 py-4 text-sm font-semibold ${activeTab === "posts"
-                            ? "text-[#1A120B] border-b-2 border-[#8D493A]"
-                            : "text-[#8D493A]"
+                        ? "text-[#1A120B] border-b-2 border-[#8D493A]"
+                        : "text-[#8D493A]"
                         }`}
                 >
                     Posts
@@ -131,8 +132,8 @@ function PostContent({ userData }) {
                     type="button"
                     onClick={() => setActiveTab("thoughts")}
                     className={`px-6 py-4 text-sm font-semibold ${activeTab === "thoughts"
-                            ? "text-[#1A120B] border-b-2 border-[#8D493A]"
-                            : "text-[#8D493A]"
+                        ? "text-[#1A120B] border-b-2 border-[#8D493A]"
+                        : "text-[#8D493A]"
                         }`}
                 >
                     Thoughts
@@ -140,7 +141,11 @@ function PostContent({ userData }) {
 
                 <button
                     type="button"
-                    className="px-6 py-4 text-sm font-semibold text-[#8D493A]"
+                    onClick={() => setActiveTab("replies")}
+                    className={`px-6 py-4 text-sm font-semibold ${activeTab === "replies"
+                        ? "text-[#1A120B] border-b-2 border-[#8D493A]"
+                        : "text-[#8D493A]"
+                        }`}
                 >
                     Replies
                 </button>
@@ -211,6 +216,13 @@ function PostContent({ userData }) {
 
             {activeTab === "thoughts" && (
                 <ThoughtContent userData={userData} />
+            )}
+
+            {activeTab === "replies" && (
+                <ReplyContent
+                    userData={userData}
+                    setSelectedPost={setSelectedPostId}
+                />
             )}
 
             {selectedPost && (
