@@ -53,13 +53,7 @@ export const editComment = async (commentId, content) => {
     return response.data
 }
 
-export const getMyComments = async () => {
-    const response = await axios.get(
-        `${API_URL}/comment/my-comments`,
-        {
-            withCredentials: true
-        }
-    )
-
-    return response.data
-}
+export const getMyComments = async (page = 1, limit = 18) => { 
+    const response = await axios.get( `${API_URL}/comment/my-comments?page=${page}&limit=${limit}`, 
+                           { withCredentials: true } ) 
+    return response.data }

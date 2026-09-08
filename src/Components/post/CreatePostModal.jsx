@@ -353,8 +353,6 @@ useEffect(() => {
                             type="submit"
                             disabled={loading}
                             className="
-                                h-12
-                                w-20
                                 px-6
                                 py-2.5
                                 rounded-full

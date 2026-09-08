@@ -1,24 +1,65 @@
 import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { getMyComments } from "../../services/commentService"
+import {
+    setReplies,
+    addReplies,
+    setHasMore,
+    setPage
+} from "../../Utils/myRepliesSlice"
 import ReplyCard from "./ReplyCard"
 
 function ReplyContent({ userData }) {
 
-    const [comments, setComments] = useState([])
-    const [loading, setLoading] = useState(true)
+    const dispatch = useDispatch()
+
+    const replies = useSelector(
+        store => store.MyReplies?.replies || []
+    )
+
+    const hasMore = useSelector(
+        store => store.MyReplies?.hasMore || false
+    )
+
+    const page = useSelector(
+        store => store.MyReplies?.page || 1
+    )
+
+    const loaded = useSelector(
+        store => store.MyReplies?.loaded || false
+    )
+
+    const [loading, setLoading] = useState(false)
+    const [loadingMore, setLoadingMore] = useState(false)
 
     useEffect(() => {
 
-        const fetchComments = async () => {
+        if (loaded) {
+            setLoading(false)
+            return
+        }
+
+        const fetchReplies = async () => {
 
             try {
 
                 setLoading(true)
 
-                const response = await getMyComments()
+                const response = await getMyComments(1, 18)
 
                 if (response.success) {
-                    setComments(response.data || [])
+
+                    dispatch(
+                        setReplies(response.data || [])
+                    )
+
+                    dispatch(
+                        setHasMore(
+                            response.pagination?.hasMore || false
+                        )
+                    )
+
+                    dispatch(setPage(1))
                 }
 
             } catch (error) {
@@ -32,49 +73,170 @@ function ReplyContent({ userData }) {
             }
         }
 
-        fetchComments()
+        fetchReplies()
 
-    }, [])
+    }, [dispatch, loaded])
 
-    if (loading) {
-        return (
-            <div className="text-center py-10 text-[#1A120B]">
-                Loading replies...
-            </div>
-        )
+
+    const handleScroll = async () => {
+
+        if (loadingMore || !hasMore) return
+
+        const scrollTop =
+            document.documentElement.scrollTop
+
+        const windowHeight =
+            window.innerHeight
+
+        const scrollHeight =
+            document.documentElement.scrollHeight
+
+        if (
+            windowHeight +
+                scrollTop +
+                1 >=
+            scrollHeight
+        ) {
+
+            try {
+
+                setLoadingMore(true)
+
+                const nextPage = page + 1
+
+                const response = await getMyComments(
+                    nextPage,
+                    18
+                )
+
+                if (response.success) {
+
+                    dispatch(
+                        addReplies(
+                            response.data || []
+                        )
+                    )
+
+                    dispatch(
+                        setHasMore(
+                            response.pagination?.hasMore || false
+                        )
+                    )
+
+                    dispatch(setPage(nextPage))
+                }
+
+            } catch (error) {
+
+                console.log(error)
+
+            } finally {
+
+                setLoadingMore(false)
+
+            }
+        }
     }
 
-    if (comments.length === 0) {
-        return (
-            <div className="text-center py-10 text-[#1A120B]">
-                No replies yet
-            </div>
+
+    useEffect(() => {
+
+        window.addEventListener(
+            "scroll",
+            handleScroll
         )
-    }
+
+        return () => {
+
+            window.removeEventListener(
+                "scroll",
+                handleScroll
+            )
+
+        }
+
+    }, [
+        page,
+        hasMore,
+        loadingMore
+    ])
+
 
     return (
+
         <div className="p-6">
 
-            <div className="space-y-4">
+            {loading ? (
 
-                {comments.map(comment => (
+                <div className="
+                    text-center
+                    py-10
+                    text-[#8B6F61]
+                ">
+                    Loading replies...
+                </div>
 
-                    <ReplyCard
-                        key={comment._id}
-                        comment={comment}
-                        userData={userData}
-                        type={
-                            comment.post?.displayPicture
-                                ? "post"
-                                : "thought"
-                        }
-                    />
+            ) : replies.length === 0 ? (
 
-                ))}
+                <div className="
+                    text-center
+                    py-10
+                    text-[#8B6F61]
+                ">
+                    No replies yet
+                </div>
 
-            </div>
+            ) : (
+
+                <div className="space-y-4">
+
+                    {replies.map(reply => (
+
+                        <ReplyCard
+                            key={reply._id}
+                            comment={reply}
+                            userData={userData}
+                            type={
+                                reply.post?.imgUrl
+                                    ? "post"
+                                    : "thought"
+                            }
+                        />
+
+                    ))}
+
+                </div>
+
+            )}
+
+
+            {loadingMore && (
+
+                <div className="
+                    text-center
+                    py-6
+                    text-[#8B6F61]
+                ">
+                    Loading more replies...
+                </div>
+
+            )}
+
+
+            {!hasMore && replies.length > 0 && (
+
+                <div className="
+                    text-center
+                    py-6
+                    text-[#8B6F61]
+                ">
+                    No more replies
+                </div>
+
+            )}
 
         </div>
+
     )
 }
 

@@ -3,6 +3,7 @@ import UsersSliceReducer from "./usersSlice"
 import postReducer from "./postsSlice"
 import feedReducer from "./feedSlice"
 import thoughtsReducer from "./thoughtsSlice"
+import myRepliesReducer from "./myRepliesSlice"
 
 const store=configureStore({
     
@@ -10,7 +11,8 @@ const store=configureStore({
         "User":UsersSliceReducer,
         "Post": postReducer,
         "Feed": feedReducer,
-        "Thought": thoughtsReducer
+        "Thought": thoughtsReducer,
+        "MyReplies": myRepliesReducer
     }
 })
 
