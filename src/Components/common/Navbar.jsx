@@ -68,11 +68,11 @@ function Navbar() {
             "
         >
             <div className="flex items-center gap-3">
-                {/* <img
+                <img
                     src="/MUUV_logo2.png"
                     alt="MUUV-logo"
                     className="h-12 w-auto object-contain"
-                /> */}
+                />
 
                 <div className="hidden sm:block">
                     <h1 className="text-2xl font-extrabold tracking-tight text-[#E5E5CB]">

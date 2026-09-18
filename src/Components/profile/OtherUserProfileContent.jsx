@@ -8,49 +8,54 @@ import { followUser, unfollowUser } from "../../services/followService"
 import toast from "react-hot-toast"
 import { useDispatch, useSelector } from "react-redux"
 import { otherFollowersCount, setOtherUser, userIsFollowing } from "../../Utils/otherUserSlice"
-import {loggedInUserFollowingCount } from "../../Utils/usersSlice"
+import { loggedInUserFollowingCount } from "../../Utils/usersSlice"
+import FollowerModal from "../followers&following/FollowersModal"
+import FollowingModal from "../followers&following/FollowingModal"
 
 function OtherUserProfileContent() {
     const { userId } = useParams()
-    const loggedInUser=useSelector(store=>store.User?.data)
-    const userData=useSelector(store=>store.otherUser?.data)
-    
+    const loggedInUser = useSelector(store => store.User?.data)
+    const userData = useSelector(store => store.otherUser?.data)
+
     const [loading, setLoading] = useState(true)
     const [activeTab, setActiveTab] = useState("posts")
 
-    const dispatch=useDispatch()
+    const [showFollowers, setShowFollowers] = useState(false)
+    const [showUnfollowModal, setShowUnfollowModal] = useState(false)
+    const [showFollowing, setShowFollowing] = useState(false)
 
-    const [isFollowing, setIsFollowing] = useState(userData?.isFollowing || false)
+    const dispatch = useDispatch()
 
-     const handleFollow = async () => {
-    try {
-        let response
+    const isFollowing = userData?.isFollowing || false
 
-        if (isFollowing) {
-            response = await unfollowUser(userId)
-        } else {
-            response = await followUser(userId)
-        }
-
-        if (response.success) {
-            setIsFollowing(!isFollowing)
-            dispatch(userIsFollowing(!isFollowing))
+    const handleFollow = async () => {
+        try {
+            let response
 
             if (isFollowing) {
-                toast.success(`Unfollowed ${userData.username}`)
-                dispatch(otherFollowersCount(userData.followersCount-1))
-                dispatch(loggedInUserFollowingCount(loggedInUser.followingCount-1))
+                response = await unfollowUser(userId)
             } else {
-                toast.success(`Following ${userData.username}`)
-                dispatch(otherFollowersCount(userData.followersCount+1))
-                dispatch(loggedInUserFollowingCount(loggedInUser.followingCount+1))
+                response = await followUser(userId)
             }
+
+            if (response.success) {
+                dispatch(userIsFollowing(!isFollowing))
+
+                if (isFollowing) {
+                    toast.success(`Unfollowed ${userData.username}`)
+                    dispatch(otherFollowersCount(userData.followersCount - 1))
+                    dispatch(loggedInUserFollowingCount(loggedInUser.followingCount - 1))
+                } else {
+                    toast.success(`Following ${userData.username}`)
+                    dispatch(otherFollowersCount(userData.followersCount + 1))
+                    dispatch(loggedInUserFollowingCount(loggedInUser.followingCount + 1))
+                }
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error("Something went wrong")
         }
-    } catch (error) {
-        console.log(error)
-        toast.error("Something went wrong")
     }
-}
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -61,7 +66,6 @@ function OtherUserProfileContent() {
 
                 if (response.success) {
                     dispatch(setOtherUser(response.data))
-                    setIsFollowing(response?.data?.isFollowing)
                 }
             } catch (error) {
                 console.log(error)
@@ -71,7 +75,7 @@ function OtherUserProfileContent() {
         }
 
         fetchUser()
-    }, [userId,dispatch])
+    }, [userId, dispatch])
 
     if (loading) {
         return (
@@ -125,11 +129,15 @@ function OtherUserProfileContent() {
                     </div>
 
                     <button
-                        onClick={()=>{
-                            handleFollow()
+                        onClick={() => {
+                            if (isFollowing) {
+                                setShowUnfollowModal(true)
+                            } else {
+                                handleFollow()
+                            }
                         }}
                         type="button"
-                        className="mt-4 px-5 py-2 rounded-full border-2 border-[#3C2A21] text-[#3C2A21] font-semibold hover:bg-[#3C2A21] hover:border-[#D5CEA3] hover:text-white transition"
+                        className="mt-4 px-5 py-2 rounded-full border-2 border-[#3C2A21] text-[#3C2A21] font-semibold hover:bg-[#3C2A21] hover:border-[#D5CEA3] hover:text-white transition cursor-pointer"
                     >
                         {isFollowing ? "Following" : "Follow"}
                     </button>
@@ -166,33 +174,42 @@ function OtherUserProfileContent() {
 
                     <div className="flex gap-6 mt-4 text-sm">
 
-                        <span className="text-[#8B6F61]">
+                        <button className="text-[#8B6F61]">
                             <b className="text-[#4E220F]">
                                 {postCount || 0}
                             </b>{" "}
                             Post
-                        </span>
+                        </button>
 
-                        <span className="text-[#8B6F61]">
+                        <button className="text-[#8B6F61]">
                             <b className="text-[#4E220F]">
                                 {thoughtCount || 0}
                             </b>{" "}
                             Thought
-                        </span>
+                        </button>
 
-                        <span className="text-[#8B6F61]">
-                            <b className="text-[#4E220F]">
+                        <button
+                            onClick={() => {
+                                setShowFollowing(true)
+                            }}
+                            className="text-[#8B6F61] cursor-pointer"
+                        >
+                            <b className="text-[#4E220F] ">
                                 {followingCount || 0}
                             </b>{" "}
                             Following
-                        </span>
+                        </button>
 
-                        <span className="text-[#8B6F61]">
+                        <button
+                            onClick={() => {
+                                setShowFollowers(true)
+                            }}
+                            className="text-[#8B6F61] cursor-pointer">
                             <b className="text-[#4E220F]">
                                 {followersCount || 0}
                             </b>{" "}
                             Followers
-                        </span>
+                        </button>
 
                     </div>
                 </div>
@@ -204,8 +221,8 @@ function OtherUserProfileContent() {
                         type="button"
                         onClick={() => setActiveTab("posts")}
                         className={`px-6 py-4 text-sm font-semibold ${activeTab === "posts"
-                                ? "text-[#1A120B] border-b-2 border-[#8D493A]"
-                                : "text-[#8D493A]"
+                            ? "text-[#1A120B] border-b-2 border-[#8D493A]"
+                            : "text-[#8D493A]"
                             }`}
                     >
                         Posts
@@ -215,8 +232,8 @@ function OtherUserProfileContent() {
                         type="button"
                         onClick={() => setActiveTab("thoughts")}
                         className={`px-6 py-4 text-sm font-semibold ${activeTab === "thoughts"
-                                ? "text-[#1A120B] border-b-2 border-[#8D493A]"
-                                : "text-[#8D493A]"
+                            ? "text-[#1A120B] border-b-2 border-[#8D493A]"
+                            : "text-[#8D493A]"
                             }`}
                     >
                         Thoughts
@@ -237,6 +254,57 @@ function OtherUserProfileContent() {
                     />
                 )}
             </div>
+
+            {showUnfollowModal && (
+                <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+                    <div className="bg-white w-full max-w-xs rounded-xl p-5 shadow-lg">
+                        <h2 className="text-lg font-semibold text-[#4E220F]">
+                            Unfollow @{username}?
+                        </h2>
+
+                        <p className="text-sm text-[#8B6F61] mt-2">
+                            You will no longer follow this user.
+                        </p>
+
+                        <div className="flex justify-end gap-3 mt-5">
+                            <button
+                                type="button"
+                                onClick={() => setShowUnfollowModal(false)}
+                                className="px-4 py-2 rounded-lg border border-[#D0B8A8] text-[#4E220F]"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={async () => {
+                                    await handleFollow()
+                                    setShowUnfollowModal(false)
+                                }}
+                                className="px-4 py-2 rounded-lg bg-[#F62440] text-white"
+                            >
+                                Unfollow
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
+            {showFollowers && (
+                <FollowerModal
+                    userId={userId}
+                    onClose={() => setShowFollowers(false)}
+                />
+            )}
+
+            {showFollowing && (
+                <FollowingModal
+                    userId={userId}
+                    onClose={() => setShowFollowing(false)}
+                />
+            )}
+
         </div>
     )
 }

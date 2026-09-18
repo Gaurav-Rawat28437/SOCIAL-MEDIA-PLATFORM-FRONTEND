@@ -11,7 +11,6 @@ export const followUser = async (userId) => {
                 withCredentials: true
             }
         )
-        console.log(response.data)
 
         return response.data
    
@@ -38,7 +37,6 @@ export const getFollowers = async (userId, page = 1, limit = 10) => {
                 withCredentials: true
             }
         )
-
         return response.data
     
 }
@@ -55,7 +53,6 @@ export const getFollowing = async (userId, page = 1, limit = 10) => {
                 withCredentials: true
             }
         )
-
         return response.data
     
 }

@@ -3,21 +3,25 @@ import { useSelector } from "react-redux"
 import { Calendar } from "lucide-react"
 import EditProfileModal from "./EditProfileModal"
 import PostContent from "../post/PostContent"
+import FollowerModal from "../followers&following/FollowersModal"
+import FollowingModal from "../followers&following/FollowingModal"
 
 function ProfileContent() {
 
     const userData = useSelector(store => store?.User?.data || {})
-    
+
+    const [showFollowers, setShowFollowers] = useState(false)
+    const [showFollowing,setShowFollowing] =useState(false)
     const {
         bio,
         createdAt,
         displayPicture,
         firstName,
         coverPicture,
-        followersCount ,
-        followingCount ,
-        postCount ,
-        thoughtCount ,
+        followersCount,
+        followingCount,
+        postCount,
+        thoughtCount,
         lastName,
         username
     } = userData
@@ -97,33 +101,41 @@ function ProfileContent() {
 
                     <div className="flex gap-6 mt-4 text-sm">
 
-                        <span className="text-[#8B6F61]">
+                        <button className="text-[#8B6F61]">
                             <b className="text-[#4E220F]">
-                                {postCount}
+                                {postCount || 0}
                             </b>{" "}
                             Post
-                        </span>
+                        </button>
 
-                        <span className="text-[#8B6F61]">
+                        <button className="text-[#8B6F61]">
                             <b className="text-[#4E220F]">
-                                {thoughtCount}
+                                {thoughtCount || 0}
                             </b>{" "}
                             thougth
-                        </span>
+                        </button>
 
-                        <span className="text-[#8B6F61]">
+                        <button
+                            onClick={()=>{
+                                setShowFollowing(true)
+                            }}
+                            className="text-[#8B6F61] cursor-pointer">
                             <b className="text-[#4E220F]">
-                                {followingCount}
+                                {followingCount || 0}
                             </b>{" "}
                             Following
-                        </span>
+                        </button>
 
-                        <span className="text-[#8B6F61]">
+                        <button
+                            onClick={() => {
+                                setShowFollowers(true)
+                            }}
+                            className="text-[#8B6F61] cursor-pointer">
                             <b className="text-[#4E220F]">
-                                {followersCount}
+                                {followersCount || 0}
                             </b>{" "}
                             Followers
-                        </span>
+                        </button>
 
                     </div>
 
@@ -131,10 +143,24 @@ function ProfileContent() {
 
             </div>
 
-             <PostContent userData={userData} />
+            <PostContent userData={userData} />
 
             {showEdit && (
                 <EditProfileModal setShowEdit={setShowEdit} />
+            )}
+
+            {showFollowers && (
+                <FollowerModal
+                    userId={userData._id}
+                    onClose={() => setShowFollowers(false)}
+                />
+            )}
+
+            {showFollowing && (
+                <FollowingModal
+                    userId={userData._id}
+                    onClose={() => setShowFollowing(false)}
+                />
             )}
 
         </div>

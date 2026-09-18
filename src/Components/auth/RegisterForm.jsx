@@ -58,7 +58,7 @@ function RegisterForm() {
         toast.success("OTP sent to your email")
 
         setOtp("")
-        setResendCooldown(60)
+        setResendCooldown(180)
         setStep(2)
       }
     } catch (error) {
@@ -117,7 +117,7 @@ function RegisterForm() {
         toast.success("New OTP sent to your email")
 
         setOtp("")
-        setResendCooldown(60)
+        setResendCooldown(180)
       }
     } catch (error) {
       console.error(error)
@@ -158,7 +158,7 @@ function RegisterForm() {
       console.error(error)
 
       const message =
-        error.response?.data?.msg || "Something went wrong"
+        error.message || "Something went wrong"
 
       toast.error(message)
     } finally {
