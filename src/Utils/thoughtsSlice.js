@@ -5,13 +5,15 @@ const thoughtsSlice = createSlice({
     initialState: {
         thoughts: [],
         hasMore: false,
-        page: 1
+        page: 1,
+        loaded: false
     },
 
     reducers: {
 
         setThoughts: (state, action) => {
             state.thoughts = action.payload
+            state.loaded = true
         },
 
         addThought: (state, action) => {
@@ -19,9 +21,16 @@ const thoughtsSlice = createSlice({
         },
 
         addThoughts: (state, action) => {
-            state.thoughts.push(...action.payload)
-        },
+            action.payload.forEach(thought => {
+                const exists = state.thoughts.some(
+                    item => item._id === thought._id
+                )
 
+                if (!exists) {
+                    state.thoughts.push(thought)
+                }
+            })
+        },
         setHasMore: (state, action) => {
             state.hasMore = action.payload
         },

@@ -9,10 +9,14 @@ import { addThought } from "../../Utils/thoughtsSlice"
 import { useEffect } from "react"
 import { uploadImage } from "../../services/cloudinaryService"
 import { addFeedPost } from "../../Utils/feedSlice"
+import { postCount, thoughtCount } from "../../Utils/usersSlice"
 
 function CreatePostModal({ setShowCreatePost }) {
 
     const userData = useSelector(store => store.User?.data || {})
+    const postLoaded = useSelector(store => store.Post?.loaded || false)
+
+    const thoughtLoaded = useSelector(store => store.Thought?.loaded || false)
 
     const [content, setContent] = useState("")
     const [imageFile, setImageFile] = useState(null)
@@ -27,11 +31,11 @@ function CreatePostModal({ setShowCreatePost }) {
 
     const inputFocusRef = useRef(null)
 
-useEffect(() => {
-    
+    useEffect(() => {
+
         inputFocusRef.current?.focus()
-    
-}, [])
+
+    }, [])
 
     const dispatch = useDispatch()
 
@@ -53,7 +57,6 @@ useEffect(() => {
 
 
     const handleSubmit = async (e) => {
-
         e.preventDefault()
 
         if (!content.trim() && !imageFile) {
@@ -62,7 +65,6 @@ useEffect(() => {
         }
 
         try {
-
             setLoading(true)
 
             let postUrl = ""
@@ -73,7 +75,7 @@ useEffect(() => {
 
             const postData = {
                 content: content.trim(),
-                imgUrl: postUrl,
+                imgUrl: postUrl
             }
 
             const response = await createPost(postData)
@@ -81,11 +83,28 @@ useEffect(() => {
             if (response.success) {
 
                 if (response.data?.imgUrl) {
-                   
-                    dispatch(addPost(response.data))
+
+                    if (postLoaded) {
+                        dispatch(addPost(response.data))
+                    }
+
+                    dispatch(
+                        postCount((userData.postCount || 0) + 1)
+                    )
+
                     dispatch(addFeedPost(response.data))
+
                 } else {
-                    dispatch(addThought(response.data))
+
+                    if (thoughtLoaded) {
+                        dispatch(addThought(response.data))
+                    }
+
+                    dispatch(
+                        thoughtCount((userData.thoughtCount || 0) + 1)
+                    )
+
+                    dispatch(addFeedPost(response.data))
                 }
 
                 toast.success(
@@ -107,9 +126,7 @@ useEffect(() => {
             )
 
         } finally {
-
             setLoading(false)
-
         }
     }
 
@@ -120,8 +137,7 @@ useEffect(() => {
 
         <div className="fixed inset-0 z-50 flex items-center justify-center border bg-black/50 p-4">
 
-            <div className="bg-[#D5CEA3] w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-xl">
-
+            <div className="bg-[#D5CEA3] w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-xl [&::-webkit-scrollbar]:w-0 [scrollbar-width:none]">
 
                 <div className="flex items-center justify-between px-5 py-4 border-b border-[#b99b88]">
 
@@ -331,7 +347,7 @@ useEffect(() => {
                                 accept="image/*,video/*"
                                 className="hidden"
                                 onChange={(e) => {
-                                    
+
 
                                     const file = e.target.files[0]
 

@@ -1,16 +1,30 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { Bookmark, Heart, MessageCircle, MoreVertical, Pencil, Share, Trash2, X } from "lucide-react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import toast from "react-hot-toast"
 import { deletePost, editPost } from "../../services/postServices"
 import { removeThought, updateThought, updateThoughtComments, updateThoughtLike } from "../../Utils/thoughtsSlice"
 import { likePost, unlikePost } from "../../services/likeServices"
-import { updateFeedPostComments, updateFeedPostLike } from "../../Utils/feedSlice"
+import { removeFeedPost, updateFeedPost, updateFeedPostComments, updateFeedPostLike } from "../../Utils/feedSlice"
 import CommentModal from "../comment/CommentModal"
+import { addLike, removeLike, updateLikeComments } from "../../Utils/myLikesSlice"
+import {
+    updateReplyLike,
+    updateReplyComments
+} from "../../Utils/myRepliesSlice"
+import { postCount, thoughtCount } from "../../Utils/usersSlice"
 
-function ThoughtCard({ thought, userData }) {
+function ThoughtCard({
+    thought,
+    userData,
+    onLikeUpdate,
+    onCommentUpdate
+}) {
 
     const dispatch = useDispatch()
+    const loggedInUser = useSelector(
+        store => store.User?.data
+    )
 
     const [isShare, setShare] = useState(false)
     const [isBookmarked, setIsBookmarked] = useState(false)
@@ -20,6 +34,8 @@ function ThoughtCard({ thought, userData }) {
     const [showEdit, setShowEdit] = useState(false)
     const [content, setContent] = useState(thought.content)
     const [loading, setLoading] = useState(false)
+    const [likeLoading, setLikeLoading] = useState(false)
+    const [showComments, setShowComments] = useState(false)
 
     const {
         firstName,
@@ -48,6 +64,15 @@ function ThoughtCard({ thought, userData }) {
 
                 dispatch(removeThought(thought._id))
 
+                dispatch(removeFeedPost(thought._id))
+
+                if (thought.imgUrl) {
+                    dispatch(postCount(loggedInUser?.postCount - 1))
+                }
+                else {
+                    dispatch(thoughtCount(loggedInUser?.thoughtCount - 1))
+                }
+
                 toast.success(
                     response.msg || "Thought deleted successfully"
                 )
@@ -66,7 +91,7 @@ function ThoughtCard({ thought, userData }) {
 
         } finally {
 
-            setLoading(false)
+            setDeleting(false)
 
         }
 
@@ -94,6 +119,8 @@ function ThoughtCard({ thought, userData }) {
 
                 dispatch(updateThought(response.data))
 
+                dispatch(updateFeedPost(response.data))
+
                 setShowEdit(false)
 
                 toast.success(
@@ -120,13 +147,12 @@ function ThoughtCard({ thought, userData }) {
 
     }
 
-    const [likeLoading, setLikeLoading] = useState(false)
-
     const handleLike = async () => {
 
         if (likeLoading) return
 
         try {
+
             setLikeLoading(true)
 
             const response = thought.isLiked
@@ -153,6 +179,44 @@ function ThoughtCard({ thought, userData }) {
                     })
                 )
 
+                dispatch(
+                    updateReplyLike({
+                        postId: thought._id,
+                        isLiked,
+                        likesCount: response.likesCount
+                    })
+                )
+
+                if (isLiked) {
+
+                    dispatch(
+                        addLike({
+                            post: {
+                                ...thought,
+                                isLiked: true,
+                                likesCount: response.likesCount
+                            }
+                        })
+                    )
+
+                } else {
+
+                    dispatch(
+                        removeLike(thought._id)
+                    )
+
+                }
+
+                if (onLikeUpdate) {
+
+                    onLikeUpdate(
+                        thought._id,
+                        isLiked,
+                        response.likesCount
+                    )
+
+                }
+
             }
 
         } catch (error) {
@@ -170,10 +234,9 @@ function ThoughtCard({ thought, userData }) {
             setLikeLoading(false)
 
         }
+
     }
 
-
-    const [showComments, setShowComments] = useState(false)
     const handleCommentAdded = (commentsCount) => {
         dispatch(
             updateThoughtComments({
@@ -188,7 +251,29 @@ function ThoughtCard({ thought, userData }) {
                 commentsCount
             })
         )
+
+        dispatch(
+            updateLikeComments({
+                postId: thought._id,
+                commentsCount
+            })
+        )
+
+        dispatch(
+            updateReplyComments({
+                postId: thought._id,
+                commentsCount
+            })
+        )
+
+        if (onCommentUpdate) {
+            onCommentUpdate(
+                thought._id,
+                commentsCount
+            )
+        }
     }
+
 
     return (
         <>
@@ -221,45 +306,47 @@ function ThoughtCard({ thought, userData }) {
 
                     </div>
 
-                    <div className="relative shrink-0">
+                    {thought.authorId === loggedInUser._id && (
+                        <div className="relative shrink-0">
 
-                        <button
-                            type="button"
-                            disabled={loading}
-                            onClick={() => setShowMenu(!showMenu)}
-                            className="p-1 text-[#8B6F61] hover:text-[#4E220F] transition"
-                        >
-                            <MoreVertical size={18} />
-                        </button>
+                            <button
+                                type="button"
+                                disabled={loading}
+                                onClick={() => setShowMenu(!showMenu)}
+                                className="p-1 text-[#8B6F61] hover:text-[#4E220F] transition"
+                            >
+                                <MoreVertical size={18} />
+                            </button>
 
-                        {showMenu && (
-                            <div className="absolute right-0 top-7 z-20 w-28 bg-white border border-[#D0B8A8] rounded-lg shadow-lg overflow-hidden">
+                            {showMenu && (
+                                <div className="absolute right-0 top-7 z-20 w-28 bg-white border border-[#D0B8A8] rounded-lg shadow-lg overflow-hidden">
 
-                                <button
-                                    type="button"
-                                    onClick={handleEdit}
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[#4E220F] hover:bg-[#F8EDE3] transition"
-                                >
-                                    <Pencil size={14} />
-                                    Edit
-                                </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleEdit}
+                                        className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[#4E220F] hover:bg-[#F8EDE3] transition"
+                                    >
+                                        <Pencil size={14} />
+                                        Edit
+                                    </button>
 
-                                <button
-                                    type="button"
-                                    disabled={loading}
-                                    onClick={() => {
-                                        setShowDeleteConfirm(true)
-                                    }}
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-500 hover:bg-red-50 transition"
-                                >
-                                    <Trash2 size={14} />
-                                    Delete
-                                </button>
+                                    <button
+                                        type="button"
+                                        disabled={loading}
+                                        onClick={() => {
+                                            setShowDeleteConfirm(true)
+                                        }}
+                                        className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-500 hover:bg-red-50 transition"
+                                    >
+                                        <Trash2 size={14} />
+                                        Delete
+                                    </button>
 
-                            </div>
-                        )}
+                                </div>
+                            )}
 
-                    </div>
+                        </div>
+                    )}
 
                 </div>
 
@@ -294,24 +381,25 @@ function ThoughtCard({ thought, userData }) {
                         disabled={likeLoading}
                         onClick={handleLike}
                         className="
-                                flex
-                                items-center
-                                justify-center
-                                gap-2
-                                min-w-[70px]
-                                h-10
-                                px-3
-                                rounded-full
-                                border
-                                border-transparent
-                                text-[#1A120B]
-                                hover:bg-[#D5CEA3]
-                                hover:border-[#1A120B]
-                                transition-all
-                                disabled:opacity-50
-                                disabled:cursor-not-allowed
-                            "
+                            flex
+                            items-center
+                            justify-center
+                            gap-2
+                            min-w-[70px]
+                            h-10
+                            px-3
+                            rounded-full
+                            border
+                            border-transparent
+                            text-[#1A120B]
+                            hover:bg-[#D5CEA3]
+                            hover:border-[#1A120B]
+                            transition-all
+                            disabled:opacity-50
+                            disabled:cursor-not-allowed
+                        "
                     >
+
                         <Heart
                             size={20}
                             className="shrink-0 text-[#1A120B]"
@@ -321,17 +409,30 @@ function ThoughtCard({ thought, userData }) {
                         <span className="text-sm text-[#1A120B]">
                             {thought.likesCount || 0}
                         </span>
+
                     </button>
 
                     <button
                         type="button"
                         onClick={() => setShowComments(true)}
                         className="
-                                flex items-center justify-center gap-2 min-w-[70px] h-10 px-3
-                                rounded-full border border-transparent text-[#1A120B]
-                                hover:bg-[#D5CEA3] hover:border-[#1A120B] transition-all
-                            "
+                            flex
+                            items-center
+                            justify-center
+                            gap-2
+                            min-w-[70px]
+                            h-10
+                            px-3
+                            rounded-full
+                            border
+                            border-transparent
+                            text-[#1A120B]
+                            hover:bg-[#D5CEA3]
+                            hover:border-[#1A120B]
+                            transition-all
+                        "
                     >
+
                         <MessageCircle
                             size={20}
                             className="shrink-0 text-[#1A120B]"
@@ -340,6 +441,7 @@ function ThoughtCard({ thought, userData }) {
                         <span className="text-sm text-[#1A120B]">
                             {thought.commentsCount || 0}
                         </span>
+
                     </button>
 
                     <button
@@ -473,8 +575,6 @@ function ThoughtCard({ thought, userData }) {
 
                     </div>
 
-
-
                 </div>
             )}
 
@@ -527,10 +627,12 @@ function ThoughtCard({ thought, userData }) {
             {showComments && (
                 <CommentModal
                     postId={thought._id}
+                    post={thought}
                     onClose={() => setShowComments(false)}
                     onCommentAdded={handleCommentAdded}
                 />
             )}
+
         </>
     )
 }

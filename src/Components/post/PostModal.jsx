@@ -11,22 +11,35 @@ import {
     Pause,
     VolumeX
 } from "lucide-react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import toast from "react-hot-toast"
 import { deletePost } from "../../services/postServices"
 import { removePost, updateLike, updatePostComments } from "../../Utils/postsSlice"
 import EditPostModal from "./EditPostModal"
 import { likePost, unlikePost } from "../../services/likeServices"
-import { updateFeedPostComments, updateFeedPostLike } from "../../Utils/feedSlice"
+import { updateFeedPostComments, updateFeedPostLike, removeFeedPost } from "../../Utils/feedSlice"
 import CommentModal from "../comment/CommentModal"
+import { updateThoughtComments, updateThoughtLike } from "../../Utils/thoughtsSlice"
+import { addLike, removeLike, updateLikeComments } from "../../Utils/myLikesSlice"
+import { updateReplyComments } from "../../Utils/myRepliesSlice"
+import { updateReplyLike } from "../../Utils/myRepliesSlice"
+import { useNavigate } from "react-router-dom"
+import { postCount, thoughtCount } from "../../Utils/usersSlice"
 
-
-function PostModal({ post, userData, setSelectedPost }) {
+function PostModal({
+    post,
+    userData,
+    setSelectedPost,
+    onLikeUpdate,
+    onCommentUpdate
+}) {
 
     const dispatch = useDispatch()
 
-
-
+    const loggedInUser = useSelector(
+        store => store.User?.data
+    )
+    
     const [isShare, setShare] = useState(false)
     const [isBookmarked, setIsBookmarked] = useState(false)
     const [showOptions, setShowOptions] = useState(false)
@@ -34,9 +47,15 @@ function PostModal({ post, userData, setSelectedPost }) {
     const [deleting, setDeleting] = useState(false)
     const [showEdit, setShowEdit] = useState(false)
 
+    const [commentsCount, setCommentsCount] = useState(post.commentsCount || 0)
+    const [isLiked, setIsLiked] = useState(post.isLiked || false)
+    const [likesCount, setLikesCount] = useState(post.likesCount || 0)
+
     const [isPlaying, setIsPlaying] = useState(false)
     const [isMuted, setIsMuted] = useState(false)
     const [volume, setVolume] = useState(1)
+
+    const nav=useNavigate()
 
     const videoRef = useRef(null)
 
@@ -103,6 +122,17 @@ function PostModal({ post, userData, setSelectedPost }) {
 
                 dispatch(removePost(post._id))
 
+                dispatch(removeFeedPost(post._id))
+
+                if(post.imgUrl)
+                {
+                    dispatch(postCount(loggedInUser?.postCount-1))
+                }
+                else{
+                    dispatch(thoughtCount(loggedInUser?.thoughtCount-1))
+                }
+
+
                 toast.success(
                     response.msg || "Post deleted successfully"
                 )
@@ -133,30 +163,87 @@ function PostModal({ post, userData, setSelectedPost }) {
         if (likeLoading) return
 
         try {
+
             setLikeLoading(true)
 
-            const response = post.isLiked
+            const response = isLiked
                 ? await unlikePost(post._id)
                 : await likePost(post._id)
 
             if (response.success) {
-                const isLiked = !post.isLiked
+
+                const newIsLiked = !isLiked
+                const newLikesCount = response.likesCount
+
+                setIsLiked(newIsLiked)
+                setLikesCount(newLikesCount)
+
+                if (onLikeUpdate) {
+                    onLikeUpdate(
+                        post._id,
+                        newIsLiked,
+                        newLikesCount
+                    )
+                }
 
                 dispatch(
                     updateFeedPostLike({
                         postId: post._id,
-                        isLiked,
-                        likesCount: response.likesCount
+                        isLiked: newIsLiked,
+                        likesCount: newLikesCount
                     })
                 )
 
                 dispatch(
-                    updateLike({
+                    updateReplyLike({
                         postId: post._id,
-                        isLiked,
-                        likesCount: response.likesCount
+                        isLiked: newIsLiked,
+                        likesCount: newLikesCount
                     })
                 )
+
+                if (post.imgUrl) {
+
+                    dispatch(
+                        updateLike({
+                            postId: post._id,
+                            isLiked: newIsLiked,
+                            likesCount: newLikesCount
+                        })
+                    )
+
+                } else {
+
+                    dispatch(
+                        updateThoughtLike({
+                            postId: post._id,
+                            isLiked: newIsLiked,
+                            likesCount: newLikesCount
+                        })
+                    )
+
+                }
+
+                if (newIsLiked) {
+
+                    dispatch(
+                        addLike({
+                            post: {
+                                ...post,
+                                isLiked: true,
+                                likesCount: newLikesCount
+                            }
+                        })
+                    )
+
+                } else {
+
+                    dispatch(
+                        removeLike(post._id)
+                    )
+
+                }
+
             }
 
         } catch (error) {
@@ -168,10 +255,11 @@ function PostModal({ post, userData, setSelectedPost }) {
                 error.message ||
                 "Unable to update like"
             )
-        }
-        finally {
+
+        } finally {
 
             setLikeLoading(false)
+
         }
     }
 
@@ -179,14 +267,12 @@ function PostModal({ post, userData, setSelectedPost }) {
 
 
     const [showComments, setShowComments] = useState(false)
+
     const handleCommentAdded = (commentsCount) => {
 
-        dispatch(
-            updatePostComments({
-                postId: post._id,
-                commentsCount
-            })
-        )
+        setCommentsCount(commentsCount)
+
+        const isThought = !post?.imgUrl
 
         dispatch(
             updateFeedPostComments({
@@ -195,6 +281,42 @@ function PostModal({ post, userData, setSelectedPost }) {
             })
         )
 
+        dispatch(
+            updateLikeComments({
+                postId: post._id,
+                commentsCount
+            })
+        )
+
+        dispatch(
+            updateReplyComments({
+                postId: post._id,
+                commentsCount
+            })
+        )
+
+        if (isThought) {
+            dispatch(
+                updateThoughtComments({
+                    postId: post._id,
+                    commentsCount
+                })
+            )
+        } else {
+            dispatch(
+                updatePostComments({
+                    postId: post._id,
+                    commentsCount
+                })
+            )
+        }
+
+        if (onCommentUpdate) {
+            onCommentUpdate(
+                post._id,
+                commentsCount
+            )
+        }
     }
 
 
@@ -211,50 +333,51 @@ function PostModal({ post, userData, setSelectedPost }) {
                     </h2>
 
                     <div className="flex items-center gap-1">
+                        {(loggedInUser._id === post.authorId || loggedInUser._id === post.authorId?._id) && (
+                            <div className="relative">
 
-                        <div className="relative">
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setShowOptions(!showOptions)
+                                    }
+                                    className="p-2 rounded-full hover:bg-[#F8EDE3] text-[#4E220F]"
+                                >
+                                    <MoreVertical size={20} />
+                                </button>
 
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    setShowOptions(!showOptions)
-                                }
-                                className="p-2 rounded-full hover:bg-[#F8EDE3] text-[#4E220F]"
-                            >
-                                <MoreVertical size={20} />
-                            </button>
+                                {showOptions && (
 
-                            {showOptions && (
+                                    <div className="absolute right-0 top-11 w-32 bg-white border border-[#D0B8A8] rounded-xl shadow-lg overflow-hidden">
 
-                                <div className="absolute right-0 top-11 w-32 bg-white border border-[#D0B8A8] rounded-xl shadow-lg overflow-hidden">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setShowOptions(false)
+                                                setShowEdit(true)
+                                            }}
+                                            className="w-full px-4 py-2.5 text-left text-sm text-[#4A352C] hover:bg-[#F8EDE3]"
+                                        >
+                                            Edit
+                                        </button>
 
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setShowOptions(false)
-                                            setShowEdit(true)
-                                        }}
-                                        className="w-full px-4 py-2.5 text-left text-sm text-[#4A352C] hover:bg-[#F8EDE3]"
-                                    >
-                                        Edit
-                                    </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setShowOptions(false)
+                                                setShowDeleteConfirm(true)
+                                            }}
+                                            className="w-full px-4 py-2.5 text-left text-sm text-red-500 hover:bg-[#F8EDE3]"
+                                        >
+                                            Delete
+                                        </button>
 
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setShowOptions(false)
-                                            setShowDeleteConfirm(true)
-                                        }}
-                                        className="w-full px-4 py-2.5 text-left text-sm text-red-500 hover:bg-[#F8EDE3]"
-                                    >
-                                        Delete
-                                    </button>
+                                    </div>
 
-                                </div>
+                                )}
 
-                            )}
-
-                        </div>
+                            </div>
+                        )}
 
                         <button
                             type="button"
@@ -413,7 +536,18 @@ function PostModal({ post, userData, setSelectedPost }) {
 
                 <div className="p-5">
 
-                    <div className="flex items-center gap-3">
+                    <div 
+                        onClick={()=>{
+                            
+                             if(loggedInUser===userData._id)
+                             {
+                                nav("/profile")
+                             }
+                             else{
+                                nav(`/profile/${userData._id}`)
+                             }
+                        }}
+                        className="flex items-center gap-3">
 
                         <img
                             src={
@@ -484,11 +618,11 @@ function PostModal({ post, userData, setSelectedPost }) {
                             <Heart
                                 size={20}
                                 className="shrink-0 text-[#1A120B]"
-                                fill={post.isLiked ? "currentColor" : "none"}
+                                fill={isLiked ? "currentColor" : "none"}
                             />
 
                             <span className="text-sm text-[#1A120B]">
-                                {post.likesCount || 0}
+                                {likesCount}
                             </span>
                         </button>
 
@@ -503,7 +637,7 @@ function PostModal({ post, userData, setSelectedPost }) {
                             />
 
                             <span className="text-sm">
-                                {post.commentsCount || 0}
+                                {commentsCount}
                             </span>
                         </button>
 
@@ -629,6 +763,7 @@ function PostModal({ post, userData, setSelectedPost }) {
             {showComments && (
                 <CommentModal
                     postId={post._id}
+                    post={post}
                     onClose={() => setShowComments(false)}
                     onCommentAdded={handleCommentAdded}
                 />

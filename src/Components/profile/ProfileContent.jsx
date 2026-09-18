@@ -7,15 +7,17 @@ import PostContent from "../post/PostContent"
 function ProfileContent() {
 
     const userData = useSelector(store => store?.User?.data || {})
-
+    
     const {
         bio,
         createdAt,
         displayPicture,
         firstName,
         coverPicture,
-        followers = [],
-        following = [],
+        followersCount ,
+        followingCount ,
+        postCount ,
+        thoughtCount ,
         lastName,
         username
     } = userData
@@ -97,14 +99,28 @@ function ProfileContent() {
 
                         <span className="text-[#8B6F61]">
                             <b className="text-[#4E220F]">
-                                {following.length}
+                                {postCount}
+                            </b>{" "}
+                            Post
+                        </span>
+
+                        <span className="text-[#8B6F61]">
+                            <b className="text-[#4E220F]">
+                                {thoughtCount}
+                            </b>{" "}
+                            thougth
+                        </span>
+
+                        <span className="text-[#8B6F61]">
+                            <b className="text-[#4E220F]">
+                                {followingCount}
                             </b>{" "}
                             Following
                         </span>
 
                         <span className="text-[#8B6F61]">
                             <b className="text-[#4E220F]">
-                                {followers.length}
+                                {followersCount}
                             </b>{" "}
                             Followers
                         </span>

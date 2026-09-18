@@ -69,3 +69,25 @@ export const getPostById = async (postId) => {
 
     return response.data
 }
+
+export const getUserPosts = async (userId, page = 1, limit = 18) => {
+    const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/post/user/${userId}/posts?page=${page}&limit=${limit}`,
+        {
+            withCredentials: true
+        }
+    )
+
+    return response.data
+}
+
+export const getUserThoughts = async (userId, page = 1, limit = 18) => {
+    const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/post/user/${userId}/thoughts?page=${page}&limit=${limit}`,
+        {
+            withCredentials: true
+        }
+    )
+
+    return response.data
+}

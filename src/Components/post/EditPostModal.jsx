@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux"
 import toast from "react-hot-toast"
 import { editPost } from "../../services/postServices"
 import { updatePost } from "../../Utils/postsSlice"
+import { updateFeedPost } from "../../Utils/feedSlice"
 
 function EditPostModal({ post, setShowEdit, setSelectedPost }) {
 
@@ -38,6 +39,8 @@ function EditPostModal({ post, setShowEdit, setSelectedPost }) {
             if (response.success) {
 
                 dispatch(updatePost(response.data))
+                
+                dispatch(updateFeedPost(response.data))
 
                 toast.success(
                     response.msg || "Post updated successfully"

@@ -1,3 +1,4 @@
+
 import { createSlice } from "@reduxjs/toolkit"
 
 const myRepliesSlice = createSlice({
@@ -17,7 +18,15 @@ const myRepliesSlice = createSlice({
         },
 
         addReplies: (state, action) => {
-            state.replies.push(...action.payload)
+            action.payload.forEach(reply => {
+                const exists = state.replies.some(
+                    item => item._id === reply._id
+                )
+
+                if (!exists) {
+                    state.replies.push(reply)
+                }
+            })
         },
 
         setHasMore: (state, action) => {
@@ -33,6 +42,45 @@ const myRepliesSlice = createSlice({
             state.hasMore = false
             state.page = 1
             state.loaded = false
+        },
+
+        addReply: (state, action) => {
+            const exists = state.replies.some(
+                reply => reply._id === action.payload._id
+            )
+
+            if (!exists) {
+                state.replies.unshift(action.payload)
+            }
+        },
+        updateReplyComments: (state, action) => {
+            state.replies.forEach(reply => {
+                if (reply.post?._id === action.payload.postId) {
+                    reply.post.commentsCount = action.payload.commentsCount
+                }
+            })
+        },
+        removeReply: (state, action) => {
+            state.replies = state.replies.filter(
+                reply => reply._id !== action.payload
+            )
+        },
+        updateReply: (state, action) => {
+            const reply = state.replies.find(
+                reply => reply._id === action.payload.commentId
+            )
+
+            if (reply) {
+                reply.content = action.payload.content
+            }
+        },
+        updateReplyLike: (state, action) => {
+            state.replies.forEach(reply => {
+                if (reply.post?._id === action.payload.postId) {
+                    reply.post.isLiked = action.payload.isLiked
+                    reply.post.likesCount = action.payload.likesCount
+                }
+            })
         }
     }
 })
@@ -42,7 +90,13 @@ export const {
     addReplies,
     setHasMore,
     setPage,
-    clearReplies
+    clearReplies,
+    addReply,
+    updateReplyComments,
+    removeReply,
+    updateReply,
+    updateReplyLike
 } = myRepliesSlice.actions
 
 export default myRepliesSlice.reducer
+

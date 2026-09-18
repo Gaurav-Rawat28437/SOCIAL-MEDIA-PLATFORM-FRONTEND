@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { getMyPosts } from "../../services/postServices"
 import { setPosts, setHasMore, addPosts, setPage } from "../../Utils/postsSlice"
 import PostCard from "./PostCard"
 import PostModal from "./PostModal"
 import ThoughtContent from "./ThoughtContent"
-import ReplyContent from "../comment/ReplyContent"
+import ReplyContent from "./ReplyContent"
+import MyLikesContent from "./MyLikesContent"
 
 function PostContent({ userData }) {
 
@@ -24,6 +25,8 @@ function PostContent({ userData }) {
     const selectedPost = posts.find(
         post => post._id === selectedPostId
     )
+
+    const loadingMoreRef = useRef(false)
 
     useEffect(() => {
 
@@ -66,7 +69,7 @@ function PostContent({ userData }) {
     const handleScroll = async () => {
 
         if (activeTab !== "posts") return
-        if (loadingMore || !hasMore) return
+        if (loadingMoreRef.current || !hasMore) return
 
         const scrollTop = document.documentElement.scrollTop
         const windowHeight = window.innerHeight
@@ -76,18 +79,29 @@ function PostContent({ userData }) {
 
             try {
 
+                loadingMoreRef.current = true
                 setLoadingMore(true)
 
                 const nextPage = page + 1
 
-                const response = await getMyPosts(nextPage, 18)
+                const response = await getMyPosts(
+                    nextPage,
+                    18
+                )
 
                 if (response.success) {
 
-                    dispatch(addPosts(response.data))
-                    dispatch(setHasMore(response.hasMore))
-                    dispatch(setPage(nextPage))
+                    dispatch(
+                        addPosts(response.data || [])
+                    )
 
+                    dispatch(
+                        setHasMore(response.hasMore)
+                    )
+
+                    dispatch(
+                        setPage(nextPage)
+                    )
                 }
 
             } catch (error) {
@@ -96,6 +110,7 @@ function PostContent({ userData }) {
 
             } finally {
 
+                loadingMoreRef.current = false
                 setLoadingMore(false)
 
             }
@@ -112,10 +127,19 @@ function PostContent({ userData }) {
 
     }, [activeTab, page, hasMore, loadingMore])
 
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: "instant"
+        })
+    }, [activeTab])
+
+
+
     return (
         <div className="border-t border-[#D0B8A8]">
 
-            <div className="flex border-b border-[#D0B8A8]">
+            <div className="flex border-b border-[#D0B8A8] sticky top-15 z-10 bg-white">
 
                 <button
                     type="button"
@@ -150,9 +174,10 @@ function PostContent({ userData }) {
                     Replies
                 </button>
 
-                <button
-                    type="button"
-                    className="px-6 py-4 text-sm font-semibold text-[#8D493A]"
+                <button type="button"
+                    onClick={() => setActiveTab("likes")}
+                    className={`px-6 py-4 text-sm font-semibold 
+                                    ${activeTab === "likes" ? "text-[#1A120B] border-b-2 border-[#8D493A]" : "text-[#8D493A]"}`}
                 >
                     Likes
                 </button>
@@ -222,6 +247,11 @@ function PostContent({ userData }) {
                 <ReplyContent
                     userData={userData}
                     setSelectedPost={setSelectedPostId}
+                />
+            )}
+
+            {activeTab === "likes" && (
+                <MyLikesContent userData={userData}
                 />
             )}
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { getPostById } from "../../services/postServices"
 import PostModal from "../post/PostModal"
+import toast from "react-hot-toast"
 
 function ReplyCard({ comment, type }) {
 
@@ -18,10 +19,17 @@ function ReplyCard({ comment, type }) {
             }
         } catch (error) {
             console.log(error)
+            toast.error(
+                error.response?.data?.msg ||
+                error.message ||
+                "Unable to load post"
+            )
         } finally {
             setLoading(false)
         }
     }
+
+    const isVideo = comment.post?.imgUrl?.includes("/video/upload/")
 
     return (
         <>
@@ -39,78 +47,10 @@ function ReplyCard({ comment, type }) {
                 "
             >
 
-                <div className="flex items-center gap-3">
-
-                    <img
-                        src={
-                            comment.user?.displayPicture ||
-                            "/muuv_pfp_dark.svg"
-                        }
-                        alt="Reply user"
-                        className="
-                            w-10
-                            h-10
-                            rounded-full
-                            object-cover
-                            border-2
-                            border-[#D5CEA3]
-                        "
-                    />
-
-                    <div className="flex-1">
-
-                        <p className="text-sm font-bold text-[#1A120B]">
-                            {comment.user?.firstName}{" "}
-                            {comment.user?.lastName}
-                        </p>
-
-                        <p className="text-xs text-[#8B6F61]">
-                            @{comment.user?.username}
-                        </p>
-
-                    </div>
-
-                    <span className="text-xs text-[#8B6F61]">
-                        {new Date(comment.createdAt).toLocaleDateString(
-                            "en-US",
-                            {
-                                day: "numeric",
-                                month: "short"
-                            }
-                        )}
-                    </span>
-
-                </div>
-
-
                 {comment.post && (
-                    <div
-                        className="
-                            mt-4
-                            rounded-xl
-                            bg-[#F8EDE3]
-                            px-4
-                            py-3
-                            border-l-4
-                            border-[#9D6638]
-                        "
-                    >
+                    <div>
 
-                        <p className="
-                            text-[11px]
-                            font-semibold
-                            uppercase
-                            tracking-wide
-                            text-[#8B6F61]
-                            mb-3
-                        ">
-                            {type === "post"
-                                ? "Original Post"
-                                : "Original Thought"}
-                        </p>
-
-
-                        <div className="flex items-center gap-2 mb-3">
+                        <div className="flex items-center gap-3">
 
                             <img
                                 src={
@@ -119,20 +59,20 @@ function ReplyCard({ comment, type }) {
                                 }
                                 alt="Original post owner"
                                 className="
-                                    w-8
-                                    h-8
+                                    w-11
+                                    h-11
                                     rounded-full
                                     object-cover
-                                    border
+                                    border-2
                                     border-[#D5CEA3]
                                 "
                             />
 
-                            <div>
+                            <div className="flex-1">
 
                                 <p className="
-                                    text-xs
-                                    font-semibold
+                                    text-sm
+                                    font-bold
                                     text-[#1A120B]
                                 ">
                                     {comment.post.authorId?.firstName}{" "}
@@ -140,7 +80,7 @@ function ReplyCard({ comment, type }) {
                                 </p>
 
                                 <p className="
-                                    text-[10px]
+                                    text-xs
                                     text-[#8B6F61]
                                 ">
                                     @{comment.post.authorId?.username}
@@ -148,30 +88,75 @@ function ReplyCard({ comment, type }) {
 
                             </div>
 
+                            <span className="
+                                text-xs
+                                text-[#8B6F61]
+                            ">
+                                {type === "post" ? "Post" : "Thought"}
+                            </span>
+
                         </div>
 
-
-                        <p className="
-                            text-sm
-                            text-[#4A352C]
-                            line-clamp-2
+                        <div className="
+                            mt-4
+                            rounded-xl
+                            bg-[#F8EDE3]
+                            overflow-hidden
                         ">
-                            {comment.post.content}
-                        </p>
+
+                            {comment.post.content && (
+                                <p className="
+                                    px-4
+                                    pt-3
+                                    text-sm
+                                    text-[#4A352C]
+                                    leading-relaxed
+                                    break-words
+                                ">
+                                    {comment.post.content}
+                                </p>
+                            )}
+
+                            {comment.post.imgUrl && (
+                                isVideo ? (
+                                    <video
+                                        src={comment.post.imgUrl}
+                                        className="
+                                            mt-3
+                                            w-full
+                                            max-h-80
+                                            object-cover
+                                        "
+                                        controls
+                                        onClick={e => e.stopPropagation()}
+                                    />
+                                ) : (
+                                    <img
+                                        src={comment.post.imgUrl}
+                                        alt="Original post"
+                                        className="
+                                            mt-3
+                                            w-full
+                                            max-h-80
+                                            object-cover
+                                        "
+                                        onClick={e => e.stopPropagation()}
+                                    />
+                                )
+                            )}
+
+                        </div>
 
                     </div>
                 )}
 
-
-                <div
-                    className="
-                        mt-4
-                        rounded-xl
-                        bg-[#DFD3C3]
-                        px-4
-                        py-3
-                    "
-                >
+                <div className="
+                    mt-4
+                    rounded-xl
+                    bg-[#DFD3C3]
+                    px-4
+                    py-3
+                ">
 
                     <p className="
                         text-[11px]
@@ -195,7 +180,6 @@ function ReplyCard({ comment, type }) {
 
                 </div>
 
-
                 {loading && (
                     <p className="
                         mt-3
@@ -207,7 +191,6 @@ function ReplyCard({ comment, type }) {
                 )}
 
             </div>
-
 
             {selectedPost && (
                 <PostModal

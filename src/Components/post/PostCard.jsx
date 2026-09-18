@@ -1,6 +1,16 @@
-import React from "react"
+import React, { useState } from "react"
+import { Heart } from "lucide-react"
+import { useDispatch } from "react-redux"
+import toast from "react-hot-toast"
+import { likePost, unlikePost } from "../../services/likeServices"
+import { updateLike } from "../../Utils/postsSlice"
+import { updateFeedPostLike } from "../../Utils/feedSlice"
+import { updateThoughtLike } from "../../Utils/thoughtsSlice"
+import { addLike, removeLike } from "../../Utils/myLikesSlice"
 
 function PostCard({ post, userData, setSelectedPost }) {
+
+    const dispatch = useDispatch()
 
     const {
         firstName,
@@ -8,6 +18,8 @@ function PostCard({ post, userData, setSelectedPost }) {
         username,
         displayPicture
     } = userData
+
+    const [likeLoading, setLikeLoading] = useState(false)
 
     const isVideo =
         post.imgUrl?.includes("/video/upload/") ||
@@ -45,7 +57,10 @@ function PostCard({ post, userData, setSelectedPost }) {
                 <div className="flex items-center gap-2">
 
                     <img
-                        src={displayPicture || "/muuv_pfp_dark.svg"}
+                        src={
+                            displayPicture ||
+                            "/muuv_pfp_dark.svg"
+                        }
                         alt="Profile"
                         className="w-7 h-7 rounded-full object-cover"
                     />
@@ -71,10 +86,13 @@ function PostCard({ post, userData, setSelectedPost }) {
                 )}
 
                 <p className="mt-2 text-[10px] text-[#8B6F61]">
-                    {new Date(post.createdAt).toLocaleDateString("en-US", {
-                        day: "numeric",
-                        month: "short"
-                    })}
+                    {new Date(post.createdAt).toLocaleDateString(
+                        "en-US",
+                        {
+                            day: "numeric",
+                            month: "short"
+                        }
+                    )}
                 </p>
 
             </div>

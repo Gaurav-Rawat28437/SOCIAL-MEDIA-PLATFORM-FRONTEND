@@ -11,20 +11,25 @@ import {
     VolumeX
 } from "lucide-react"
 import { useDispatch, useSelector } from "react-redux"
-import { likePost, unlikePost } from "../../services/likeServices"
-import { updateFeedPostLike } from "../../Utils/feedSlice"
+import { unlikePost } from "../../services/likeServices"
+import { removeLike, updateLikeComments } from "../../Utils/myLikesSlice"
 import toast from "react-hot-toast"
+import CommentModal from "../comment/CommentModal"
+import { updateFeedPostComments, updateFeedPostLike } from "../../Utils/feedSlice"
 import { updateThoughtComments, updateThoughtLike } from "../../Utils/thoughtsSlice"
 import { updateLike, updatePostComments } from "../../Utils/postsSlice"
-import CommentModal from "../comment/CommentModal"
-import { updateFeedPostComments } from "../../Utils/feedSlice"
-import { addLike, removeLike, updateLikeComments } from "../../Utils/myLikesSlice"
-import { updateReplyComments } from "../../Utils/myRepliesSlice"
 import { useNavigate } from "react-router-dom"
 
-function FeedCard({ post }) {
+function LikeCard({ like }) {
 
     const loggedInUser = useSelector(store => store.User?.data)
+
+    const nav = useNavigate()
+
+    const dispatch = useDispatch()
+
+    const post = like.post
+    const author = post?.authorId
 
     const [isBookmarked, setIsBookmarked] = useState(false)
     const [isShare, setShare] = useState(false)
@@ -33,15 +38,18 @@ function FeedCard({ post }) {
     const [isMuted, setIsMuted] = useState(false)
     const [volume, setVolume] = useState(1)
 
+    const [likeLoading, setLikeLoading] = useState(false)
+    const [showComments, setShowComments] = useState(false)
+
     const videoRef = useRef(null)
-    const nav = useNavigate()
 
-    const author = post.authorId
+    const isThought = !post?.imgUrl
+    const isVideo = post?.imgUrl?.includes("/video/upload/")
 
-    const isThought = !post.imgUrl
-    const isVideo = post.imgUrl?.includes("/video/upload/")
+    const togglePlay = (e) => {
 
-    const togglePlay = () => {
+        e.stopPropagation()
+
         if (!videoRef.current) return
 
         if (videoRef.current.paused) {
@@ -51,60 +59,73 @@ function FeedCard({ post }) {
         }
     }
 
-    const toggleMute = () => {
+    const toggleMute = (e) => {
+
+        e.stopPropagation()
+
         if (!videoRef.current) return
 
-        if (videoRef.current.muted || videoRef.current.volume === 0) {
+        if (
+            videoRef.current.muted ||
+            videoRef.current.volume === 0
+        ) {
+
             const newVolume = volume === 0 ? 1 : volume
 
             videoRef.current.volume = newVolume
             videoRef.current.muted = false
+
             setVolume(newVolume)
             setIsMuted(false)
+
         } else {
+
             videoRef.current.muted = true
             videoRef.current.volume = 0
+
             setVolume(0)
             setIsMuted(true)
         }
     }
 
     const handleVolume = (e) => {
+
+        e.stopPropagation()
+
         const value = Number(e.target.value)
 
         setVolume(value)
 
         if (videoRef.current) {
+
             videoRef.current.volume = value
             videoRef.current.muted = value === 0
+
             setIsMuted(value === 0)
         }
     }
 
+    const handleUnlike = async () => {
 
-    const dispatch = useDispatch()
-
-    const [likeLoading, setLikeLoading] = useState(false)
-
-
-    const handleLike = async () => {
-        if (likeLoading) return
+        if (likeLoading || !post?._id) return
 
         try {
+
             setLikeLoading(true)
 
-            const response = post.isLiked
-                ? await unlikePost(post._id)
-                : await likePost(post._id)
+            const response = await unlikePost(post._id)
+
 
             if (response.success) {
 
-                const isLiked = !post.isLiked
+                dispatch(
+                    removeLike(post._id)
+                )
 
                 dispatch(
                     updateFeedPostLike({
                         postId: post._id,
-                        isLiked,
+                        isLiked: false,
                         likesCount: response.likesCount
                     })
                 )
@@ -112,7 +133,7 @@ function FeedCard({ post }) {
                 dispatch(
                     updateLike({
                         postId: post._id,
-                        isLiked,
+                        isLiked: false,
                         likesCount: response.likesCount
                     })
                 )
@@ -120,30 +141,10 @@ function FeedCard({ post }) {
                 dispatch(
                     updateThoughtLike({
                         postId: post._id,
-                        isLiked,
+                        isLiked: false,
                         likesCount: response.likesCount
                     })
                 )
-
-                if (isLiked) {
-
-                    dispatch(
-                        addLike({
-                            post: {
-                                ...post,
-                                isLiked: true,
-                                likesCount: response.likesCount
-                            }
-                        })
-                    )
-
-                } else {
-
-                    dispatch(
-                        removeLike(post._id)
-                    )
-
-                }
             }
 
         } catch (error) {
@@ -153,20 +154,18 @@ function FeedCard({ post }) {
             toast.error(
                 error.response?.data?.msg ||
                 error.message ||
-                "Unable to update like"
+                "Unable to unlike post"
             )
 
         } finally {
+
             setLikeLoading(false)
         }
     }
 
-
-
-
-    const [showComments, setShowComments] = useState(false)
-
     const handleCommentAdded = (commentsCount) => {
+        dispatch(updateLikeComments({ postId: post._id, commentsCount }))
+
         dispatch(
             updateFeedPostComments({
                 postId: post._id,
@@ -187,35 +186,23 @@ function FeedCard({ post }) {
                 commentsCount
             })
         )
-
-        dispatch(
-            updateLikeComments({
-                postId: post._id,
-                commentsCount
-            })
-        )
-
-        dispatch(
-            updateReplyComments({
-                postId: post._id,
-                commentsCount
-            })
-        )
     }
 
     return (
+
         <article
             className="
-            bg-[#E5E5CB]
-            border
-            border-[#1A120B]
-            rounded-2xl
-            overflow-hidden
-            shadow-[0_3px_12px_rgba(141,73,58,0.08)]
-            hover:shadow-[0_7px_22px_rgba(141,73,58,0.14)]
-            transition-all
+                bg-[#E5E5CB]
+                border
+                border-[#1A120B]
+                rounded-2xl
+                overflow-hidden
+                shadow-[0_3px_12px_rgba(141,73,58,0.08)]
+                hover:shadow-[0_7px_22px_rgba(141,73,58,0.14)]
+                transition-all
             "
         >
+
             <div className="p-5">
 
                 <div className="flex items-start justify-between">
@@ -224,26 +211,26 @@ function FeedCard({ post }) {
 
                         <div
                             onClick={() => {
-                                if (author._id === loggedInUser._id) {
+                                if (loggedInUser._id === author._id) {
                                     nav("/profile")
                                 }
                                 else {
-
                                     nav(`/profile/${author._id}`)
                                 }
                             }}
                             className="
-                            w-11
-                            h-11
-                            rounded-full
-                            overflow-hidden
-                            shrink-0
-                            bg-[#D0B8A8]
-                            border
-                            border-[#1A120B]
-                            cursor-pointer
+                                w-11
+                                h-11
+                                rounded-full
+                                overflow-hidden
+                                shrink-0
+                                bg-[#D0B8A8]
+                                border
+                                border-[#1A120B]
+                                cursor-pointer
                             "
                         >
+
                             <img
                                 src={
                                     author?.displayPicture ||
@@ -251,22 +238,22 @@ function FeedCard({ post }) {
                                 }
                                 alt="Profile"
                                 className="
-                                w-full
-                                h-full
-                                object-cover
+                                    w-full
+                                    h-full
+                                    object-cover
                                 "
                             />
+
                         </div>
 
                         <div>
 
                             <div
                                 onClick={() => {
-                                    if (author._id === loggedInUser._id) {
+                                    if (loggedInUser._id === author._id) {
                                         nav("/profile")
                                     }
                                     else {
-
                                         nav(`/profile/${author._id}`)
                                     }
                                 }}
@@ -274,8 +261,8 @@ function FeedCard({ post }) {
 
                                 <p
                                     className="
-                                    font-semibold
-                                    text-[#1A120B]
+                                        font-semibold
+                                        text-[#1A120B]
                                     "
                                 >
                                     {author?.firstName}{" "}
@@ -284,8 +271,8 @@ function FeedCard({ post }) {
 
                                 <span
                                     className="
-                                    text-sm
-                                    text-[#1A120B]/60
+                                        text-sm
+                                        text-[#1A120B]/60
                                     "
                                 >
                                     @{author?.username}
@@ -295,27 +282,30 @@ function FeedCard({ post }) {
 
                             <div
                                 className="
-                                flex
-                                items-center
-                                gap-1
-                                text-xs
-                                text-[#1A120B]/60
-                                mt-0.5
+                                    flex
+                                    items-center
+                                    gap-1
+                                    text-xs
+                                    text-[#1A120B]/60
+                                    mt-0.5
                                 "
                             >
+
                                 <span>Muuv</span>
+
                                 <span>·</span>
 
                                 <span>
-                                    {new Date(
-                                        post.createdAt
-                                    ).toLocaleDateString(
-                                        "en-US",
-                                        {
-                                            day: "numeric",
-                                            month: "short"
-                                        }
-                                    )}
+                                    {post?.createdAt &&
+                                        new Date(
+                                            post.createdAt
+                                        ).toLocaleDateString(
+                                            "en-US",
+                                            {
+                                                day: "numeric",
+                                                month: "short"
+                                            }
+                                        )}
                                 </span>
 
                             </div>
@@ -327,36 +317,36 @@ function FeedCard({ post }) {
                     <button
                         type="button"
                         className="
-                        w-9
-                        h-9
-                        flex
-                        items-center
-                        justify-center
-                        rounded-full
-                        text-[#1A120B]
-                        border
-                        border-transparent
-                        hover:bg-[#D5CEA3]
-                        hover:border-[#1A120B]
-                        transition-all
+                            w-9
+                            h-9
+                            flex
+                            items-center
+                            justify-center
+                            rounded-full
+                            text-[#1A120B]
+                            border
+                            border-transparent
+                            hover:bg-[#D5CEA3]
+                            hover:border-[#1A120B]
+                            transition-all
                         "
                     >
-                        <MoreHorizontal
-                            size={20}
-                            className="shrink-0"
-                        />
+
+                        <MoreHorizontal size={20} />
+
                     </button>
 
                 </div>
 
-                {post.content && (
+                {post?.content && (
+
                     <p
                         className={`
-                        mt-4
-                        text-[#1A120B]
-                        whitespace-pre-wrap
-                        break-words
-                        ${isThought
+                            mt-4
+                            text-[#1A120B]
+                            whitespace-pre-wrap
+                            break-words
+                            ${isThought
                                 ? "text-[17px] leading-7"
                                 : "text-[16px] leading-6"
                             }
@@ -364,18 +354,20 @@ function FeedCard({ post }) {
                     >
                         {post.content}
                     </p>
+
                 )}
 
-                {post.imgUrl && (
+                {post?.imgUrl && (
+
                     <div
                         className="
-                        mt-4
-                        h-[400px]
-                        rounded-xl
-                        overflow-hidden
-                        border
-                        border-[#1A120B]
-                        bg-[#1A120B]
+                            mt-4
+                            h-[400px]
+                            rounded-xl
+                            overflow-hidden
+                            border
+                            border-[#1A120B]
+                            bg-[#1A120B]
                         "
                     >
 
@@ -388,58 +380,68 @@ function FeedCard({ post }) {
                                     src={post.imgUrl}
                                     playsInline
                                     onClick={togglePlay}
-                                    onPlay={() => setIsPlaying(true)}
-                                    onPause={() => setIsPlaying(false)}
-                                    onEnded={() => setIsPlaying(false)}
+                                    onPlay={() =>
+                                        setIsPlaying(true)
+                                    }
+                                    onPause={() =>
+                                        setIsPlaying(false)
+                                    }
+                                    onEnded={() =>
+                                        setIsPlaying(false)
+                                    }
                                     className="
-                                    w-full
-                                    h-full
-                                    object-contain
-                                    cursor-pointer
+                                        w-full
+                                        h-full
+                                        object-contain
+                                        cursor-pointer
                                     "
                                 />
 
                                 {!isPlaying && (
+
                                     <button
                                         type="button"
                                         onClick={togglePlay}
                                         className="
-                                        absolute
-                                        left-1/2
-                                        top-1/2
-                                        -translate-x-1/2
-                                        -translate-y-1/2
-                                        w-14
-                                        h-14
-                                        rounded-full
-                                        bg-black/60
-                                        text-white
-                                        flex
-                                        items-center
-                                        justify-center
-                                        hover:bg-black/80
-                                        transition
+                                            absolute
+                                            left-1/2
+                                            top-1/2
+                                            -translate-x-1/2
+                                            -translate-y-1/2
+                                            w-14
+                                            h-14
+                                            rounded-full
+                                            bg-black/60
+                                            text-white
+                                            flex
+                                            items-center
+                                            justify-center
+                                            hover:bg-black/80
+                                            transition
                                         "
                                     >
+
                                         <Play
                                             size={27}
                                             className="ml-1"
                                         />
+
                                     </button>
+
                                 )}
 
                                 <div
                                     className="
-                                    absolute
-                                    bottom-0
-                                    left-0
-                                    right-0
-                                    flex
-                                    items-center
-                                    gap-3
-                                    px-4
-                                    py-3
-                                    bg-black/70
+                                        absolute
+                                        bottom-0
+                                        left-0
+                                        right-0
+                                        flex
+                                        items-center
+                                        gap-3
+                                        px-4
+                                        py-3
+                                        bg-black/70
                                     "
                                 >
 
@@ -447,32 +449,36 @@ function FeedCard({ post }) {
                                         type="button"
                                         onClick={togglePlay}
                                         className="
-                                        text-white
-                                        hover:text-[#D0B8A8]
-                                        transition
+                                            text-white
+                                            hover:text-[#D0B8A8]
+                                            transition
                                         "
                                     >
+
                                         {isPlaying ? (
                                             <Pause size={20} />
                                         ) : (
                                             <Play size={20} />
                                         )}
+
                                     </button>
 
                                     <button
                                         type="button"
                                         onClick={toggleMute}
                                         className="
-                                        text-white
-                                        hover:text-[#D0B8A8]
-                                        transition
+                                            text-white
+                                            hover:text-[#D0B8A8]
+                                            transition
                                         "
                                     >
+
                                         {isMuted ? (
                                             <VolumeX size={20} />
                                         ) : (
                                             <Volume2 size={20} />
                                         )}
+
                                     </button>
 
                                     <input
@@ -483,8 +489,8 @@ function FeedCard({ post }) {
                                         value={volume}
                                         onChange={handleVolume}
                                         className="
-                                        w-24
-                                        accent-[#8D493A]
+                                            w-24
+                                            accent-[#8D493A]
                                         "
                                     />
 
@@ -498,132 +504,165 @@ function FeedCard({ post }) {
                                 src={post.imgUrl}
                                 alt="Post"
                                 className="
-                                w-full
-                                h-full
-                                object-contain
+                                    w-full
+                                    h-full
+                                    object-contain
                                 "
                             />
 
                         )}
 
                     </div>
+
                 )}
 
                 <div
                     className="
-                    flex
-                    items-center
-                    justify-between
-                    mt-4
-                    pt-3
-                    border-t
-                    border-[#1A120B]
+                        flex
+                        items-center
+                        justify-between
+                        mt-4
+                        pt-3
+                        border-t
+                        border-[#1A120B]
                     "
                 >
 
                     <button
                         type="button"
                         disabled={likeLoading}
-                        onClick={handleLike}
+                        onClick={handleUnlike}
                         className="
-                               flex
-                               items-center
-                               justify-center
-                               gap-2
-                               min-w-[70px]
-                               h-10
-                               px-3
-                               rounded-full
-                               border
-                               border-transparent
-                               text-[#1A120B]
-                               hover:bg-[#D5CEA3]
-                               hover:border-[#1A120B]
-                               transition-all
-                               disabled:opacity-50
-                               disabled:cursor-not-allowed
-                           "
+                            flex
+                            items-center
+                            justify-center
+                            gap-2
+                            min-w-[70px]
+                            h-10
+                            px-3
+                            rounded-full
+                            border
+                            border-transparent
+                            text-[#1A120B]
+                            hover:bg-[#D5CEA3]
+                            hover:border-[#1A120B]
+                            transition-all
+                            disabled:opacity-50
+                            disabled:cursor-not-allowed
+                        "
                     >
+
                         <Heart
                             size={20}
                             className="shrink-0 text-[#1A120B]"
-                            fill={post.isLiked ? "currentColor" : "none"}
+                            fill="currentColor"
                         />
 
                         <span className="text-sm text-[#1A120B]">
-                            {post.likesCount || 0}
+                            {post?.likesCount || 0}
                         </span>
+
                     </button>
 
                     <button
                         type="button"
-                        onClick={() => setShowComments(true)}
-                        className=" flex items-center justify-center gap-2 min-w-[70px] h-10 px-3 rounded-full border border-transparent text-[#1A120B] hover:bg-[#D5CEA3] hover:border-[#1A120B] transition-all  "
+                        onClick={() =>
+                            setShowComments(true)
+                        }
+                        className="
+                            flex
+                            items-center
+                            justify-center
+                            gap-2
+                            min-w-[70px]
+                            h-10
+                            px-3
+                            rounded-full
+                            border
+                            border-transparent
+                            text-[#1A120B]
+                            hover:bg-[#D5CEA3]
+                            hover:border-[#1A120B]
+                            transition-all
+                        "
                     >
+
                         <MessageCircle
                             size={20}
-                            className="shrink-0 text-[#1A120B]"
+                            className="shrink-0"
                         />
 
-                        <span className="text-sm text-[#1A120B]">
-                            {post.commentsCount || 0}
+                        <span className="text-sm">
+                            {post?.commentsCount || 0}
                         </span>
+
                     </button>
 
                     <button
                         type="button"
-                        onClick={() => setShare(!isShare)}
+                        onClick={() =>
+                            setShare(!isShare)
+                        }
                         className="
-                        flex
-                        items-center
-                        justify-center
-                        gap-2
-                        min-w-[70px]
-                        h-10
-                        px-3
-                        rounded-full
-                        border
-                        border-transparent
-                        text-[#1A120B]
-                        hover:bg-[#D5CEA3]
-                        hover:border-[#1A120B]
-                        transition-all
+                            flex
+                            items-center
+                            justify-center
+                            gap-2
+                            min-w-[70px]
+                            h-10
+                            px-3
+                            rounded-full
+                            border
+                            border-transparent
+                            text-[#1A120B]
+                            hover:bg-[#D5CEA3]
+                            hover:border-[#1A120B]
+                            transition-all
                         "
                     >
+
                         <Share
                             size={20}
-                            className="shrink-0 text-[#1A120B]"
+                            className="shrink-0"
                         />
 
-                        <span className="text-sm text-[#1A120B]">
-                            {post.repostsCount || 0}
+                        <span className="text-sm">
+                            {post?.repostsCount || 0}
                         </span>
 
                     </button>
 
                     <button
                         type="button"
-                        onClick={() => setIsBookmarked(!isBookmarked)}
+                        onClick={() =>
+                            setIsBookmarked(!isBookmarked)
+                        }
                         className="
-                        w-10
-                        h-10
-                        flex
-                        items-center
-                        justify-center
-                        rounded-full
-                        border
-                        border-transparent
-                        text-[#1A120B]
-                        hover:bg-[#D5CEA3]
-                        hover:border-[#1A120B]
-                        transition-all
+                            w-10
+                            h-10
+                            flex
+                            items-center
+                            justify-center
+                            rounded-full
+                            border
+                            border-transparent
+                            text-[#1A120B]
+                            hover:bg-[#D5CEA3]
+                            hover:border-[#1A120B]
+                            transition-all
                         "
                     >
+
                         <Bookmark
                             size={20}
-                            className="shrink-0 text-[#1A120B]"
-                            fill={isBookmarked ? "#1A120B" : "none"}
+                            className="shrink-0"
+                            fill={
+                                isBookmarked
+                                    ? "#1A120B"
+                                    : "none"
+                            }
                         />
+
                     </button>
 
                 </div>
@@ -631,16 +670,21 @@ function FeedCard({ post }) {
             </div>
 
             {showComments && (
+
                 <CommentModal
                     postId={post._id}
-                    post={post}
-                    onClose={() => setShowComments(false)}
-                    onCommentAdded={handleCommentAdded}
+                    onClose={() =>
+                        setShowComments(false)
+                    }
+                    onCommentAdded={
+                        handleCommentAdded
+                    }
                 />
+
             )}
 
         </article>
     )
 }
 
-export default FeedCard
+export default LikeCard

@@ -7,6 +7,7 @@ import HomePage from './Pages/HomePage'
 import ProtectedRoutes from './routes/ProtectedRoutes'
 import ProfilePage from './Pages/ProfilePage'
 import CompleteProfile from './Pages/CompleteProfile'
+import OtherUserProfilePage from './Pages/OtherUserProfilePage'
 
 
 
@@ -26,9 +27,10 @@ function App() {
         <Route  element={<ProtectedRoutes/>}>
 
           <Route path="/" element={<HomePage />}></Route>
-          < Route path="/home" element={<HomePage />} />
-          < Route path="/profile" element={<ProfilePage />} />
-          <Route path="/complete-profile" element={<CompleteProfile />} />
+          <Route path="/home" element={<HomePage />} ></Route>
+          <Route path="/profile" element={<ProfilePage />} ></Route>
+          <Route path="/complete-profile" element={<CompleteProfile />} ></Route>
+          <Route path="/profile/:userId" element={<OtherUserProfilePage />} ></Route>
 
         </Route>
 

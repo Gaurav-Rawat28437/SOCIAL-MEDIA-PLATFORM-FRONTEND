@@ -1,7 +1,9 @@
-import React, { useState } from "react"
+import React, { useRef, useState } from "react"
 import { Plus, Search } from "lucide-react"
 import { useSelector } from "react-redux"
 import CreatePostModal from "../post/CreatePostModal"
+import { getUsersBySearch } from "../../services/otherUserService"
+import { useNavigate } from "react-router-dom"
 
 function Navbar() {
     const userData = useSelector(
@@ -10,6 +12,42 @@ function Navbar() {
 
     const [showCreatePost, setShowCreatePost] =
         useState(false)
+
+    const [users, setUsers] = useState([])
+    const [search, setSearch] = useState("")
+    const [searching, setSearching] = useState(false)
+
+    const navigate=useNavigate()
+
+    const id = useRef(null)
+
+    const debouncing = (e) => {
+        try {
+            const value = e.target.value
+
+            setSearch(value)
+            clearTimeout(id.current)
+
+            if (value === "") {
+                setUsers([])
+                setSearching(false)
+                return
+            }
+
+            setSearching(true)
+
+            id.current = setTimeout(async () => {
+                const response = await getUsersBySearch(value)
+
+                setUsers(response.users || [])
+                setSearching(false)
+            }, 500)
+        } catch (error) {
+            console.log(error)
+            setSearching(false)
+        }
+    }
+
 
     return (
         <nav
@@ -61,6 +99,7 @@ function Navbar() {
                     />
 
                     <input
+                        onChange={(e) => debouncing(e)}
                         id="search"
                         type="text"
                         placeholder="Search"
@@ -83,6 +122,56 @@ function Navbar() {
                         "
                     />
                 </div>
+
+                {searching && (
+                    <div className="absolute top-12 left-0 w-[420px] bg-[#E5E5CB] rounded-2xl shadow-xl border border-[#D5CEA3] px-4 py-5 text-center text-[#3C2A21]">
+                        Searching...
+                    </div>
+                )}
+
+                {!searching && users.length > 0 && (
+                    <div className="absolute top-12 left-0 w-[420px] bg-[#E5E5CB] rounded-2xl shadow-xl border border-[#D5CEA3] overflow-hidden">
+                        {users.map((item) => (
+                            <div
+                                onClick={() => {
+                                    navigate(`/profile/${item._id}`)}}
+                                key={item._id}
+                                className="flex items-center gap-3 px-4 py-3 hover:bg-[#D5CEA3] cursor-pointer"
+                            >
+                                <div className="w-11 h-11 rounded-full overflow-hidden bg-[#D0B8A8] flex items-center justify-center">
+                                    {item.displayPicture ? (
+                                        <img
+                                            src={item.displayPicture}
+                                            alt="userPfp"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <span className="text-[#3C2A21] font-semibold">
+                                            {item.firstName?.[0]?.toUpperCase() || "U"}
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <p className="font-semibold text-[#3C2A21]">
+                                        {item.firstName} {item.lastName}
+                                    </p>
+
+                                    <p className="text-sm text-[#8D493A]">
+                                        @{item.username}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {!searching && search && users.length === 0 && (
+                    <div className="absolute top-12 left-0 w-[420px] bg-[#E5E5CB] rounded-2xl shadow-xl border border-[#D5CEA3] px-4 py-5 text-center text-[#3C2A21]">
+                        User not found
+                    </div>
+                )}
+
             </div>
 
             <div className="ml-auto flex items-center gap-4">

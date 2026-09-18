@@ -18,7 +18,15 @@ const postsSlice = createSlice({
         },
 
         addPosts: (state, action) => {
-            state.posts.push(...action.payload)
+            action.payload.forEach(post => {
+                const exists = state.posts.some(
+                    item => item._id === post._id
+                )
+
+                if (!exists) {
+                    state.posts.push(post)
+                }
+            })
         },
 
         addPost: (state, action) => {

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { X, Send, MoreVertical, Pencil, Trash2 } from "lucide-react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import toast from "react-hot-toast"
-import { getComments, addComment, deleteComment, editComment} from "../../services/commentService"
+import { getComments, addComment, deleteComment, editComment } from "../../services/commentService"
+import { addReply, removeReply, updateReply } from "../../Utils/myRepliesSlice"
+import { getPostById } from "../../services/postServices"
 
-function CommentModal({ postId, onClose, onCommentAdded }) {
+function CommentModal({ postId, post, onClose, onCommentAdded }) {
 
     const [comments, setComments] = useState([])
     const [content, setContent] = useState("")
@@ -16,6 +18,8 @@ function CommentModal({ postId, onClose, onCommentAdded }) {
     const [editCommentId, setEditCommentId] = useState(null)
     const [editContent, setEditContent] = useState("")
     const [editing, setEditing] = useState(false)
+
+    const dispatch = useDispatch()
 
     const userData = useSelector(
         store => store.User?.data
@@ -69,6 +73,18 @@ function CommentModal({ postId, onClose, onCommentAdded }) {
                     onCommentAdded(response.commentsCount)
                 }
 
+                const postResponse = await getPostById(postId)
+
+                if (postResponse.success) {
+                    dispatch(
+                        addReply({
+                            ...response.data,
+                            user: userData,
+                            post: postResponse.data
+                        })
+                    )
+                }
+
                 await fetchComments()
 
                 toast.success(
@@ -98,6 +114,8 @@ function CommentModal({ postId, onClose, onCommentAdded }) {
                         comment => comment._id !== commentId
                     )
                 )
+
+                dispatch(removeReply(commentId))
 
                 if (onCommentAdded) {
                     onCommentAdded(response.commentsCount)
@@ -141,6 +159,13 @@ function CommentModal({ postId, onClose, onCommentAdded }) {
                             }
                             : comment
                     )
+                )
+
+                dispatch(
+                    updateReply({
+                        commentId,
+                        content: response.data.content
+                    })
                 )
 
                 setEditCommentId(null)

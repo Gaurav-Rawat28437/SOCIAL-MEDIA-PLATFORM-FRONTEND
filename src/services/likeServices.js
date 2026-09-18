@@ -26,3 +26,18 @@ export const unlikePost = async (postId) => {
 
     return response.data
 }
+
+export const getMyLikes = async (page = 1, limit = 18) => {
+    const response = await axios.get(
+        `${API_URL}/like/my-likes`,
+        {
+            params: {
+                page,
+                limit
+            },
+            withCredentials: true
+        }
+    )
+
+    return response.data
+}
