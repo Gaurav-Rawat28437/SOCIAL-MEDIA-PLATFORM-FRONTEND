@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import ProfileProgress from "../Components/profile/CompleteProfile/ProfileProgress"
+import ProfileProgress from "../Components/profile/completeProfile/ProfileProgress"
 import BasicInformation from "../Components/profile/completeProfile/BasicInformation"
 import ProfileSetup from "../Components/profile/completeProfile/ProfileSetup"
 import ReviewProfile from "../Components/profile/completeProfile/ReviewProfile"
