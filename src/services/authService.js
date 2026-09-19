@@ -121,12 +121,24 @@ export const logout = async () => {
 }
 
 export const checkUsername = async (username) => {
-    const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/auth/check-username`,
-        {
-            params: { username },
-            withCredentials: true
+    try {
+        const response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/auth/check-username?username=${username}`,
+            {
+                withCredentials: true
+            }
+        )
+
+        console.log(response.data)
+        return response.data
+    } catch (error) {
+        if (error.response?.status === 409) {
+            return {
+                success: false,
+                msg: "Username is already taken"
+            }
         }
-    )
-    return response.data
+
+        throw error
+    }
 }

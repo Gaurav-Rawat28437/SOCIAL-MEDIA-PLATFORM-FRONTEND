@@ -145,6 +145,7 @@ function RegisterForm() {
       setLoading(true)
 
       const usernameResponse = await checkUsername(username)
+      console.log(usernameResponse)
 
       if (!usernameResponse.success) {
         toast.error("Username is already taken")
