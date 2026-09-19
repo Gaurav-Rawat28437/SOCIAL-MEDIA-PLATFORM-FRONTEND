@@ -129,7 +129,6 @@ export const checkUsername = async (username) => {
             }
         )
 
-        console.log(response.data)
         return response.data
     } catch (error) {
         if (error.response?.status === 409) {
