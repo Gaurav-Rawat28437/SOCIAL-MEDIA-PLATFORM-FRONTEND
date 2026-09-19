@@ -19,7 +19,13 @@ const feedSlice = createSlice({
         },
 
         addFeedPosts: (state, action) => {
-            state.posts.push(...action.payload)
+            const newPosts = action.payload.filter(
+                newPost => !state.posts.some(
+                    post => post._id === newPost._id
+                )
+            )
+
+            state.posts.push(...newPosts)
         },
 
         addFeedPost: (state, action) => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Loading from '../Components/common/Loading'
 import { addUserData } from '../Utils/usersSlice'
@@ -11,6 +11,7 @@ function ProtectedRoutes() {
   const nav = useNavigate()
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(true)
+  const location = useLocation()
 
   useEffect(() => {
 
