@@ -96,7 +96,7 @@ function RegisterForm() {
       console.error(error)
 
       const message =
-        error.response?.data?.msg ||
+        error.message ||
         "Invalid OTP, please try again"
 
       toast.error(message)
@@ -123,7 +123,7 @@ function RegisterForm() {
       console.error(error)
 
       const message =
-        error.response?.data?.msg || "Something went wrong"
+        error.message || "Something went wrong"
 
       toast.error(message)
     } finally {
