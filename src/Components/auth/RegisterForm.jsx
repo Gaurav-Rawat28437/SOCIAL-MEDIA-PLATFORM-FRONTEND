@@ -3,6 +3,7 @@ import {
   registerUser,
   sendOtp,
   verifyOtp,
+  checkUsername,
 } from "../../services/authService"
 import toast from "react-hot-toast"
 import validator from "validator"
@@ -46,8 +47,7 @@ function RegisterForm() {
     try {
       setLoading(true)
 
-      if(!validator.isEmail(email))
-      {
+      if (!validator.isEmail(email)) {
         toast.error("Enter valid email")
         return
       }
@@ -81,7 +81,7 @@ function RegisterForm() {
     try {
       setVerifyLoading(true)
 
-      if(isNaN(otp) || otp.length!==6){
+      if (isNaN(otp) || otp.length !== 6) {
         toast.error("Enter the valid 6-digit otp")
         return
       }
@@ -144,6 +144,13 @@ function RegisterForm() {
     try {
       setLoading(true)
 
+      const usernameResponse = await checkUsername(username)
+
+      if (!usernameResponse.success) {
+        toast.error("Username is already taken")
+        return
+      }
+
       const response = await registerUser(
         email,
         username,
@@ -158,7 +165,8 @@ function RegisterForm() {
       console.error(error)
 
       const message =
-        error.message || "Something went wrong"
+        error.message ||
+        "Something went wrong"
 
       toast.error(message)
     } finally {
@@ -231,7 +239,7 @@ function RegisterForm() {
               <span className="font-semibold text-[#4A352C]">
                 {email}
               </span>
-              <br/>
+              <br />
               <span>(If you don't see the OTP in your inbox, check your spam folder.)</span>
             </p>
 
@@ -425,7 +433,7 @@ function RegisterForm() {
                 </div>
               </div>
 
-              
+
               <button
                 type="submit"
                 disabled={loading}

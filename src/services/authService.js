@@ -120,3 +120,13 @@ export const logout = async () => {
   }
 }
 
+export const checkUsername = async (username) => {
+    const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/auth/check-username`,
+        {
+            params: { username }
+        }
+    )
+
+    return response.data
+}
