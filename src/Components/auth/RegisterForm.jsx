@@ -65,7 +65,7 @@ function RegisterForm() {
       console.error(error)
 
       const message =
-        error.response?.data?.msg || "Something went wrong"
+        error.message || "Something went wrong"
 
       toast.error(message)
     } finally {
@@ -231,6 +231,8 @@ function RegisterForm() {
               <span className="font-semibold text-[#4A352C]">
                 {email}
               </span>
+              <br/>
+              <span>(If you don't see the OTP in your inbox, check your spam folder.)</span>
             </p>
 
             <form onSubmit={handleVerifyOtp}>
