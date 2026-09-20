@@ -1,5 +1,5 @@
-import React from "react"
-import { Home,User, LogOut, MessageCircle } from "lucide-react"
+import React, { useState } from "react"
+import { Home, User, LogOut, MessageCircle } from "lucide-react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { logout } from "../../services/authService"
 import toast from "react-hot-toast"
@@ -10,6 +10,20 @@ function Sidebar() {
 
   const nav = useNavigate()
   const dispatch = useDispatch()
+
+  const [expanded, setExpanded] = useState(
+    sessionStorage.getItem("sidebarExpanded") === "true"
+  )
+
+  const handleMouseEnter = () => {
+    setExpanded(true)
+    sessionStorage.setItem("sidebarExpanded", "true")
+  }
+
+  const handleMouseLeave = () => {
+    setExpanded(false)
+    sessionStorage.setItem("sidebarExpanded", "false")
+  }
 
   const logoutHandler = async () => {
     try {
@@ -24,7 +38,11 @@ function Sidebar() {
 
   return (
     <aside
-      className="group fixed top-16 left-0 w-20 hover:w-64 h-[calc(100vh-4rem)] border-r border-[#5A382A] bg-[#E5E5CB] p-3 transition-all duration-300 overflow-hidden flex flex-col z-40"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className={`fixed top-16 left-0 ${
+        expanded ? "w-64" : "w-20"
+      } h-[calc(100vh-4rem)] border-r border-[#5A382A] bg-[#E5E5CB] p-3 transition-all duration-300 overflow-hidden flex flex-col z-40`}
     >
 
       <div className="space-y-2">
@@ -32,74 +50,55 @@ function Sidebar() {
         <NavLink
           to="/home"
           className={({ isActive }) =>
-            `w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[#1A120B] font-semibold transition whitespace-nowrap ${
+            `w-full flex items-center gap-3 px-3 py-3 rounded-xl font-semibold whitespace-nowrap ${
               isActive
-                ? "bg-[#3C2A21] text-[#D5CEA3] "
+                ? "bg-[#3C2A21] text-[#D5CEA3]"
                 : "text-[#1A120B]"
             }`
           }
         >
           <Home size={24} className="shrink-0 ml-1" />
-          <span className="hidden group-hover:block">
-            Home
-          </span>
+          {expanded && <span>Home</span>}
         </NavLink>
 
         <NavLink
-          to="/"
+          to="/chat"
           className={({ isActive }) =>
-            `w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[#1A120B] transition whitespace-nowrap ${
+            `w-full flex items-center gap-3 px-3 py-3 rounded-xl whitespace-nowrap ${
               isActive
-                ? "bg-[#3C2A21] text-[#D5CEA3] "
-                : " text-[#1A120B]"
+                ? "bg-[#3C2A21] text-[#D5CEA3]"
+                : "text-[#1A120B]"
             }`
           }
         >
           <MessageCircle size={24} className="shrink-0 ml-1" />
-          <span className="hidden group-hover:block">
-            Chat
-          </span>
+          {expanded && <span>Chat</span>}
         </NavLink>
-
 
         <NavLink
           to="/profile"
           end
           className={({ isActive }) =>
-            `w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[#1A120B] transition whitespace-nowrap ${
+            `w-full flex items-center gap-3 px-3 py-3 rounded-xl whitespace-nowrap ${
               isActive
-                ? " bg-[#3C2A21] text-[#D5CEA3] "
+                ? "bg-[#3C2A21] text-[#D5CEA3]"
                 : "text-[#1A120B]"
             }`
           }
         >
           <User size={24} className="shrink-0 ml-1" />
-          <span className="hidden group-hover:block">
-            Profile
-          </span>
+          {expanded && <span>Profile</span>}
         </NavLink>
 
       </div>
 
-
       <button
         onClick={logoutHandler}
         type="button"
-        className="
-          w-full flex items-center gap-3
-          px-3 py-3 rounded-xl
-          hover:bg-[#1A120B]
-          hover:text-[#E5E5CB]
-          text-[#1A120B]
-          transition whitespace-nowrap
-          mt-auto
-        "
+        className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-[#1A120B] hover:text-[#E5E5CB] text-[#1A120B] whitespace-nowrap mt-auto"
       >
         <LogOut size={24} className="shrink-0" />
-
-        <span className="hidden group-hover:block">
-          Logout
-        </span>
+        {expanded && <span>Logout</span>}
       </button>
 
     </aside>

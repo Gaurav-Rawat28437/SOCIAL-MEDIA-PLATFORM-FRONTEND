@@ -23,6 +23,8 @@ function HomePage() {
                 </div>
             </main>
         </div>
+
+        
     )
 }
 

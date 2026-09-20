@@ -8,6 +8,7 @@ import ProtectedRoutes from './routes/ProtectedRoutes'
 import ProfilePage from './Pages/ProfilePage'
 import CompleteProfile from './Pages/CompleteProfile'
 import OtherUserProfilePage from './Pages/OtherUserProfilePage'
+import ChatPage from './Pages/ChatPage'
 
 
 
@@ -31,6 +32,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} ></Route>
           <Route path="/complete-profile" element={<CompleteProfile />} ></Route>
           <Route path="/profile/:userId" element={<OtherUserProfilePage />} ></Route>
+          <Route path="/chat" element={<ChatPage />} ></Route>
 
         </Route>
 
