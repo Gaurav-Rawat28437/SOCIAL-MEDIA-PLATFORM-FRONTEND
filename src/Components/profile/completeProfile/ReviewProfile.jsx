@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { completeProfile } from "../../../services/profileService"
 import { useNavigate } from "react-router-dom"
 import { addUserData } from "../../../Utils/usersSlice"
-import {uploadImage} from "../../../services/cloudinaryService"
+import { uploadImage } from "../../../services/cloudinaryService"
 
 function ReviewProfile({ userData, setUserData, setStep, tempPicture, pictureFile }) {
 
@@ -67,7 +67,7 @@ function ReviewProfile({ userData, setUserData, setStep, tempPicture, pictureFil
       console.log(error)
 
       toast.error(
-        error.response?.data?.message || "Unable to complete profile"
+        error.response?.data?.msg || "Unable to complete profile"
       )
 
     } finally {
