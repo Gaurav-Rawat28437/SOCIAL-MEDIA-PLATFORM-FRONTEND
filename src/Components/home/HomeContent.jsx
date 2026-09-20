@@ -8,6 +8,8 @@ import PostComposer from "./PostComposer"
 function HomeContent() {
     const dispatch = useDispatch()
 
+    const IsloggedInUserProfileComplete=useSelector(store=>store?.User?.data?.isCompletedProfile) || false
+
     const posts = useSelector(
         store => store.Feed?.posts || []
     )
@@ -33,6 +35,11 @@ function HomeContent() {
         useState(false)
 
     useEffect(() => {
+
+        if(!IsloggedInUserProfileComplete)
+        {
+            return
+        }
 
         if (loaded) {
             setLoading(false)
