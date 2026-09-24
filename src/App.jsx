@@ -1,17 +1,15 @@
-import React from 'react'
-import LoginPage from './Pages/LoginPage'
+import React, { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import RegisterPage from './Pages/RegisterPage'
 import { Toaster } from "react-hot-toast"
-import HomePage from './Pages/HomePage'
 import ProtectedRoutes from './routes/ProtectedRoutes'
-import ProfilePage from './Pages/ProfilePage'
-import CompleteProfile from './Pages/CompleteProfile'
-import OtherUserProfilePage from './Pages/OtherUserProfilePage'
-import ChatPage from './Pages/ChatPage'
 
-
-
+const LoginPage = lazy(() => import('./Pages/LoginPage'))
+const RegisterPage = lazy(() => import('./Pages/RegisterPage'))
+const HomePage = lazy(() => import('./Pages/HomePage'))
+const ProfilePage = lazy(() => import('./Pages/ProfilePage'))
+const CompleteProfile = lazy(() => import('./Pages/CompleteProfile'))
+const OtherUserProfilePage = lazy(() => import('./Pages/OtherUserProfilePage'))
+const ChatPage = lazy(() => import('./Pages/ChatPage'))
 
 function App() {
 
@@ -19,26 +17,35 @@ function App() {
     <>
       <Toaster />
 
-      <Routes>
-        <Route path="/login" element={<LoginPage />}></Route>
-        <Route path="/register" element={<RegisterPage />}></Route>
+      <Suspense
+        fallback={
+          <div className="w-full h-screen flex items-center justify-center">
+            Loading...
+          </div>
+        }
+      >
 
+        <Routes>
 
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
 
-        <Route  element={<ProtectedRoutes/>}>
+          <Route element={<ProtectedRoutes />}>
 
-          <Route path="/" element={<HomePage />}></Route>
-          <Route path="/home" element={<HomePage />} ></Route>
-          <Route path="/profile" element={<ProfilePage />} ></Route>
-          <Route path="/complete-profile" element={<CompleteProfile />} ></Route>
-          <Route path="/profile/:userId" element={<OtherUserProfilePage />} ></Route>
-          <Route path="/chat" element={<ChatPage />} ></Route>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/complete-profile" element={<CompleteProfile />} />
+            <Route path="/profile/:userId" element={<OtherUserProfilePage />} />
+            <Route path="/chat" element={<ChatPage />} />
 
-        </Route>
+          </Route>
 
-        <Route path="*" element={<LoginPage/>}></Route>
-      </Routes>
+          <Route path="*" element={<LoginPage />} />
 
+        </Routes>
+
+      </Suspense>
     </>
   )
 }
