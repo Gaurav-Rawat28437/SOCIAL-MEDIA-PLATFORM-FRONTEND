@@ -6,6 +6,8 @@ import thoughtsReducer from "./thoughtsSlice"
 import myRepliesReducer from "./myRepliesSlice"
 import myLikesReducer from "./myLikesSlice"
 import otherUserSliceReducer from "./otherUserSlice"
+import chatListSliceReducer from "./ChatSlice"
+ 
 
 const store=configureStore({
     
@@ -16,7 +18,8 @@ const store=configureStore({
         "Thought": thoughtsReducer,
         "MyReplies": myRepliesReducer,
         "MyLikes": myLikesReducer,
-        "otherUser":otherUserSliceReducer
+        "otherUser":otherUserSliceReducer,
+        "userChat":chatListSliceReducer
     }
 })
 
