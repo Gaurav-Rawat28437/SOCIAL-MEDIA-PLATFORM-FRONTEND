@@ -34,12 +34,16 @@ function ChatContent() {
 
         socketRef.current.emit("identify", loggedInUser)
 
-        const receiveGlobalListener = ({ sender, receiver }) => {
+        const receiveGlobalListener = ({ sender, receiver,senderUser }) => {
 
             if (sender === selectedUserRef.current?._id) {
                 return
             }
 
+            if(!chatUsers.find(item=>item._id===sender))
+            {
+                dispatch(addChatUserInRedux(senderUser))
+            }
             dispatch(moveChatUserToTop(sender))
             dispatch(increaseUnreadCount(sender))
         }

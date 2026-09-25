@@ -1,4 +1,4 @@
-import { CheckCheck, ChevronDown } from "lucide-react"
+import { CheckCheck, ChevronDown, Smile, Reply, MoreVertical } from "lucide-react"
 import React from "react"
 import { useRef } from "react"
 import { useEffect } from "react"
@@ -11,7 +11,7 @@ import { moveChatUserToTop } from "../../Utils/ChatSlice"
 
 function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
-    const loggedInUser = useSelector(store => store.User?.data?._id)
+    const loggedInUser = useSelector(store => store.User?.data)
 
     const [showScrollButton, setShowScrollButton] = useState(false)
     const [messages, setMessages] = useState([])
@@ -60,7 +60,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                 socketRef.current.emit("mark-seen", {
                     sender: selectedUser._id,
-                    receiver: loggedInUser
+                    receiver: loggedInUser._id
                 })
 
             } catch (error) {
@@ -71,7 +71,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
         const handleMessagesSeen = (data) => {
 
-            if (data.sender !== loggedInUser) {
+            if (data.sender !== loggedInUser._id) {
                 return
             }
 
@@ -79,7 +79,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
                 prev.map(message => {
 
                     if (
-                        message.sender === loggedInUser &&
+                        message.sender === loggedInUser._id &&
                         message.receiver === data.receiver
                     ) {
                         return {
@@ -95,7 +95,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
         }
 
         socketRef.current.emit("join-room", {
-            sender: loggedInUser,
+            sender: loggedInUser._id,
             receiver: selectedUser._id
         })
 
@@ -108,7 +108,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                 socketRef.current.emit("mark-seen", {
                     sender: selectedUser._id,
-                    receiver: loggedInUser
+                    receiver: loggedInUser._id
                 })
 
             } catch (error) {
@@ -123,7 +123,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
             socketRef.current.off("messages-seen", handleMessagesSeen)
         }
 
-    }, [selectedUser, loggedInUser, socketRef])
+    }, [selectedUser, loggedInUser._id, socketRef])
 
     useEffect(() => {
 
@@ -318,7 +318,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
         const newMessage = {
             text,
-            sender: loggedInUser,
+            sender: loggedInUser._id,
             receiver: selectedUser._id,
             isSeen: false,
             time: new Date().toLocaleTimeString([], {
@@ -335,8 +335,15 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
         socketRef.current.emit("send-msg", {
             text,
-            sender: loggedInUser,
-            receiver: selectedUser._id
+            sender: loggedInUser._id,
+            receiver: selectedUser._id,
+            senderUser: {
+                _id: loggedInUser._id,
+                username: loggedInUser.username,
+                firstName: loggedInUser.firstName,
+                lastName: loggedInUser.lastName,
+                displayPicture: loggedInUser.displayPicture
+            }
         })
 
         dispatch(moveChatUserToTop(selectedUser._id))
@@ -419,11 +426,35 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                                     <div
                                         key={item._id || index}
-                                        className={`flex mb-2 ${item.sender === loggedInUser
+                                        className={`flex mb-2 items-center ${item.sender === loggedInUser._id
                                             ? "justify-end"
                                             : "justify-start"
                                             }`}
                                     >
+                                        {item.sender === loggedInUser._id && (<div className="flex gap-1">
+
+                                            <button
+                                                type="button"
+                                                className=" w-6 h-6  flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
+                                            >
+                                                <Smile size={18} />
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                className=" w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
+                                            >
+                                                <Reply size={18} />
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                className=" w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
+                                            >
+                                                <MoreVertical size={18} />
+                                            </button>
+
+                                        </div>)}
 
                                         <div className="text-white px-4 py-2 rounded-xl max-w-[70%] break-words whitespace-pre-wrap bg-[#3C2A21]">
 
@@ -438,7 +469,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
                                                 </p>
 
                                                 {item.delivered &&
-                                                    item.sender === loggedInUser && (
+                                                    item.sender === loggedInUser._id && (
                                                         <CheckCheck
                                                             size={13}
                                                             className={item.isSeen ? "text-blue-400" : "text-white/60"}
@@ -449,6 +480,31 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
                                             </div>
 
                                         </div>
+
+                                        {item.sender !== loggedInUser._id && (<div className="flex gap-1">
+
+                                            <button
+                                                type="button"
+                                                className=" w-6 h-6  flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
+                                            >
+                                                <Smile size={18} />
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                className="  w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
+                                            >
+                                                <Reply size={18} />
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                className=" w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
+                                            >
+                                                <MoreVertical size={18} />
+                                            </button>
+
+                                        </div>)}
 
                                     </div>
 
