@@ -71,7 +71,18 @@ const thoughtsSlice = createSlice({
             if (thought) {
                 thought.commentsCount = action.payload.commentsCount
             }
-        }
+        },
+        updateThoughtLikeCount: (state, action) => {
+
+            const thought = state.thoughts.find(
+                thought => thought._id === action.payload.postId
+            )
+
+            if (thought) {
+                thought.likesCount = action.payload.likesCount
+            }
+
+        },
 
     }
 })
@@ -85,7 +96,8 @@ export const {
     removeThought,
     updateThought,
     updateThoughtLike,
-    updateThoughtComments
+    updateThoughtComments,
+    updateThoughtLikeCount
 } = thoughtsSlice.actions
 
 export default thoughtsSlice.reducer

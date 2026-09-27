@@ -4,7 +4,8 @@ import ChatBox from "./ChatBox"
 import { useDispatch, useSelector } from "react-redux"
 import { addChatUserInRedux, chatListThunk, increaseUnreadCount, moveChatUserToTop } from "../../Utils/ChatSlice"
 import { addUserInChatList } from "../../services/chatService"
-import { io } from "socket.io-client"
+import socket from "../../socket.io/socket"
+import { decreaseTotalUnreadMessages } from "../../Utils/globalDataSlice"
 
 
 
@@ -29,7 +30,7 @@ function ChatContent() {
         if (!loggedInUser) return
 
         if (!socketRef.current) {
-            socketRef.current = io(import.meta.env.VITE_SOCKET_URL)
+            socketRef.current = socket
         }
 
         socketRef.current.emit("identify", loggedInUser)
@@ -37,6 +38,7 @@ function ChatContent() {
         const receiveGlobalListener = ({ sender, receiver,senderUser }) => {
 
             if (sender === selectedUserRef.current?._id) {
+                dispatch(decreaseTotalUnreadMessages(1))
                 return
             }
 

@@ -29,7 +29,10 @@ function ReplyCard({ comment, type }) {
         }
     }
 
-    const isVideo = comment.post?.imgUrl?.includes("/video/upload/")
+    const isVideo = comment.post?.imgUrl?.includes("/video/upload/") ||
+        /\.(mp4|webm|mov|m4v|avi|mkv)(\?|$)/i.test(
+            comment.post?.imgUrl || ""
+        )
 
     return (
         <>

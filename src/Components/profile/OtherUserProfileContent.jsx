@@ -11,6 +11,7 @@ import { otherFollowersCount, setOtherUser, userIsFollowing } from "../../Utils/
 import { loggedInUserFollowingCount } from "../../Utils/usersSlice"
 import FollowerModal from "../followers&following/FollowersModal"
 import FollowingModal from "../followers&following/FollowingModal"
+import socket from "../../socket.io/socket"
 
 function OtherUserProfileContent() {
     const { userId } = useParams()
@@ -36,6 +37,7 @@ function OtherUserProfileContent() {
                 response = await unfollowUser(userId)
             } else {
                 response = await followUser(userId)
+                socket.emit("send-notification",{notification:response.notification})
             }
 
             if (response.success) {

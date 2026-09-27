@@ -13,6 +13,7 @@ import {
     updateReplyComments
 } from "../../Utils/myRepliesSlice"
 import { postCount, thoughtCount } from "../../Utils/usersSlice"
+import socket from "../../socket.io/socket"
 
 function ThoughtCard({
     thought,
@@ -163,6 +164,12 @@ function ThoughtCard({
 
                 const isLiked = !thought.isLiked
 
+                socket.emit("send-like-update", {
+                    postId: thought._id,
+                    likesCount:response.likesCount,
+                    userId: loggedInUser._id
+                })
+
                 dispatch(
                     updateFeedPostLike({
                         postId: thought._id,
@@ -198,6 +205,12 @@ function ThoughtCard({
                             }
                         })
                     )
+
+                    if (response.notification) {
+                        socket.emit("send-notification", {
+                            notification: response.notification
+                        })
+                    }
 
                 } else {
 

@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Toaster } from "react-hot-toast"
 import ProtectedRoutes from './routes/ProtectedRoutes'
+import NotificationPage from './Pages/NotificationPage'
 
 const LoginPage = lazy(() => import('./Pages/LoginPage'))
 const RegisterPage = lazy(() => import('./Pages/RegisterPage'))
@@ -38,6 +39,7 @@ function App() {
             <Route path="/complete-profile" element={<CompleteProfile />} />
             <Route path="/profile/:userId" element={<OtherUserProfilePage />} />
             <Route path="/chat" element={<ChatPage />} />
+            <Route path="/notification" element={<NotificationPage />} />
 
           </Route>
 

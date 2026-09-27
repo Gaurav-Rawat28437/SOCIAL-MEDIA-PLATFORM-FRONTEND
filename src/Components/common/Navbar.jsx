@@ -755,10 +755,8 @@ function Navbar() {
                     font-semibold
                 ">
 
-                    {userData?.displayPicture ? (
-
                         <img
-                            src={userData.displayPicture}
+                            src={userData.displayPicture || "/muuv_display_picture.svg"}
                             alt="Profile"
                             className="
                                 w-full
@@ -767,13 +765,6 @@ function Navbar() {
                             "
                         />
 
-                    ) : (
-
-                        <span>
-                            {userData?.firstName?.[0]?.toUpperCase() || "U"}
-                        </span>
-
-                    )}
 
                 </div>
 

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux"
 import SearchModal from "./SearchModal"
 import { getUsersBySearch } from "../../services/otherUserService"
 import { clearUnreadCount } from "../../Utils/ChatSlice"
+import { decreaseTotalUnreadMessages } from "../../Utils/globalDataSlice"
 
 function ChatList({ setSelectedUser, chatUsers }) {
 
@@ -18,7 +19,7 @@ function ChatList({ setSelectedUser, chatUsers }) {
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(false)
     const [loadingMore, setLoadingMore] = useState(false)
-    const dispatch=useDispatch()
+    const dispatch = useDispatch()
 
     const loadingMoreRef = useRef(false)
     const timer = useRef(null)
@@ -284,7 +285,10 @@ function ChatList({ setSelectedUser, chatUsers }) {
                             key={user._id}
                             onClick={() => {
                                 setSelectedUser(user)
-                                dispatch(clearUnreadCount(user._id))
+                                if (user.unreadCount > 0) {
+                                    dispatch(clearUnreadCount(user._id))
+                                    dispatch(decreaseTotalUnreadMessages(user.unreadCount))
+                                }
                             }}
                             className="flex items-center gap-3 px-2 py-3 mt-1 bg-[#3C2A21] border-[#E5E5CB] hover:bg-[#3C2A21]/90 rounded-2xl cursor-pointer"
                         >

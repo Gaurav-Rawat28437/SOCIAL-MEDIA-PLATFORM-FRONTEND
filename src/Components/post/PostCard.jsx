@@ -1,16 +1,6 @@
-import React, { useState } from "react"
-import { Heart } from "lucide-react"
-import { useDispatch } from "react-redux"
-import toast from "react-hot-toast"
-import { likePost, unlikePost } from "../../services/likeServices"
-import { updateLike } from "../../Utils/postsSlice"
-import { updateFeedPostLike } from "../../Utils/feedSlice"
-import { updateThoughtLike } from "../../Utils/thoughtsSlice"
-import { addLike, removeLike } from "../../Utils/myLikesSlice"
+import React from "react"
 
 function PostCard({ post, userData, setSelectedPost }) {
-
-    const dispatch = useDispatch()
 
     const {
         firstName,
@@ -18,8 +8,6 @@ function PostCard({ post, userData, setSelectedPost }) {
         username,
         displayPicture
     } = userData
-
-    const [likeLoading, setLikeLoading] = useState(false)
 
     const isVideo =
         post.imgUrl?.includes("/video/upload/") ||

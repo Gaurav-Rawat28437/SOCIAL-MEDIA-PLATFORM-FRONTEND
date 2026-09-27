@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import toast from "react-hot-toast"
 import { loggedInUserFollowingCount } from "../../Utils/usersSlice"
+import socket from "../../socket.io/socket"
 
 function FollowingModal({ userId, onClose }) {
 
@@ -17,7 +18,7 @@ function FollowingModal({ userId, onClose }) {
     const modalRef = useRef(null)
 
     const nav = useNavigate()
-    const dispatch=useDispatch()
+    const dispatch = useDispatch()
 
     const loggedInUser = useSelector(store => store.User?.data)
 
@@ -133,6 +134,12 @@ function FollowingModal({ userId, onClose }) {
             }
 
             if (response.success) {
+                if (!isFollowing) {
+                    socket.emit("send-notification", {
+                        notification: response.notification
+                    })
+                }
+
                 setFollowing(prev =>
                     prev.map(item =>
                         item.following._id === targetUserId
@@ -175,7 +182,7 @@ function FollowingModal({ userId, onClose }) {
 
             <div
                 ref={modalRef}
-                className="bg-white w-full max-w-md max-h-[70vh] overflow-y-auto rounded-xl p-5"
+                className="bg-white w-full max-w-md max-h-[70vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden rounded-xl p-5"
             >
 
                 <div className="flex justify-between items-center mb-5 sticky top-0 bg-white py-1">

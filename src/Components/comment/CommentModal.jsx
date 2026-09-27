@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { X, Send, MoreVertical, Pencil, Trash2 } from "lucide-react"
 import { useDispatch, useSelector } from "react-redux"
 import toast from "react-hot-toast"
 import { getComments, addComment, deleteComment, editComment } from "../../services/commentService"
 import { addReply, removeReply, updateReply } from "../../Utils/myRepliesSlice"
 import { getPostById } from "../../services/postServices"
+import socket from "../../socket.io/socket"
 
 function CommentModal({ postId, post, onClose, onCommentAdded }) {
 
@@ -18,6 +19,8 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
     const [editCommentId, setEditCommentId] = useState(null)
     const [editContent, setEditContent] = useState("")
     const [editing, setEditing] = useState(false)
+
+    const commentInputRef = useRef(null)
 
     const dispatch = useDispatch()
 
@@ -48,8 +51,59 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
     }
 
     useEffect(() => {
+        document.body.style.overflow = "hidden"
+
+        return () => {
+            document.body.style.overflow = ""
+        }
+    }, [])
+
+    useEffect(() => {
         fetchComments()
     }, [postId])
+
+    useEffect(() => {
+        if (!loading) {
+            commentInputRef.current?.focus()
+        }
+    }, [loading])
+
+    useEffect(() => {
+
+        const receiveCommentUpdate = async ({
+            postId: receivedPostId,
+            commentsCount,
+            userId
+        }) => {
+
+            if (String(receivedPostId) !== String(postId)) {
+                return
+            }
+
+            if (String(userId) === String(userData?._id)) {
+                return
+            }
+
+            if (onCommentAdded) {
+                onCommentAdded(commentsCount)
+            }
+
+            await fetchComments()
+        }
+
+        socket.on(
+            "receive-comment-update",
+            receiveCommentUpdate
+        )
+
+        return () => {
+            socket.off(
+                "receive-comment-update",
+                receiveCommentUpdate
+            )
+        }
+
+    }, [postId, onCommentAdded, userData?._id])
 
     const handleAddComment = async (e) => {
         e.preventDefault()
@@ -67,6 +121,19 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
             )
 
             if (response.success) {
+
+                socket.emit("send-comment-update", {
+                    postId,
+                    commentsCount: response.commentsCount,
+                    userId: userData._id
+                })
+
+                if (response.notification) {
+                    socket.emit("send-notification", {
+                        notification: response.notification
+                    })
+                }
+
                 setContent("")
 
                 if (onCommentAdded) {
@@ -109,6 +176,14 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
             const response = await deleteComment(commentId)
 
             if (response.success) {
+
+                socket.emit("send-comment-update", {
+                    postId,
+                    commentsCount: response.commentsCount,
+                    userId: userData._id
+                })
+
+
                 setComments(prev =>
                     prev.filter(
                         comment => comment._id !== commentId
@@ -189,7 +264,7 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
     }
 
     return (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 p-4">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 p-4 ">
 
             {loading ? (
 
@@ -255,7 +330,7 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
 
                     </div>
 
-                    <div className="h-[400px] overflow-y-auto p-4">
+                    <div className="h-[400px] overflow-y-auto p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 
                         {comments.length === 0 ? (
 
@@ -272,7 +347,7 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
 
                         ) : (
 
-                            <div className="space-y-4">
+                            <div className="space-y-4 ">
 
                                 {comments.map(comment => (
 
@@ -577,6 +652,7 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
 
                         <input
                             type="text"
+                            ref={commentInputRef}
                             value={content}
                             onChange={e =>
                                 setContent(e.target.value)

@@ -79,7 +79,19 @@ const postsSlice = createSlice({
                     }
                     : post
             )
-        }
+        },
+        updatePostLikeCount: (state, action) => {
+
+            state.posts = state.posts.map(post =>
+                post._id === action.payload.postId
+                    ? {
+                        ...post,
+                        likesCount: action.payload.likesCount
+                    }
+                    : post
+            )
+
+        },
 
     }
 })
@@ -93,7 +105,8 @@ export const {
     removePost,
     updatePost,
     updateLike,
-    updatePostComments
+    updatePostComments,
+    updatePostLikeCount
 } = postsSlice.actions
 
 export default postsSlice.reducer

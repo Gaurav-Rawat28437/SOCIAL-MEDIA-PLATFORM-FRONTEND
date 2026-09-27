@@ -1,4 +1,4 @@
-import { CheckCheck, ChevronDown, Smile, Reply, MoreVertical } from "lucide-react"
+import { CheckCheck, ChevronDown, Smile, Reply, MoreVertical, X } from "lucide-react"
 import React from "react"
 import { useRef } from "react"
 import { useEffect } from "react"
@@ -19,6 +19,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
     const [currentPage, setCurrentPage] = useState(1)
     const [hasPreviousPage, setHasPreviousPage] = useState(false)
     const [loadingMore, setLoadingMore] = useState(false)
+    const [replyMessage, setReplyMessage] = useState(null)
     const dispatch = useDispatch()
 
     const messagesEndRef = useRef(null)
@@ -46,6 +47,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
                     sender: data.sender,
                     receiver: data.receiver,
                     isSeen: true,
+                    reply: data.reply,
                     time: new Date(data.createdAt || Date.now()).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit"
@@ -152,6 +154,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
                         sender: item.sender,
                         receiver: item.receiver,
                         isSeen: item.isSeen,
+                        reply: item.reply,
                         time: new Date(item.createdAt).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit"
@@ -194,7 +197,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
             inputRef.current.value = ""
             inputRef.current.focus()
         }
-
+        setReplyMessage(null)
         setShowScrollButton(false)
 
     }, [selectedUser])
@@ -252,6 +255,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
                         sender: item.sender,
                         receiver: item.receiver,
                         isSeen: item.isSeen,
+                        reply: item.reply,
                         time: new Date(item.createdAt).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit"
@@ -325,7 +329,11 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
                 hour: "2-digit",
                 minute: "2-digit"
             }),
-            delivered: true
+            delivered: true,
+            reply: replyMessage ? {
+                _id: replyMessage._id,
+                text: replyMessage.text,
+            } : null
         }
 
         setMessages(prev => [
@@ -337,6 +345,10 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
             text,
             sender: loggedInUser._id,
             receiver: selectedUser._id,
+            reply: replyMessage ? {
+                _id: replyMessage._id,
+                text: replyMessage.text,
+            } : null,
             senderUser: {
                 _id: loggedInUser._id,
                 username: loggedInUser.username,
@@ -349,6 +361,8 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
         dispatch(moveChatUserToTop(selectedUser._id))
 
         inputRef.current.value = ""
+        inputRef.current.style.height = "auto"
+        setReplyMessage(null)
 
         setShowScrollButton(false)
 
@@ -357,6 +371,13 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
                 behavior: "smooth"
             })
         })
+    }
+
+    const handleReply = (item) => {
+        setReplyMessage(item)
+
+        inputRef.current?.focus()
+
     }
 
     return (
@@ -426,12 +447,12 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                                     <div
                                         key={item._id || index}
-                                        className={`flex mb-2 items-center ${item.sender === loggedInUser._id
+                                        className={` group flex mb-2 items-center ${item.sender === loggedInUser._id
                                             ? "justify-end"
                                             : "justify-start"
                                             }`}
                                     >
-                                        {item.sender === loggedInUser._id && (<div className="flex gap-1">
+                                        {item.sender === loggedInUser._id && (<div className=" hidden group-hover:flex gap-1">
 
                                             <button
                                                 type="button"
@@ -442,6 +463,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                                             <button
                                                 type="button"
+                                                onClick={() => handleReply(item)}
                                                 className=" w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
                                             >
                                                 <Reply size={18} />
@@ -458,9 +480,19 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                                         <div className="text-white px-4 py-2 rounded-xl max-w-[70%] break-words whitespace-pre-wrap bg-[#3C2A21]">
 
-                                            <p>
-                                                {item.text}
-                                            </p>
+                                            {item.reply && (
+                                                <div className="mb-2 bg-[#E5E5CB] rounded-lg px-3 py-2 border-l-4 border-[#D5CEA3]">
+                                                    <p className="text-xs font-semibold text-[#1A120B] mb-1">
+                                                        Reply
+                                                    </p>
+
+                                                    <p className="text-sm text-[#1A120B] truncate">
+                                                        {item.reply.text}
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            <p>{item.text}</p>
 
                                             <div className="flex items-center justify-end gap-1 mt-1">
 
@@ -481,7 +513,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                                         </div>
 
-                                        {item.sender !== loggedInUser._id && (<div className="flex gap-1">
+                                        {item.sender !== loggedInUser._id && (<div className="hidden group-hover:flex gap-1">
 
                                             <button
                                                 type="button"
@@ -492,6 +524,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                                             <button
                                                 type="button"
+                                                onClick={() => handleReply(item)}
                                                 className="  w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
                                             >
                                                 <Reply size={18} />
@@ -529,20 +562,50 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                     </div>
 
+                    {replyMessage && (
+                        <div className="px-5 py-2 border-t border-[#5A382A]/20 bg-transparent flex items-center gap-3">
+
+                            <div className="flex-1 min-w-0 border-l-4 border-[#3C2A21] pl-3">
+                                <p className="text-xs font-semibold text-[#3C2A21]">
+                                    {replyMessage.sender === loggedInUser._id
+                                        ? "You"
+                                        : selectedUser.username
+                                    }
+                                </p>
+
+                                <p className="text-sm text-[#5A382A] truncate max-w-[500px]">
+                                    {replyMessage.text}
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => setReplyMessage(null)}
+                                className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-[#D5CEA3] text-[#3C2A21]"
+                            >
+                                <X size={18} />
+                            </button>
+
+                        </div>
+                    )}
+
                     <div className="flex items-center gap-3 px-5 py-3 border-t border-[#5A382A]/20">
 
-                        <input
-                            type="text"
+                        <textarea
                             ref={inputRef}
+                            rows={1}
+                            onInput={(e) => {
+                                e.target.style.height = "auto"
+                                e.target.style.height = `${Math.min(e.target.scrollHeight, 128)}px`
+                            }}
                             onKeyDown={(e) => {
-
-                                if (e.key === "Enter") {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault()
                                     sendMessage()
                                 }
-
                             }}
                             placeholder="Type a message..."
-                            className="flex-1 bg-[#FFFAF3] border border-[#5A382A]/20 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1A120B]"
+                            className="flex-1 resize-none bg-[#FFFAF3] border border-[#5A382A]/20 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1A120B] max-h-32 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                         />
 
                         <button

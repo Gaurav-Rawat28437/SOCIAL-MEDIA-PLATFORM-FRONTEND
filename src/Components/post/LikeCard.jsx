@@ -19,6 +19,7 @@ import { updateFeedPostComments, updateFeedPostLike } from "../../Utils/feedSlic
 import { updateThoughtComments, updateThoughtLike } from "../../Utils/thoughtsSlice"
 import { updateLike, updatePostComments } from "../../Utils/postsSlice"
 import { useNavigate } from "react-router-dom"
+import socket from "../../socket.io/socket"
 
 function LikeCard({ like }) {
 
@@ -117,6 +118,12 @@ function LikeCard({ like }) {
 
 
             if (response.success) {
+
+                socket.emit("send-like-update", {
+                    postId: post._id,
+                    likesCount: response.likesCount,
+                    userId: loggedInUser._id
+                })
 
                 dispatch(
                     removeLike(post._id)

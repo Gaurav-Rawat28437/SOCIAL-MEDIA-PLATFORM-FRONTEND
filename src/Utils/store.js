@@ -7,7 +7,8 @@ import myRepliesReducer from "./myRepliesSlice"
 import myLikesReducer from "./myLikesSlice"
 import otherUserSliceReducer from "./otherUserSlice"
 import chatListSliceReducer from "./ChatSlice"
- 
+import globalDataReducer from "./globalDataSlice"
+import notificationReducer from "./notificationSlice"
 
 const store=configureStore({
     
@@ -19,7 +20,9 @@ const store=configureStore({
         "MyReplies": myRepliesReducer,
         "MyLikes": myLikesReducer,
         "otherUser":otherUserSliceReducer,
-        "userChat":chatListSliceReducer
+        "userChat":chatListSliceReducer,
+        "globalData": globalDataReducer,
+        "notification":notificationReducer
     }
 })
 

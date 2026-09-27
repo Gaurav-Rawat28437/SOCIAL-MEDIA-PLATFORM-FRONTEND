@@ -56,7 +56,18 @@ const myLikesSlice = createSlice({
                     like.post.commentsCount = action.payload.commentsCount
                 }
             })
-        }
+        },
+        updateLikeCount: (state, action) => {
+
+            state.likes.forEach(like => {
+
+                if (like.post?._id === action.payload.postId) {
+                    like.post.likesCount = action.payload.likesCount
+                }
+
+            })
+
+        },
     }
 })
 
@@ -68,7 +79,8 @@ export const {
     setHasMore,
     setPage,
     clearLikes,
-    updateLikeComments
+    updateLikeComments,
+    updateLikeCount
 } = myLikesSlice.actions
 
 export default myLikesSlice.reducer

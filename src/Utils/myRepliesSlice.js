@@ -81,7 +81,18 @@ const myRepliesSlice = createSlice({
                     reply.post.likesCount = action.payload.likesCount
                 }
             })
-        }
+        },
+        updateReplyLikeCount: (state, action) => {
+
+            state.replies.forEach(reply => {
+
+                if (reply.post?._id === action.payload.postId) {
+                    reply.post.likesCount = action.payload.likesCount
+                }
+
+            })
+
+        },
     }
 })
 
@@ -95,7 +106,8 @@ export const {
     updateReplyComments,
     removeReply,
     updateReply,
-    updateReplyLike
+    updateReplyLike,
+    updateReplyLikeCount
 } = myRepliesSlice.actions
 
 export default myRepliesSlice.reducer

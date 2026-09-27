@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { getUserPosts } from "../../../services/postServices"
 import PostCard from "../PostCard"
 import PostModal from "../PostModal"
+import socket from "../../../socket.io/socket"
 
 function OtherUserPost({ userId, userData }) {
 
@@ -131,6 +132,65 @@ function OtherUserPost({ userId, userData }) {
             )
         )
     }
+
+    useEffect(() => {
+
+        const receiveLikeUpdate = ({ postId, likesCount }) => {
+
+            setPosts(prevPosts =>
+                prevPosts.map(post =>
+                    String(post._id) === String(postId)
+                        ? {
+                            ...post,
+                            likesCount
+                        }
+                        : post
+                )
+            )
+
+        }
+
+        socket.on("receive-like-update", receiveLikeUpdate)
+
+        return () => {
+            socket.off("receive-like-update", receiveLikeUpdate)
+        }
+
+    }, [])
+
+    useEffect(() => {
+
+        const receiveCommentUpdate = ({
+            postId,
+            commentsCount
+        }) => {
+
+            setPosts(prevPosts =>
+                prevPosts.map(post =>
+                    String(post._id) === String(postId)
+                        ? {
+                            ...post,
+                            commentsCount
+                        }
+                        : post
+                )
+            )
+
+        }
+
+        socket.on(
+            "receive-comment-update",
+            receiveCommentUpdate
+        )
+
+        return () => {
+            socket.off(
+                "receive-comment-update",
+                receiveCommentUpdate
+            )
+        }
+
+    }, [])
 
     const handleCommentUpdate = (
         postId,

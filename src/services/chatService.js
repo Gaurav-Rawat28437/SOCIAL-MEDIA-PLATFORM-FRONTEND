@@ -48,3 +48,14 @@ export const markChatMessagesAsSeen = async (userId) => {
 
     return response.data
 }
+
+export const getUnreadMessageCount = async () => {
+    const response = await axios.get(
+        `${API_URL}/chat/unread-count`,
+        {
+            withCredentials: true
+        }
+    )
+
+    return response.data
+}

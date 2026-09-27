@@ -25,6 +25,7 @@ import { updateReplyComments } from "../../Utils/myRepliesSlice"
 import { updateReplyLike } from "../../Utils/myRepliesSlice"
 import { useNavigate } from "react-router-dom"
 import { postCount, thoughtCount } from "../../Utils/usersSlice"
+import socket from "../../socket.io/socket"
 
 function PostModal({
     post,
@@ -39,7 +40,7 @@ function PostModal({
     const loggedInUser = useSelector(
         store => store.User?.data
     )
-    
+
     const [isShare, setShare] = useState(false)
     const [isBookmarked, setIsBookmarked] = useState(false)
     const [showOptions, setShowOptions] = useState(false)
@@ -55,7 +56,7 @@ function PostModal({
     const [isMuted, setIsMuted] = useState(false)
     const [volume, setVolume] = useState(1)
 
-    const nav=useNavigate()
+    const nav = useNavigate()
 
     const videoRef = useRef(null)
 
@@ -110,6 +111,51 @@ function PostModal({
 
     }, [])
 
+    useEffect(() => {
+
+        const receiveLikeUpdate = ({ postId, likesCount }) => {
+
+            if (postId === post._id) {
+                setLikesCount(likesCount)
+            }
+
+        }
+
+        socket.on("receive-like-update", receiveLikeUpdate)
+
+        return () => {
+            socket.off("receive-like-update", receiveLikeUpdate)
+        }
+
+    }, [post._id])
+
+    useEffect(() => {
+
+        const receiveCommentUpdate = ({
+            postId: receivedPostId,
+            commentsCount
+        }) => {
+
+            if (String(receivedPostId) === String(post._id)) {
+                setCommentsCount(commentsCount)
+            }
+
+        }
+
+        socket.on(
+            "receive-comment-update",
+            receiveCommentUpdate
+        )
+
+        return () => {
+            socket.off(
+                "receive-comment-update",
+                receiveCommentUpdate
+            )
+        }
+
+    }, [post._id])
+
     const handleDelete = async () => {
 
         try {
@@ -124,12 +170,11 @@ function PostModal({
 
                 dispatch(removeFeedPost(post._id))
 
-                if(post.imgUrl)
-                {
-                    dispatch(postCount(loggedInUser?.postCount-1))
+                if (post.imgUrl) {
+                    dispatch(postCount(loggedInUser?.postCount - 1))
                 }
-                else{
-                    dispatch(thoughtCount(loggedInUser?.thoughtCount-1))
+                else {
+                    dispatch(thoughtCount(loggedInUser?.thoughtCount - 1))
                 }
 
 
@@ -177,6 +222,12 @@ function PostModal({
 
                 setIsLiked(newIsLiked)
                 setLikesCount(newLikesCount)
+
+                socket.emit("send-like-update", {
+                    postId: post._id,
+                    likesCount: newLikesCount,
+                    userId: loggedInUser._id
+                })
 
                 if (onLikeUpdate) {
                     onLikeUpdate(
@@ -235,6 +286,12 @@ function PostModal({
                             }
                         })
                     )
+
+                    if (response.notification) {
+                        socket.emit("send-notification", {
+                            notification: response.notification
+                        })
+                    }
 
                 } else {
 
@@ -536,16 +593,15 @@ function PostModal({
 
                 <div className="p-5">
 
-                    <div 
-                        onClick={()=>{
-                            
-                             if(loggedInUser===userData._id)
-                             {
+                    <div
+                        onClick={() => {
+
+                            if (loggedInUser._id === userData._id) {
                                 nav("/profile")
-                             }
-                             else{
+                            }
+                            else {
                                 nav(`/profile/${userData._id}`)
-                             }
+                            }
                         }}
                         className="flex items-center gap-3">
 

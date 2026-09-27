@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import ThoughtCard from "../ThoughtCard"
 import { getUserThoughts } from "../../../services/postServices"
+import socket from "../../../socket.io/socket"
 
 function OtherUserThought({ userId, userData }) {
     const [thoughts, setThoughts] = useState([])
@@ -26,21 +27,64 @@ function OtherUserThought({ userId, userData }) {
         fetchThoughts()
     }, [userId])
 
-    if (loading) {
-        return (
-            <div className="text-center py-10 text-[#1A120B]">
-                Loading thoughts...
-            </div>
-        )
-    }
+    useEffect(() => {
 
-    if (thoughts.length === 0) {
-        return (
-            <div className="text-center py-10 text-[#1A120B]">
-                No thoughts yet
-            </div>
+        const receiveLikeUpdate = ({ postId, likesCount }) => {
+
+            setThoughts(prevThoughts =>
+                prevThoughts.map(thought =>
+                    String(thought._id) === String(postId)
+                        ? {
+                            ...thought,
+                            likesCount
+                        }
+                        : thought
+                )
+            )
+
+        }
+
+        socket.on("receive-like-update", receiveLikeUpdate)
+
+        return () => {
+            socket.off("receive-like-update", receiveLikeUpdate)
+        }
+
+    }, [])
+
+    useEffect(() => {
+
+        const receiveCommentUpdate = ({
+            postId,
+            commentsCount
+        }) => {
+
+            setThoughts(prevThoughts =>
+                prevThoughts.map(thought =>
+                    String(thought._id) === String(postId)
+                        ? {
+                            ...thought,
+                            commentsCount
+                        }
+                        : thought
+                )
+            )
+
+        }
+
+        socket.on(
+            "receive-comment-update",
+            receiveCommentUpdate
         )
-    }
+
+        return () => {
+            socket.off(
+                "receive-comment-update",
+                receiveCommentUpdate
+            )
+        }
+
+    }, [])
 
     const handleLikeUpdate = (
         thoughtId,
@@ -73,6 +117,22 @@ function OtherUserThought({ userId, userData }) {
                     }
                     : thought
             )
+        )
+    }
+
+    if (loading) {
+        return (
+            <div className="text-center py-10 text-[#1A120B]">
+                Loading thoughts...
+            </div>
+        )
+    }
+
+    if (thoughts.length === 0) {
+        return (
+            <div className="text-center py-10 text-[#1A120B]">
+                No thoughts yet
+            </div>
         )
     }
 

@@ -21,6 +21,7 @@ import { updateFeedPostComments } from "../../Utils/feedSlice"
 import { addLike, removeLike, updateLikeComments } from "../../Utils/myLikesSlice"
 import { updateReplyComments } from "../../Utils/myRepliesSlice"
 import { useNavigate } from "react-router-dom"
+import socket from "../../socket.io/socket"
 
 function FeedCard({ post }) {
 
@@ -125,6 +126,12 @@ function FeedCard({ post }) {
                     })
                 )
 
+                socket.emit("send-like-update", {
+                    postId: post._id,
+                    likesCount: response.likesCount,
+                    userId: loggedInUser._id
+                })
+
                 if (isLiked) {
 
                     dispatch(
@@ -136,6 +143,12 @@ function FeedCard({ post }) {
                             }
                         })
                     )
+
+                    if (response.notification) {
+                        socket.emit("send-notification", {
+                            notification: response.notification
+                        })
+                    }
 
                 } else {
 
@@ -160,8 +173,6 @@ function FeedCard({ post }) {
             setLikeLoading(false)
         }
     }
-
-
 
 
     const [showComments, setShowComments] = useState(false)

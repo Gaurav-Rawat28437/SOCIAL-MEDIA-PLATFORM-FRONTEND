@@ -72,7 +72,18 @@ const feedSlice = createSlice({
                     ? action.payload
                     : post
             )
-        }
+        },
+        updateFeedPostLikeCount: (state, action) => {
+
+            const post = state.posts.find(
+                post => post._id === action.payload.postId
+            )
+
+            if (post) {
+                post.likesCount = action.payload.likesCount
+            }
+
+        },
 
     }
 
@@ -87,7 +98,8 @@ export const {
     updateFeedPostLike,
     updateFeedPostComments,
     removeFeedPost,
-    updateFeedPost
+    updateFeedPost,
+    updateFeedPostLikeCount
 } = feedSlice.actions
 
 export default feedSlice.reducer
