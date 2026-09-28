@@ -13,18 +13,21 @@ function HomePage() {
             <main
                 className="
                     pt-20
-                    ml-[336px]
-                    mr-5
-                    pb-10
+                    ml-0
+                    lg:ml-[336px]
+                    mr-0
+                    lg:mr-5
+                    pb-24
+                    lg:pb-10
+                    px-3
+                    sm:px-5
                 "
             >
-                <div className="w-[700px]">
+                <div className="w-full max-w-[700px] mx-auto lg:mx-0">
                     <HomeContent />
                 </div>
             </main>
         </div>
-
-        
     )
 }
 

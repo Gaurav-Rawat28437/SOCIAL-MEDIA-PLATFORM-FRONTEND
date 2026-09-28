@@ -106,7 +106,7 @@ function EditProfileModal({ setShowEdit }) {
             return
         }
 
-        if (username.length < 2  || username.length > 20) {
+        if (username.length < 2 || username.length > 20) {
             toast.error("Username cannot be less then 2 and more than 20 characters")
             return
         }
@@ -117,7 +117,6 @@ function EditProfileModal({ setShowEdit }) {
 
             let finalDisplayPicture = displayPicture
             let finalCoverPicture = coverPicture
-
 
             const uploads = []
 
@@ -192,27 +191,29 @@ function EditProfileModal({ setShowEdit }) {
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
 
-            <div className="bg-white w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-xl">
+            <div className="bg-white w-full max-w-3xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto rounded-2xl shadow-xl">
 
-                <div className="sticky top-0 z-10 bg-white border-b border-[#D0B8A8] px-6 py-4 flex items-center justify-between">
+                <div className="sticky top-0 z-10 bg-white border-b border-[#D0B8A8] px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
 
-                    <div>
-                        <h2 className="text-xl font-semibold text-[#4A352C]">
+                    <div className="min-w-0">
+
+                        <h2 className="text-lg sm:text-xl font-semibold text-[#4A352C]">
                             Edit Profile
                         </h2>
 
-                        <p className="text-sm text-[#8B6F61]">
+                        <p className="text-xs sm:text-sm text-[#8B6F61] truncate">
                             Update your profile information
                         </p>
+
                     </div>
 
                     <button
                         type="button"
                         onClick={() => setShowEdit(false)}
                         disabled={loading}
-                        className="p-2 rounded-full text-[#4A352C] hover:bg-[#F8EDE3] transition"
+                        className="p-2 rounded-full text-[#4A352C] hover:bg-[#F8EDE3] transition shrink-0"
                     >
                         <X size={22} />
                     </button>
@@ -228,15 +229,15 @@ function EditProfileModal({ setShowEdit }) {
                             <img
                                 src={tempCoverPicture || "/muuv_display_picture.svg"}
                                 alt="Cover"
-                                className={`w-full h-48 md:h-56 ${tempCoverPicture ? "object-cover" : "object-contain"
+                                className={`w-full h-40 sm:h-48 md:h-56 ${tempCoverPicture ? "object-cover" : "object-contain"
                                     } bg-[#DFD3C3]`}
                             />
 
-                            <div className="absolute inset-0 flex items-center justify-center gap-3 bg-black/30 opacity-0 group-hover:opacity-100 transition">
+                            <div className="absolute inset-0 flex flex-wrap items-center justify-center gap-2 sm:gap-3 bg-black/30 opacity-0 group-hover:opacity-100 transition">
 
                                 <label
                                     htmlFor="cover-img"
-                                    className="cursor-pointer bg-[#3C2A21] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#2F211A]"
+                                    className="cursor-pointer bg-[#3C2A21] text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-[#2F211A]"
                                 >
                                     Change Cover Picture
                                 </label>
@@ -245,7 +246,7 @@ function EditProfileModal({ setShowEdit }) {
                                     <button
                                         type="button"
                                         onClick={handleRemoveCoverPicture}
-                                        className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700"
+                                        className="flex items-center gap-2 bg-red-600 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-red-700"
                                     >
                                         <Trash2 size={16} />
                                         Remove
@@ -264,12 +265,12 @@ function EditProfileModal({ setShowEdit }) {
                             onChange={handleCoverPictureChange}
                         />
 
-                        <div className="absolute left-6 -bottom-14 group">
+                        <div className="absolute left-4 sm:left-6 -bottom-10 sm:-bottom-14 group">
 
                             <img
                                 src={tempPicture || "/muuv_pfp_dark.svg"}
                                 alt="Profile"
-                                className="h-28 w-28 rounded-full object-cover border-4 border-white bg-[#DFD3C3] group-hover:brightness-75 transition"
+                                className="h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 rounded-full object-cover border-4 border-white bg-[#DFD3C3] group-hover:brightness-75 transition"
                             />
 
                             <div className="absolute inset-0 rounded-full flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition">
@@ -289,21 +290,25 @@ function EditProfileModal({ setShowEdit }) {
                                     onClick={handleRemovePicture}
                                     className="
                                         absolute
-                                        -right-20
-                                        top-[70%]
+                                        left-full
+                                        ml-2
+                                        top-1/2
                                         -translate-y-1/2
                                         flex
                                         items-center
                                         gap-1
                                         bg-red-600
                                         text-white
-                                        px-3
+                                        px-2
+                                        sm:px-3
                                         py-1.5
                                         rounded-lg
-                                        text-xs
+                                        text-[10px]
+                                        sm:text-xs
                                         font-medium
                                         hover:bg-red-700
                                         transition
+                                        whitespace-nowrap
                                     "
                                 >
                                     <Trash2 size={14} />
@@ -323,7 +328,7 @@ function EditProfileModal({ setShowEdit }) {
 
                     </div>
 
-                    <div className="p-6 pt-20 space-y-5">
+                    <div className="p-4 sm:p-6 pt-16 sm:pt-20 space-y-4 sm:space-y-5">
 
                         <div>
 
@@ -335,7 +340,7 @@ function EditProfileModal({ setShowEdit }) {
                                 type="text"
                                 value={firstName}
                                 onChange={(e) => setFirstName(e.target.value)}
-                                className="w-full border border-[#D0B8A8] rounded-xl px-4 py-3 text-[#4A352C] outline-none focus:border-[#9D6638] focus:ring-1 focus:ring-[#9D6638]"
+                                className="w-full border border-[#D0B8A8] rounded-xl px-3 sm:px-4 py-3 text-[#4A352C] outline-none focus:border-[#9D6638] focus:ring-1 focus:ring-[#9D6638]"
                             />
 
                         </div>
@@ -350,7 +355,7 @@ function EditProfileModal({ setShowEdit }) {
                                 type="text"
                                 value={lastName}
                                 onChange={(e) => setLastName(e.target.value)}
-                                className="w-full border border-[#D0B8A8] rounded-xl px-4 py-3 text-[#4A352C] outline-none focus:border-[#9D6638] focus:ring-1 focus:ring-[#9D6638]"
+                                className="w-full border border-[#D0B8A8] rounded-xl px-3 sm:px-4 py-3 text-[#4A352C] outline-none focus:border-[#9D6638] focus:ring-1 focus:ring-[#9D6638]"
                             />
 
                         </div>
@@ -366,7 +371,7 @@ function EditProfileModal({ setShowEdit }) {
                                 value={username}
                                 maxLength={12}
                                 onChange={(e) => setUsername(e.target.value)}
-                                className="w-full border border-[#D0B8A8] rounded-xl px-4 py-3 text-[#4A352C] outline-none focus:border-[#9D6638] focus:ring-1 focus:ring-[#9D6638]"
+                                className="w-full border border-[#D0B8A8] rounded-xl px-3 sm:px-4 py-3 text-[#4A352C] outline-none focus:border-[#9D6638] focus:ring-1 focus:ring-[#9D6638]"
                             />
 
                             <p className="text-xs text-[#8B6F61] mt-1">
@@ -386,7 +391,7 @@ function EditProfileModal({ setShowEdit }) {
                                 maxLength={150}
                                 rows={4}
                                 onChange={(e) => setBio(e.target.value)}
-                                className="w-full border border-[#D0B8A8] rounded-xl px-4 py-3 text-[#4A352C] outline-none focus:border-[#9D6638] focus:ring-1 focus:ring-[#9D6638] resize-none"
+                                className="w-full border border-[#D0B8A8] rounded-xl px-3 sm:px-4 py-3 text-[#4A352C] outline-none focus:border-[#9D6638] focus:ring-1 focus:ring-[#9D6638] resize-none"
                             />
 
                             <p className="text-xs text-[#8B6F61] mt-1 text-right">
@@ -404,7 +409,7 @@ function EditProfileModal({ setShowEdit }) {
                             <select
                                 value={gender}
                                 onChange={(e) => setGender(e.target.value)}
-                                className="w-full border border-[#D0B8A8] rounded-xl px-4 py-3 text-[#4A352C] outline-none focus:border-[#9D6638] focus:ring-1 focus:ring-[#9D6638] bg-white"
+                                className="w-full border border-[#D0B8A8] rounded-xl px-3 sm:px-4 py-3 text-[#4A352C] outline-none focus:border-[#9D6638] focus:ring-1 focus:ring-[#9D6638] bg-white"
                             >
 
                                 <option value="">
@@ -427,13 +432,13 @@ function EditProfileModal({ setShowEdit }) {
 
                         </div>
 
-                        <div className="flex gap-3 pt-2">
+                        <div className="flex gap-2 sm:gap-3 pt-2">
 
                             <button
                                 type="button"
                                 disabled={loading}
                                 onClick={() => setShowEdit(false)}
-                                className="px-5 py-3 rounded-xl border border-[#D0B8A8] text-[#4A352C] font-medium hover:bg-[#F8EDE3] transition disabled:opacity-50"
+                                className="px-4 sm:px-5 py-3 rounded-xl border border-[#D0B8A8] text-[#4A352C] font-medium hover:bg-[#F8EDE3] transition disabled:opacity-50"
                             >
                                 Cancel
                             </button>
@@ -441,7 +446,7 @@ function EditProfileModal({ setShowEdit }) {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="flex-1 px-5 py-3 rounded-xl bg-[#3C2A21] text-white font-semibold hover:bg-[#2F211A] disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                className="flex-1 px-4 sm:px-5 py-3 rounded-xl bg-[#3C2A21] text-white font-semibold hover:bg-[#2F211A] disabled:opacity-50 disabled:cursor-not-allowed transition"
                             >
                                 {loading ? "Saving..." : "Save Changes"}
                             </button>

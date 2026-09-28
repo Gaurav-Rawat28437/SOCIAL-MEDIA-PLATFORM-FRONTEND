@@ -117,23 +117,23 @@ function ThoughtContent({ userData }) {
     }, [page, hasMore, loadingMore])
 
     return (
-        <div className="p-6">
+        <div className="p-3 sm:p-4 md:p-6">
 
             {loading ? (
 
-                <div className="text-center py-10 text-[#8B6F61]">
+                <div className="text-center py-8 sm:py-10 text-[#8B6F61]">
                     Loading thoughts...
                 </div>
 
             ) : thoughts.length === 0 ? (
 
-                <div className="text-center py-10 text-[#8B6F61]">
+                <div className="text-center py-8 sm:py-10 text-[#8B6F61]">
                     No thoughts yet
                 </div>
 
             ) : (
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
 
                     {thoughts.map(thought => (
                         <ThoughtCard
@@ -148,13 +148,13 @@ function ThoughtContent({ userData }) {
             )}
 
             {loadingMore && (
-                <div className="text-center py-6 text-[#8B6F61]">
+                <div className="text-center py-5 sm:py-6 text-[#8B6F61]">
                     Loading more thoughts...
                 </div>
             )}
 
             {!hasMore && thoughts.length > 0 && (
-                <div className="text-center py-6 text-[#8B6F61]">
+                <div className="text-center py-5 sm:py-6 text-[#8B6F61]">
                     No more thoughts
                 </div>
             )}

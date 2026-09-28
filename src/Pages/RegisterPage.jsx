@@ -1,6 +1,6 @@
-import React from 'react'
-import RegisterForm from '../Components/auth/RegisterForm'
-import BrandSide from '../Components/auth/BrandSide'
+import React from "react"
+import RegisterForm from "../Components/auth/RegisterForm"
+import BrandSide from "../Components/auth/BrandSide"
 
 function RegisterPage() {
   return (

@@ -12,7 +12,7 @@ function ChatPage() {
 
             <Sidebar />
 
-            <main className="h-screen pt-15 ml-[256px] mr-[160px]">
+            <main className="h-screen pt-16 ml-0 md:ml-20 lg:ml-[256px] mr-0 lg:mr-[160px] pb-16 lg:pb-0">
 
                 <ChatContent />
 

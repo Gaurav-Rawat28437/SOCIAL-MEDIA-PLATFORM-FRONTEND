@@ -28,7 +28,7 @@ function LoginForm() {
       setLoading(true)
 
       const isEmail = validator.isEmail(identifier)
-    
+
       const response = await loginUser(
         isEmail ? identifier : "",
         password,
@@ -36,11 +36,11 @@ function LoginForm() {
       )
 
       if (response.success) {
- 
-          dispatch(addUserData(response.data))
-          toast.success("Login successful")
-          nav("/home")
-   
+
+        dispatch(addUserData(response.data))
+        toast.success("Login successful")
+        nav("/home")
+
       }
     } catch (error) {
       console.log(error)
@@ -51,10 +51,28 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex-1 flex items-center justify-center px-10">
-      <div className="w-[420px]">
+    <div className="flex-1 flex items-center justify-center px-4 sm:px-6 md:px-10 py-8">
+      <div className="w-full max-w-[420px]">
 
-        <h2 className="text-3xl tracking-tight text-[#4A352C]">
+        <div className="lg:hidden mb-10">
+          <div className="w-44 h-36 sm:w-52 sm:h-40 bg-[#1A120B] rounded-[50%] flex items-center justify-center overflow-hidden">
+            <img
+              src="/MUUV_logo2.png"
+              alt="MUUV"
+              className="w-32 sm:w-40 h-auto"
+            />
+          </div>
+
+          <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-[#1A120B] mt-4">
+            MUUV
+          </h1>
+
+          <p className="text-sm text-[#86795F] mt-1">
+            your move, your feed
+          </p>
+        </div>
+
+        <h2 className="text-2xl sm:text-3xl tracking-tight text-[#4A352C]">
           Welcome back
         </h2>
 
@@ -85,7 +103,7 @@ function LoginForm() {
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               required
-              className=" w-full bg-[#E5E5CB] border border-[#EDE6CC] rounded-lg px-4 py-3 text-[#4E220F] outline-none focus:border-[#3C2A21] "
+              className="w-full bg-[#E5E5CB] border border-[#EDE6CC] rounded-lg px-4 py-3 text-[#4E220F] outline-none focus:border-[#3C2A21]"
             />
           </div>
 
@@ -105,13 +123,13 @@ function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className=" w-full bg-[#E5E5CB] border border-[#EDE6CC] rounded-lg px-4 py-3 pr-12 text-[#4E220F] outline-none focus:border-[#3C2A21]"
+                className="w-full bg-[#E5E5CB] border border-[#EDE6CC] rounded-lg px-4 py-3 pr-12 text-[#4E220F] outline-none focus:border-[#3C2A21]"
               />
 
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className=" absolute right-3 top-1/2 -translate-y-1/2 z-10 text-[#86795F] hover:text-[#3C2A21] cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 text-[#86795F] hover:text-[#3C2A21] cursor-pointer"
               >
                 {showPassword ? (
                   <EyeOff size={20} />
@@ -134,14 +152,12 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className=" w-full bg-[#1A120B] text-[#E5E5CB] py-3 rounded-lg font-semibold hover:bg-[#9D6638] disabled:bg-[#86795F] disabled:cursor-not-allowed"
+            className="w-full bg-[#1A120B] text-[#E5E5CB] py-3 rounded-lg font-semibold hover:bg-[#9D6638] disabled:bg-[#86795F] disabled:cursor-not-allowed"
           >
             {loading ? "Signing in..." : "Sign in"}
           </button>
 
         </form>
-
-
 
         <p className="text-xs text-[#86795F] text-center mt-8">
           By continuing you agree to Muuv&apos;s{" "}

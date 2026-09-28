@@ -20,7 +20,7 @@ function PostCard({ post, userData, setSelectedPost }) {
         >
 
             {post.imgUrl && (
-                <div className="w-full h-48 bg-[#1A120B] overflow-hidden">
+                <div className="w-full h-32 sm:h-40 md:h-48 bg-[#1A120B] overflow-hidden">
 
                     {isVideo ? (
                         <video
@@ -40,7 +40,7 @@ function PostCard({ post, userData, setSelectedPost }) {
                 </div>
             )}
 
-            <div className="p-3">
+            <div className="p-2 sm:p-3">
 
                 <div className="flex items-center gap-2">
 
@@ -50,7 +50,7 @@ function PostCard({ post, userData, setSelectedPost }) {
                             "/muuv_pfp_dark.svg"
                         }
                         alt="Profile"
-                        className="w-7 h-7 rounded-full object-cover"
+                        className="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover shrink-0"
                     />
 
                     <div className="min-w-0">
@@ -68,7 +68,7 @@ function PostCard({ post, userData, setSelectedPost }) {
                 </div>
 
                 {post.content && (
-                    <p className="mt-2 text-sm text-[#4A352C] truncate">
+                    <p className="mt-2 text-xs sm:text-sm text-[#4A352C] truncate">
                         {post.content}
                     </p>
                 )}

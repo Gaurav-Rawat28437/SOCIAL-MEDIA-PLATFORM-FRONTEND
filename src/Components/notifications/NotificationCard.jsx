@@ -21,18 +21,22 @@ function NotificationCard({ notification }) {
                 rounded-2xl
                 border
                 border-[#FFE5BF]
-                p-4
+                p-3
+                sm:p-4
                 flex
                 items-center
-                gap-4
+                gap-3
+                sm:gap-4
                 shadow-[0_3px_12px_rgba(141,73,58,0.07)]
             "
         >
 
             <div
                 className="
-                    w-12
-                    h-12
+                    w-10
+                    h-10
+                    sm:w-12
+                    sm:h-12
                     rounded-full
                     bg-[#FFE5BF]
                     flex
@@ -54,7 +58,7 @@ function NotificationCard({ notification }) {
 
             <div className="flex-1 min-w-0">
 
-                <p className="text-[#1A120B]">
+                <p className="text-sm sm:text-base text-[#1A120B]">
 
                     <span className="font-semibold">
                         {notification.sender?.firstName}{" "}
@@ -90,13 +94,13 @@ function NotificationCard({ notification }) {
                 {(notification.type === "like" ||
                     notification.type === "comment") &&
                     notification.post?.content && (
-                        <p className="text-sm text-[#3C2A21] mt-1 line-clamp-2">
+                        <p className="text-xs sm:text-sm text-[#3C2A21] mt-1 line-clamp-2">
                             {notification.post.content}
                         </p>
                     )
                 }
 
-                <p className="text-sm text-[#8D493A] mt-1">
+                <p className="text-xs sm:text-sm text-[#8D493A] mt-1">
                     {new Date(
                         notification.createdAt
                     ).toLocaleString()}
@@ -105,7 +109,7 @@ function NotificationCard({ notification }) {
             </div>
 
             {notification.post && (
-                <div className="w-20 h-14 shrink-0 rounded-lg overflow-hidden">
+                <div className="w-16 h-12 sm:w-20 sm:h-14 shrink-0 rounded-lg overflow-hidden">
 
                     {notification.post.imgUrl ? (
 
@@ -125,8 +129,8 @@ function NotificationCard({ notification }) {
 
                     ) : (
 
-                        <div className="w-full h-full bg-[#FFE5BF] flex items-center justify-center p-2">
-                            <p className="text-xs text-[#3C2A21] line-clamp-3 text-center">
+                        <div className="w-full h-full bg-[#FFE5BF] flex items-center justify-center p-1 sm:p-2">
+                            <p className="text-[10px] sm:text-xs text-[#3C2A21] line-clamp-3 text-center">
                                 {notification.post.content}
                             </p>
                         </div>
@@ -141,4 +145,3 @@ function NotificationCard({ notification }) {
 }
 
 export default NotificationCard
-

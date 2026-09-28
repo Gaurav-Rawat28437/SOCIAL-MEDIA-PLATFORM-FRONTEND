@@ -4,7 +4,6 @@ import validator from "validator"
 
 const BasicInformation = ({ userData, setUserData, setStep }) => {
 
-
     const today = new Date().toISOString().split("T")[0]
     const firstNameRef = useRef(null)
 
@@ -12,39 +11,39 @@ const BasicInformation = ({ userData, setUserData, setStep }) => {
         firstNameRef.current?.focus()
     }, [])
 
-     const handleContinue = () => {
-    if (!userData.firstName?.trim()) {
-      toast.error("First name is required")
-      return
-    }
-    
+    const handleContinue = () => {
+        if (!userData.firstName?.trim()) {
+            toast.error("First name is required")
+            return
+        }
 
-    if (userData.firstName?.trim().length<2 || userData.firstName?.trim().length>15) {
-      toast.error("First name should be in between 2 to 15")
-      return
-    }
+        if (userData.firstName?.trim().length < 2 || userData.firstName?.trim().length > 15) {
+            toast.error("First name should be in between 2 to 15")
+            return
+        }
 
-    if (!userData.gender) {
-      toast.error("Gender is required")
-      return
-    }
+        if (!userData.gender) {
+            toast.error("Gender is required")
+            return
+        }
 
-    if (!userData.dateOfBirth) {
-      toast.error("Date of birth is required")
-      return
-    }
+        if (!userData.dateOfBirth) {
+            toast.error("Date of birth is required")
+            return
+        }
 
-    if (userData.dateOfBirth > today) {
-        toast.error("Date of birth cannot be greater than today")
-        return
+        if (userData.dateOfBirth > today) {
+            toast.error("Date of birth cannot be greater than today")
+            return
+        }
+
+        setStep(2)
     }
-    
-    setStep(2)
-  }
 
     return (
         <div className="w-full max-w-lg">
-            <h2 className="text-2xl font-semibold text-[#3C2A21]">
+
+            <h2 className="text-xl sm:text-2xl font-semibold text-[#3C2A21]">
                 Basic Information
             </h2>
 
@@ -52,7 +51,7 @@ const BasicInformation = ({ userData, setUserData, setStep }) => {
                 Tell us a little about yourself.
             </p>
 
-            <div className="mt-6 space-y-5">
+            <div className="mt-5 sm:mt-6 space-y-4 sm:space-y-5">
 
                 <div>
                     <label className="mb-2 block text-sm font-medium text-[#3C2A21]">
@@ -74,7 +73,6 @@ const BasicInformation = ({ userData, setUserData, setStep }) => {
                     />
                 </div>
 
-
                 <div>
                     <label className="mb-2 block text-sm font-medium text-[#3C2A21]">
                         Last Name
@@ -93,7 +91,6 @@ const BasicInformation = ({ userData, setUserData, setStep }) => {
                         className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-[#9D6638]"
                     />
                 </div>
-
 
                 <div>
                     <label className="mb-2 block text-sm font-medium text-[#3C2A21]">
@@ -143,7 +140,9 @@ const BasicInformation = ({ userData, setUserData, setStep }) => {
                 >
                     Continue
                 </button>
+
             </div>
+
         </div>
     )
 }

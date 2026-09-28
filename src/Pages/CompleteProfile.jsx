@@ -4,8 +4,6 @@ import BasicInformation from "../Components/profile/completeProfile/BasicInforma
 import ProfileSetup from "../Components/profile/completeProfile/ProfileSetup"
 import ReviewProfile from "../Components/profile/completeProfile/ReviewProfile"
 
-
-
 function CompleteProfile() {
     const [step, setStep] = useState(1)
 
@@ -18,19 +16,19 @@ function CompleteProfile() {
         displayPicture: ""
     })
 
-     const [tempPicture,setTempPicture] = useState("/muuv_pfp_dark.svg")
-     const [pictureFile,setPictureFile]=useState(null)
+    const [tempPicture, setTempPicture] = useState("/muuv_pfp_dark.svg")
+    const [pictureFile, setPictureFile] = useState(null)
 
     return (
-        <div className="min-h-screen bg-[#F8EDE3] flex items-center justify-center p-5">
+        <div className="min-h-screen bg-[#F8EDE3] flex items-center justify-center p-3 sm:p-5">
 
-            <div className="w-full max-w-xl bg-white rounded-2xl p-8 border border-[#D0B8A8]">
+            <div className="w-full max-w-xl bg-white rounded-2xl p-5 sm:p-8 border border-[#D0B8A8]">
 
-                <h1 className="text-3xl font-semibold text-[#4A352C] text-center mb-2">
+                <h1 className="text-2xl sm:text-3xl font-semibold text-[#4A352C] text-center mb-2">
                     Complete Your Profile
                 </h1>
 
-                <p className="text-center text-[#8B6F61] mb-8">
+                <p className="text-sm sm:text-base text-center text-[#8B6F61] mb-6 sm:mb-8">
                     Tell us a little about yourself
                 </p>
 
@@ -64,7 +62,6 @@ function CompleteProfile() {
                         pictureFile={pictureFile}
                     />
                 )}
-
 
             </div>
 

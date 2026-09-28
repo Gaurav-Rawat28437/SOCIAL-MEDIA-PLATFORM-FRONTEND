@@ -54,8 +54,6 @@ function CreatePostModal({ setShowCreatePost }) {
 
     }
 
-
-
     const handleSubmit = async (e) => {
         e.preventDefault()
 
@@ -130,18 +128,17 @@ function CreatePostModal({ setShowCreatePost }) {
         }
     }
 
-
     const isVideo = imageFile?.type?.startsWith("video/")
 
     return (
 
-        <div className="fixed inset-0 z-50 flex items-center justify-center border bg-black/50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center border bg-black/50 p-3 sm:p-4">
 
-            <div className="bg-[#D5CEA3] w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-xl [&::-webkit-scrollbar]:w-0 [scrollbar-width:none]">
+            <div className="bg-[#D5CEA3] w-full max-w-xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto rounded-2xl shadow-xl [&::-webkit-scrollbar]:w-0 [scrollbar-width:none]">
 
-                <div className="flex items-center justify-between px-5 py-4 border-b border-[#b99b88]">
+                <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-[#b99b88]">
 
-                    <h2 className="text-xl font-semibold text-[#1A120B]">
+                    <h2 className="text-lg sm:text-xl font-semibold text-[#1A120B]">
                         Create Post
                     </h2>
 
@@ -156,12 +153,11 @@ function CreatePostModal({ setShowCreatePost }) {
 
                 </div>
 
-
                 <form onSubmit={handleSubmit}>
 
-                    <div className="p-5">
+                    <div className="p-4 sm:p-5">
 
-                        <div className="flex items-center gap-3 mb-5">
+                        <div className="flex items-center gap-3 mb-4 sm:mb-5">
 
                             <img
                                 src={
@@ -169,23 +165,22 @@ function CreatePostModal({ setShowCreatePost }) {
                                     "/muuv_pfp_dark.svg"
                                 }
                                 alt="Profile"
-                                className="w-11 h-11 rounded-full object-cover border border-[#D0B8A8]"
+                                className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border border-[#D0B8A8] shrink-0"
                             />
 
-                            <div>
+                            <div className="min-w-0">
 
-                                <p className="font-semibold text-[#1A120B]">
+                                <p className="font-semibold text-[#1A120B] truncate">
                                     {userData.firstName} {userData.lastName}
                                 </p>
 
-                                <p className="text-sm text-[#5c4437]">
+                                <p className="text-sm text-[#5c4437] truncate">
                                     @{userData.username}
                                 </p>
 
                             </div>
 
                         </div>
-
 
                         <textarea
                             ref={inputFocusRef}
@@ -200,7 +195,8 @@ function CreatePostModal({ setShowCreatePost }) {
                                 outline-none
                                 text-[#1A120B]
                                 placeholder-[#6b513e]
-                                text-lg
+                                text-base
+                                sm:text-lg
                             "
                         />
 
@@ -208,15 +204,12 @@ function CreatePostModal({ setShowCreatePost }) {
                             {content.length}/500
                         </div>
 
-
-
                         {tempImage && (
 
                             <div className="relative mt-4">
 
                                 {isVideo ?
                                     (
-
 
                                         <div className="relative overflow-hidden rounded-xl border border-[#D0B8A8] bg-[#1A120B]">
 
@@ -234,10 +227,10 @@ function CreatePostModal({ setShowCreatePost }) {
                                                 onPlay={() => setIsPlaying(true)}
                                                 onPause={() => setIsPlaying(false)}
                                                 onEnded={() => setIsPlaying(false)}
-                                                className="w-full max-h-80 object-contain cursor-pointer"
+                                                className="w-full max-h-64 sm:max-h-80 object-contain cursor-pointer"
                                             />
 
-                                            <div className="absolute bottom-0 left-0 right-0 flex items-center gap-3 px-4 py-3 bg-black/70">
+                                            <div className="absolute bottom-0 left-0 right-0 flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 bg-black/70">
 
                                                 <button
                                                     type="button"
@@ -248,7 +241,7 @@ function CreatePostModal({ setShowCreatePost }) {
                                                             videoRef.current.pause()
                                                         }
                                                     }}
-                                                    className="text-white hover:text-[#D0B8A8] transition"
+                                                    className="text-white hover:text-[#D0B8A8] transition shrink-0"
                                                 >
                                                     {isPlaying ? <Pause size={20} /> : <Play size={20} />}
                                                 </button>
@@ -259,7 +252,7 @@ function CreatePostModal({ setShowCreatePost }) {
                                                         videoRef.current.muted = !videoRef.current.muted
                                                         setIsMuted(videoRef.current.muted)
                                                     }}
-                                                    className="text-white hover:text-[#D0B8A8] transition"
+                                                    className="text-white hover:text-[#D0B8A8] transition shrink-0"
                                                 >
                                                     {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
                                                 </button>
@@ -279,19 +272,18 @@ function CreatePostModal({ setShowCreatePost }) {
                                                         videoRef.current.muted = value === 0
                                                         setIsMuted(value === 0)
                                                     }}
-                                                    className="w-24 accent-[#8D493A]"
+                                                    className="w-16 sm:w-24 accent-[#8D493A]"
                                                 />
 
                                             </div>
 
                                         </div>
 
-
                                     ) : (
                                         <img
                                             src={tempImage}
                                             alt="Post preview"
-                                            className=" w-full max-h-80 object-cover rounded-xl border border-[#D0B8A8] "
+                                            className="w-full max-h-64 sm:max-h-80 object-cover rounded-xl border border-[#D0B8A8]"
                                         />
                                     )}
 
@@ -320,8 +312,7 @@ function CreatePostModal({ setShowCreatePost }) {
 
                     </div>
 
-
-                    <div className="px-5 py-4 border-t border-[#b99f8b] flex items-center justify-between">
+                    <div className="px-4 sm:px-5 py-3 sm:py-4 border-t border-[#b99f8b] flex flex-wrap items-center justify-between gap-3">
 
                         <label
                             htmlFor="post-image"
@@ -334,11 +325,17 @@ function CreatePostModal({ setShowCreatePost }) {
                                 font-medium
                                 hover:text-[#302119]
                                 transition
+                                text-sm
+                                sm:text-base
+                                min-w-0
                             "
                         >
-                            <ImageIcon size={21} />
 
-                            Add Image or Video
+                            <ImageIcon size={21} className="shrink-0" />
+
+                            <span className="truncate">
+                                Add Image or Video
+                            </span>
 
                             <input
                                 disabled={loading}
@@ -347,7 +344,6 @@ function CreatePostModal({ setShowCreatePost }) {
                                 accept="image/*,video/*"
                                 className="hidden"
                                 onChange={(e) => {
-
 
                                     const file = e.target.files[0]
 
@@ -369,7 +365,8 @@ function CreatePostModal({ setShowCreatePost }) {
                             type="submit"
                             disabled={loading}
                             className="
-                                px-6
+                                px-5
+                                sm:px-6
                                 py-2.5
                                 rounded-full
                                 bg-[#1A120B]
@@ -382,6 +379,7 @@ function CreatePostModal({ setShowCreatePost }) {
                                 disabled:opacity-50
                                 disabled:cursor-not-allowed
                                 transition
+                                shrink-0
                             "
                         >
                             {loading ? "Posting..." : "Post"}

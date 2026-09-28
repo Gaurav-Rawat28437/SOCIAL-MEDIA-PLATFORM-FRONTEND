@@ -39,11 +39,13 @@ function ReplyCard({ comment, type }) {
             <div
                 onClick={handleReplyClick}
                 className="
-                    rounded-2xl
+                    rounded-xl
+                    sm:rounded-2xl
                     border
                     border-[#D0B8A8]
                     bg-white
-                    p-5
+                    p-3
+                    sm:p-5
                     hover:shadow-md
                     transition
                     cursor-pointer
@@ -53,7 +55,7 @@ function ReplyCard({ comment, type }) {
                 {comment.post && (
                     <div>
 
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
 
                             <img
                                 src={
@@ -62,21 +64,25 @@ function ReplyCard({ comment, type }) {
                                 }
                                 alt="Original post owner"
                                 className="
-                                    w-11
-                                    h-11
+                                    w-9
+                                    h-9
+                                    sm:w-11
+                                    sm:h-11
                                     rounded-full
                                     object-cover
                                     border-2
                                     border-[#D5CEA3]
+                                    shrink-0
                                 "
                             />
 
-                            <div className="flex-1">
+                            <div className="flex-1 min-w-0">
 
                                 <p className="
                                     text-sm
                                     font-bold
                                     text-[#1A120B]
+                                    truncate
                                 ">
                                     {comment.post.authorId?.firstName}{" "}
                                     {comment.post.authorId?.lastName}
@@ -85,6 +91,7 @@ function ReplyCard({ comment, type }) {
                                 <p className="
                                     text-xs
                                     text-[#8B6F61]
+                                    truncate
                                 ">
                                     @{comment.post.authorId?.username}
                                 </p>
@@ -92,8 +99,10 @@ function ReplyCard({ comment, type }) {
                             </div>
 
                             <span className="
-                                text-xs
+                                text-[10px]
+                                sm:text-xs
                                 text-[#8B6F61]
+                                shrink-0
                             ">
                                 {type === "post" ? "Post" : "Thought"}
                             </span>
@@ -101,7 +110,8 @@ function ReplyCard({ comment, type }) {
                         </div>
 
                         <div className="
-                            mt-4
+                            mt-3
+                            sm:mt-4
                             rounded-xl
                             bg-[#F8EDE3]
                             overflow-hidden
@@ -109,7 +119,8 @@ function ReplyCard({ comment, type }) {
 
                             {comment.post.content && (
                                 <p className="
-                                    px-4
+                                    px-3
+                                    sm:px-4
                                     pt-3
                                     text-sm
                                     text-[#4A352C]
@@ -127,7 +138,8 @@ function ReplyCard({ comment, type }) {
                                         className="
                                             mt-3
                                             w-full
-                                            max-h-80
+                                            max-h-64
+                                            sm:max-h-80
                                             object-cover
                                         "
                                         controls
@@ -140,7 +152,8 @@ function ReplyCard({ comment, type }) {
                                         className="
                                             mt-3
                                             w-full
-                                            max-h-80
+                                            max-h-64
+                                            sm:max-h-80
                                             object-cover
                                         "
                                         onClick={e => e.stopPropagation()}
@@ -154,15 +167,18 @@ function ReplyCard({ comment, type }) {
                 )}
 
                 <div className="
-                    mt-4
+                    mt-3
+                    sm:mt-4
                     rounded-xl
                     bg-[#DFD3C3]
-                    px-4
+                    px-3
+                    sm:px-4
                     py-3
                 ">
 
                     <p className="
-                        text-[11px]
+                        text-[10px]
+                        sm:text-[11px]
                         font-semibold
                         uppercase
                         tracking-wide

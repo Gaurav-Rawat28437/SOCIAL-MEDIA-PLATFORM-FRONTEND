@@ -5,21 +5,21 @@ import ProfileContent from "../Components/profile/ProfileContent"
 
 function ProfilePage() {
 
-  return (
-    <div className="min-h-screen bg-white">
+    return (
+        <div className="min-h-screen bg-white">
 
-      <Navbar />
+            <Navbar />
 
-      <Sidebar />
+            <Sidebar />
 
-      <main className="pt-16 ml-20">
+            <main className="pt-16 ml-0 md:ml-20 pb-16 lg:pb-0 px-3 md:px-6 lg:px-8">
 
-        <ProfileContent />
+                <ProfileContent />
 
-      </main>
+            </main>
 
-    </div>
-  )
+        </div>
+    )
 }
 
 export default ProfilePage

@@ -7,9 +7,6 @@ import { addUserInChatList } from "../../services/chatService"
 import socket from "../../socket.io/socket"
 import { decreaseTotalUnreadMessages } from "../../Utils/globalDataSlice"
 
-
-
-
 function ChatContent() {
 
     const { loading, data, error } = useSelector(store => store.userChat)
@@ -35,7 +32,7 @@ function ChatContent() {
 
         socketRef.current.emit("identify", loggedInUser)
 
-        const receiveGlobalListener = ({ sender, receiver,senderUser }) => {
+        const receiveGlobalListener = ({ sender, receiver, senderUser }) => {
 
             if (sender === selectedUserRef.current?._id) {
                 dispatch(decreaseTotalUnreadMessages(1))
@@ -43,10 +40,10 @@ function ChatContent() {
                 return
             }
 
-            if(!chatUsers.find(item=>item._id===sender))
-            {
+            if (!chatUsers.find(item => item._id === sender)) {
                 dispatch(addChatUserInRedux(senderUser))
             }
+
             dispatch(moveChatUserToTop(sender))
         }
 
@@ -59,12 +56,11 @@ function ChatContent() {
             )
         }
 
-    }, [loggedInUser, dispatch,selectedUserRef])
+    }, [loggedInUser, dispatch, selectedUserRef])
 
     useEffect(() => {
         selectedUserRef.current = selectedUser
     }, [selectedUser])
-
 
     useEffect(() => {
         if (!data) {
@@ -72,10 +68,9 @@ function ChatContent() {
         }
     }, [dispatch, data])
 
-
-
     const addChatUser = async (user) => {
         try {
+
             const alreadyExists = chatUsers.some(
                 item => item._id === user._id
             )
@@ -84,18 +79,16 @@ function ChatContent() {
                 return
             }
 
-           const response= await addUserInChatList(user._id)
+            const response = await addUserInChatList(user._id)
 
-           if(response.success)
-           {
-               dispatch(addChatUserInRedux(user))
-           }
+            if (response.success) {
+                dispatch(addChatUserInRedux(user))
+            }
 
         } catch (error) {
             console.log(error)
         }
     }
-
 
     if (loading) {
         return (
@@ -114,19 +107,32 @@ function ChatContent() {
     return (
         <div className="w-full h-full flex">
 
-            <div className="w-[40%]">
+            <div
+                className={`${
+                    selectedUser
+                        ? "hidden lg:block"
+                        : "block"
+                } w-full lg:w-[40%] min-w-0`}
+            >
                 <ChatList
                     setSelectedUser={setSelectedUser}
                     chatUsers={chatUsers}
                 />
             </div>
 
-            <div className="w-[60%]">
+            <div
+                className={`${
+                    selectedUser
+                        ? "block"
+                        : "hidden lg:block"
+                } w-full lg:w-[60%] min-w-0`}
+            >
                 <ChatBox
                     selectedUser={selectedUser}
                     addChatUser={addChatUser}
                     chatUsers={chatUsers}
                     socketRef={socketRef}
+                    setSelectedUser={setSelectedUser}
                 />
             </div>
 

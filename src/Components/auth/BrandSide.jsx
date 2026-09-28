@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react"
 
 function BrandSide() {
 
@@ -22,7 +22,7 @@ function BrandSide() {
     }, [])
 
     return (
-        <div className="w-[380px] m-6 rounded-3xl bg-[#2F211B] p-8 flex flex-col">
+        <div className="hidden lg:flex lg:w-[380px] lg:m-6 rounded-3xl bg-[#2F211B] p-8 flex-col">
 
             <div>
                 <h1 className="text-2xl font-serif text-[#F8EDE3]">
@@ -66,7 +66,6 @@ function BrandSide() {
                     </p>
                 </div>
 
-
                 <div className="flex w-fit items-center gap-1 rounded-2xl rounded-bl bg-[#3C2A21] px-3.5 py-3">
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#D5CEA3]" />
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#D5CEA3] [animation-delay:150ms]" />
@@ -75,14 +74,13 @@ function BrandSide() {
 
             </div>
 
-
             <div className="mt-6 flex justify-between border-t border-[#D0B8A8]/30 pt-[18px] font-mono text-[11px] text-[#D0B8A8]">
-                <span >show up. post up.</span>
+                <span>show up. post up.</span>
 
                 <span>{time}</span>
             </div>
 
-        </div >
+        </div>
     )
 }
 

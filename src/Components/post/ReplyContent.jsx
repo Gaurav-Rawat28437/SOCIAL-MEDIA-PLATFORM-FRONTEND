@@ -163,13 +163,14 @@ function ReplyContent({ userData }) {
 
     return (
 
-        <div className="p-6">
+        <div className="p-3 sm:p-4 md:p-6">
 
             {loading ? (
 
                 <div className="
                     text-center
-                    py-10
+                    py-8
+                    sm:py-10
                     text-[#8B6F61]
                 ">
                     Loading replies...
@@ -179,7 +180,8 @@ function ReplyContent({ userData }) {
 
                 <div className="
                     text-center
-                    py-10
+                    py-8
+                    sm:py-10
                     text-[#8B6F61]
                 ">
                     No replies yet
@@ -187,7 +189,7 @@ function ReplyContent({ userData }) {
 
             ) : (
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
 
                     {replies.map(reply => (
 
@@ -213,7 +215,8 @@ function ReplyContent({ userData }) {
 
                 <div className="
                     text-center
-                    py-6
+                    py-5
+                    sm:py-6
                     text-[#8B6F61]
                 ">
                     Loading more replies...
@@ -226,7 +229,8 @@ function ReplyContent({ userData }) {
 
                 <div className="
                     text-center
-                    py-6
+                    py-5
+                    sm:py-6
                     text-[#8B6F61]
                 ">
                     No more replies

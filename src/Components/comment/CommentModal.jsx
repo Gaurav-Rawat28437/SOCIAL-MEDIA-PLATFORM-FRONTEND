@@ -183,7 +183,6 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                     userId: userData._id
                 })
 
-
                 setComments(prev =>
                     prev.filter(
                         comment => comment._id !== commentId
@@ -264,24 +263,26 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
     }
 
     return (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 p-4 ">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 p-2 sm:p-4">
 
             {loading ? (
 
                 <div className="
                     w-full
                     max-w-lg
-                    h-[500px]
+                    h-[70vh]
+                    sm:h-[500px]
                     flex
                     items-center
                     justify-center
                     bg-[#F8EDE3]
-                    rounded-2xl
+                    rounded-xl
+                    sm:rounded-2xl
                     border
                     border-[#D0B8A8]
                     shadow-2xl
                 ">
-                    <p className="text-sm text-[#8B6F61]">
+                    <p className="text-xs sm:text-sm text-[#8B6F61]">
                         Loading comments...
                     </p>
                 </div>
@@ -291,8 +292,10 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                 <div className="
                     w-full
                     max-w-lg
+                    max-h-[95vh]
                     bg-[#F8EDE3]
-                    rounded-2xl
+                    rounded-xl
+                    sm:rounded-2xl
                     border
                     border-[#D0B8A8]
                     shadow-2xl
@@ -303,13 +306,15 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                         flex
                         items-center
                         justify-between
-                        px-4
-                        py-3
+                        px-3
+                        sm:px-4
+                        py-2.5
+                        sm:py-3
                         border-b
                         border-[#D0B8A8]
                     ">
 
-                        <h2 className="text-lg font-semibold text-[#4E220F]">
+                        <h2 className="text-base sm:text-lg font-semibold text-[#4E220F]">
                             Comments
                         </h2>
 
@@ -317,7 +322,8 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                             type="button"
                             onClick={onClose}
                             className="
-                                p-2
+                                p-1.5
+                                sm:p-2
                                 rounded-full
                                 text-[#8B6F61]
                                 hover:bg-[#D5CEA3]
@@ -325,12 +331,20 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                                 transition
                             "
                         >
-                            <X size={20} />
+                            <X size={19} className="sm:w-5 sm:h-5" />
                         </button>
 
                     </div>
 
-                    <div className="h-[400px] overflow-y-auto p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    <div className="
+                        h-[55vh]
+                        sm:h-[400px]
+                        overflow-y-auto
+                        p-3
+                        sm:p-4
+                        [scrollbar-width:none]
+                        [&::-webkit-scrollbar]:hidden
+                    ">
 
                         {comments.length === 0 ? (
 
@@ -340,20 +354,20 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                                 justify-center
                                 h-full
                             ">
-                                <p className="text-sm text-[#8B6F61]">
+                                <p className="text-xs sm:text-sm text-[#8B6F61]">
                                     No comments yet
                                 </p>
                             </div>
 
                         ) : (
 
-                            <div className="space-y-4 ">
+                            <div className="space-y-3 sm:space-y-4">
 
                                 {comments.map(comment => (
 
                                     <div
                                         key={comment._id}
-                                        className="flex gap-3"
+                                        className="flex gap-2 sm:gap-3"
                                     >
 
                                         <img
@@ -363,8 +377,10 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                                             }
                                             alt="Profile"
                                             className="
-                                                w-9
-                                                h-9
+                                                w-8
+                                                h-8
+                                                sm:w-9
+                                                sm:h-9
                                                 rounded-full
                                                 object-cover
                                                 border
@@ -379,18 +395,21 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                                                 flex
                                                 items-start
                                                 justify-between
-                                                gap-2
+                                                gap-1.5
+                                                sm:gap-2
                                             ">
 
                                                 <div className="
                                                     flex
                                                     items-center
-                                                    gap-2
+                                                    gap-1.5
+                                                    sm:gap-2
                                                     min-w-0
                                                 ">
 
                                                     <p className="
-                                                        text-sm
+                                                        text-xs
+                                                        sm:text-sm
                                                         font-semibold
                                                         text-[#4E220F]
                                                         truncate
@@ -400,7 +419,8 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                                                     </p>
 
                                                     <p className="
-                                                        text-xs
+                                                        text-[10px]
+                                                        sm:text-xs
                                                         text-[#8B6F61]
                                                         truncate
                                                     ">
@@ -422,7 +442,8 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                                                                 )
                                                             }
                                                             className="
-                                                                p-1.5
+                                                                p-1
+                                                                sm:p-1.5
                                                                 rounded-full
                                                                 text-[#8B6F61]
                                                                 hover:bg-[#D5CEA3]
@@ -430,14 +451,15 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                                                                 transition
                                                             "
                                                         >
-                                                            <MoreVertical size={17} />
+                                                            <MoreVertical size={16} className="sm:w-[17px] sm:h-[17px]" />
                                                         </button>
 
                                                         {openCommentMenu === comment._id && (
                                                             <div className="
                                                                 absolute
                                                                 right-0
-                                                                top-8
+                                                                top-7
+                                                                sm:top-8
                                                                 z-10
                                                                 w-24
                                                                 bg-[#F8EDE3]
@@ -601,7 +623,8 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
 
                                                 <p className="
                                                     mt-1
-                                                    text-sm
+                                                    text-xs
+                                                    sm:text-sm
                                                     text-[#4A352C]
                                                     break-words
                                                 ">
@@ -612,7 +635,8 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
 
                                             <p className="
                                                 mt-1
-                                                text-[10px]
+                                                text-[9px]
+                                                sm:text-[10px]
                                                 text-[#8B6F61]
                                             ">
                                                 {new Date(
@@ -644,7 +668,8 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                             flex
                             items-center
                             gap-2
-                            p-3
+                            p-2.5
+                            sm:p-3
                             border-t
                             border-[#D0B8A8]
                         "
@@ -662,13 +687,16 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                             disabled={adding}
                             className="
                                 flex-1
-                                h-10
+                                min-w-0
+                                h-9
+                                sm:h-10
                                 px-3
                                 rounded-full
                                 border
                                 border-[#D0B8A8]
                                 bg-white
-                                text-sm
+                                text-xs
+                                sm:text-sm
                                 text-[#4E220F]
                                 placeholder:text-[#8B6F61]
                                 outline-none
@@ -683,8 +711,10 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                                 !content.trim()
                             }
                             className="
-                                w-10
-                                h-10
+                                w-9
+                                h-9
+                                sm:w-10
+                                sm:h-10
                                 flex
                                 items-center
                                 justify-center
@@ -695,9 +725,10 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                                 transition
                                 disabled:opacity-50
                                 disabled:cursor-not-allowed
+                                shrink-0
                             "
                         >
-                            <Send size={17} />
+                            <Send size={16} className="sm:w-[17px] sm:h-[17px]" />
                         </button>
 
                     </form>
@@ -715,14 +746,16 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                     items-center
                     justify-center
                     bg-black/40
-                    p-4
+                    p-3
+                    sm:p-4
                 ">
 
                     <div className="
                         flex
                         gap-2
                         bg-[#F8EDE3]
-                        p-3
+                        p-2.5
+                        sm:p-3
                         rounded-xl
                         border
                         border-[#D0B8A8]
@@ -735,12 +768,14 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                                 setDeleteCommentId(null)
                             }
                             className="
-                                px-4
+                                px-3
+                                sm:px-4
                                 h-9
                                 rounded-full
                                 border
                                 border-[#D0B8A8]
-                                text-sm
+                                text-xs
+                                sm:text-sm
                                 text-[#4E220F]
                                 hover:bg-[#D5CEA3]
                                 transition
@@ -759,11 +794,13 @@ function CommentModal({ postId, post, onClose, onCommentAdded }) {
                                 setDeleteCommentId(null)
                             }}
                             className="
-                                px-4
+                                px-3
+                                sm:px-4
                                 h-9
                                 rounded-full
                                 bg-[#4E220F]
-                                text-sm
+                                text-xs
+                                sm:text-sm
                                 text-[#F8EDE3]
                                 hover:bg-[#3C2A21]
                                 transition

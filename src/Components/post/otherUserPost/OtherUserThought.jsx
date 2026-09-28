@@ -122,7 +122,7 @@ function OtherUserThought({ userId, userData }) {
 
     if (loading) {
         return (
-            <div className="text-center py-10 text-[#1A120B]">
+            <div className="text-center py-8 sm:py-10 text-[#1A120B]">
                 Loading thoughts...
             </div>
         )
@@ -130,15 +130,15 @@ function OtherUserThought({ userId, userData }) {
 
     if (thoughts.length === 0) {
         return (
-            <div className="text-center py-10 text-[#1A120B]">
+            <div className="text-center py-8 sm:py-10 text-[#1A120B]">
                 No thoughts yet
             </div>
         )
     }
 
     return (
-        <div className="p-6">
-            <div className="grid grid-cols-2 gap-4">
+        <div className="p-3 sm:p-4 md:p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                 {thoughts.map((thought) => (
                     <ThoughtCard
                         key={thought._id}

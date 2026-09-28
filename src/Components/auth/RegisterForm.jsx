@@ -175,13 +175,30 @@ function RegisterForm() {
   }
 
   return (
-    <div className="flex-1 flex items-center justify-center px-10">
-      <div className="w-[420px]">
+    <div className="flex-1 flex items-center justify-center px-4 sm:px-6 md:px-10 py-8">
+      <div className="w-full max-w-[420px]">
 
+        <div className="lg:hidden mb-10">
+          <div className="w-44 h-36 sm:w-52 sm:h-40 bg-[#1A120B] rounded-[50%] flex items-center justify-center overflow-hidden">
+            <img
+              src="/MUUV_logo2.png"
+              alt="MUUV"
+              className="w-32 sm:w-40 h-auto"
+            />
+          </div>
+
+          <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-[#1A120B] mt-4">
+            MUUV
+          </h1>
+
+          <p className="text-sm text-[#86795F] mt-1">
+            your move, your feed
+          </p>
+        </div>
 
         {step === 1 && (
           <>
-            <h2 className="text-3xl font-semibold tracking-tight text-[#4A352C]">
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#4A352C]">
               Create your account
             </h2>
 
@@ -227,10 +244,9 @@ function RegisterForm() {
           </>
         )}
 
-
         {step === 2 && (
           <>
-            <h2 className="text-3xl font-semibold tracking-tight text-[#4A352C]">
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#4A352C]">
               Verify your email
             </h2>
 
@@ -240,7 +256,9 @@ function RegisterForm() {
                 {email}
               </span>
               <br />
-              <span>(If you don't see the OTP in your inbox, check your spam folder.)</span>
+              <span>
+                (If you don't see the OTP in your inbox, check your spam folder.)
+              </span>
             </p>
 
             <form onSubmit={handleVerifyOtp}>
@@ -279,7 +297,7 @@ function RegisterForm() {
               </button>
             </form>
 
-            <div className="flex justify-between mt-5 text-sm">
+            <div className="flex justify-between gap-4 mt-5 text-sm">
               <button
                 type="button"
                 onClick={() => {
@@ -301,7 +319,7 @@ function RegisterForm() {
                   resendCooldown > 0 ||
                   verifyLoading
                 }
-                className="font-semibold text-[#4A352C] hover:text-[#8B6F61] hover:underline disabled:text-[#8B6F61] disabled:cursor-not-allowed"
+                className="font-semibold text-[#4A352C] hover:text-[#8B6F61] hover:underline disabled:text-[#8B6F61] disabled:cursor-not-allowed text-right"
               >
                 {resendLoading
                   ? "Sending..."
@@ -313,10 +331,9 @@ function RegisterForm() {
           </>
         )}
 
-
         {step === 3 && (
           <>
-            <h2 className="text-3xl font-semibold tracking-tight text-[#4A352C]">
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#4A352C]">
               Complete your profile
             </h2>
 
@@ -326,7 +343,6 @@ function RegisterForm() {
             </p>
 
             <form onSubmit={handleCreateAccount}>
-
 
               <div className="mb-5">
                 <label
@@ -350,7 +366,6 @@ function RegisterForm() {
                   className="w-full bg-[#DFD3C3] border border-[#D0B8A8] rounded-lg px-4 py-3 text-[#4A352C] placeholder:text-[#8B6F61] outline-none focus:border-[#8B6F61] focus:bg-white disabled:opacity-60"
                 />
               </div>
-
 
               <div className="mb-5">
                 <label
@@ -381,14 +396,19 @@ function RegisterForm() {
 
                   <button
                     type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
+                    onClick={() =>
+                      setShowPassword((prev) => !prev)
+                    }
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8B6F61] hover:text-[#4A352C] cursor-pointer"
                   >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showPassword ? (
+                      <EyeOff size={20} />
+                    ) : (
+                      <Eye size={20} />
+                    )}
                   </button>
                 </div>
               </div>
-
 
               <div className="mb-7">
                 <label
@@ -432,7 +452,6 @@ function RegisterForm() {
                   </button>
                 </div>
               </div>
-
 
               <button
                 type="submit"

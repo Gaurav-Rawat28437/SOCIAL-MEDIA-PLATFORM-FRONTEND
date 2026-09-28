@@ -17,7 +17,6 @@ function Navbar() {
     const [users, setUsers] =
         useState([])
 
-
     const [searchResults, setSearchResults] =
         useState([])
 
@@ -295,16 +294,16 @@ function Navbar() {
 
     const selectUser = (user) => {
 
-    clearTimeout(id.current)
+        clearTimeout(id.current)
 
-    setSearch("")
-    setSearchResults([])
-    setShowUsers(false)
+        setSearch("")
+        setSearchResults([])
+        setShowUsers(false)
 
-    navigate(
-        `/profile/${user._id}`
-    )
-}
+        navigate(
+            `/profile/${user._id}`
+        )
+    }
 
     return (
         <nav
@@ -320,22 +319,23 @@ function Navbar() {
                 border-[#D5CEA3]
                 flex
                 items-center
-                px-6
+                px-3
+                sm:px-6
                 shadow-[0_2px_10px_rgba(141,73,58,0.08)]
             "
         >
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
 
                 <img
                     src="/MUUV_logo2.png"
                     alt="MUUV-logo"
-                    className="h-12 w-auto object-contain"
+                    className="h-10 sm:h-12 w-auto object-contain"
                 />
 
                 <div className="hidden sm:block">
 
-                    <h1 className="text-2xl font-extrabold tracking-tight text-[#E5E5CB]">
+                    <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-[#E5E5CB]">
                         MUUV
                     </h1>
 
@@ -349,9 +349,18 @@ function Navbar() {
 
             <div
                 ref={searchContainerRef}
-                className="absolute left-1/2 -translate-x-1/2">
+                className="
+                    absolute
+                    left-1/2
+                    -translate-x-1/2
+                    w-[38%]
+                    min-w-[180px]
+                    max-w-[420px]
+                    sm:w-[45%]
+                "
+            >
 
-                <div className="relative w-[420px]">
+                <div className="relative w-full">
 
                     <Search
                         size={18}
@@ -411,13 +420,13 @@ function Navbar() {
                             setShowUsers(false)
                         }}
                         className="
-                              absolute
-                              right-3
-                              top-1/2
-                              -translate-y-1/2
-                              text-[#3C2A21]
-                              hover:text-[#8D493A]
-                          "
+                            absolute
+                            right-3
+                            top-1/2
+                            -translate-y-1/2
+                            text-[#3C2A21]
+                            hover:text-[#8D493A]
+                        "
                     >
                         <X size={18} />
                     </button>
@@ -429,7 +438,7 @@ function Navbar() {
                         absolute
                         top-12
                         left-0
-                        w-[420px]
+                        w-full
                         bg-[#E5E5CB]
                         rounded-2xl
                         shadow-xl
@@ -451,7 +460,7 @@ function Navbar() {
                         absolute
                         top-12
                         left-0
-                        w-[420px]
+                        w-full
                         bg-[#E5E5CB]
                         rounded-2xl
                         shadow-xl
@@ -476,7 +485,7 @@ function Navbar() {
                                 absolute
                                 top-12
                                 left-0
-                                w-[420px]
+                                w-full
                                 bg-[#E5E5CB]
                                 rounded-2xl
                                 shadow-xl
@@ -497,7 +506,8 @@ function Navbar() {
                                         flex
                                         items-center
                                         gap-3
-                                        px-4
+                                        px-3
+                                        sm:px-4
                                         py-3
                                         hover:bg-[#D5CEA3]
                                         cursor-pointer
@@ -505,14 +515,17 @@ function Navbar() {
                                 >
 
                                     <div className="
-                                        w-11
-                                        h-11
+                                        w-10
+                                        h-10
+                                        sm:w-11
+                                        sm:h-11
                                         rounded-full
                                         overflow-hidden
                                         bg-[#D0B8A8]
                                         flex
                                         items-center
                                         justify-center
+                                        shrink-0
                                     ">
 
                                         {item.displayPicture ? (
@@ -540,11 +553,12 @@ function Navbar() {
 
                                     </div>
 
-                                    <div>
+                                    <div className="min-w-0">
 
                                         <p className="
                                             font-semibold
                                             text-[#3C2A21]
+                                            truncate
                                         ">
                                             {item.firstName} {item.lastName}
                                         </p>
@@ -552,6 +566,7 @@ function Navbar() {
                                         <p className="
                                             text-sm
                                             text-[#8D493A]
+                                            truncate
                                         ">
                                             @{item.username}
                                         </p>
@@ -574,7 +589,7 @@ function Navbar() {
                             absolute
                             top-12
                             left-0
-                            w-[420px]
+                            w-full
                             bg-[#E5E5CB]
                             rounded-2xl
                             shadow-xl
@@ -598,7 +613,7 @@ function Navbar() {
                             absolute
                             top-12
                             left-0
-                            w-[420px]
+                            w-full
                             bg-[#E5E5CB]
                             rounded-2xl
                             shadow-xl
@@ -622,7 +637,8 @@ function Navbar() {
                                     flex
                                     items-center
                                     gap-3
-                                    px-4
+                                    px-3
+                                    sm:px-4
                                     py-3
                                     hover:bg-[#D5CEA3]
                                     cursor-pointer
@@ -630,14 +646,17 @@ function Navbar() {
                             >
 
                                 <div className="
-                                    w-11
-                                    h-11
+                                    w-10
+                                    h-10
+                                    sm:w-11
+                                    sm:h-11
                                     rounded-full
                                     overflow-hidden
                                     bg-[#D0B8A8]
                                     flex
                                     items-center
                                     justify-center
+                                    shrink-0
                                 ">
 
                                     {item.displayPicture ? (
@@ -665,11 +684,12 @@ function Navbar() {
 
                                 </div>
 
-                                <div>
+                                <div className="min-w-0">
 
                                     <p className="
                                         font-semibold
                                         text-[#3C2A21]
+                                        truncate
                                     ">
                                         {item.firstName} {item.lastName}
                                     </p>
@@ -677,6 +697,7 @@ function Navbar() {
                                     <p className="
                                         text-sm
                                         text-[#8D493A]
+                                        truncate
                                     ">
                                         @{item.username}
                                     </p>
@@ -706,7 +727,7 @@ function Navbar() {
 
             </div>
 
-            <div className="ml-auto flex items-center gap-4">
+            <div className="ml-auto flex items-center gap-2 sm:gap-4 shrink-0">
 
                 <button
                     type="button"
@@ -717,7 +738,8 @@ function Navbar() {
                         flex
                         items-center
                         gap-2
-                        px-5
+                        px-3
+                        sm:px-5
                         py-2
                         rounded-full
                         bg-[#E5E5CB]
@@ -728,21 +750,24 @@ function Navbar() {
                         hover:bg-[#D5CEA3]
                         hover:border-[#E5E5CB]
                         transition
-                        scale-105
+                        scale-100
+                        sm:scale-105
                     "
                 >
 
                     <Plus size={18} />
 
-                    <span>
+                    <span className="hidden sm:inline">
                         Post
                     </span>
 
                 </button>
 
                 <div className="
-                    w-10
-                    h-10
+                    w-9
+                    h-9
+                    sm:w-10
+                    sm:h-10
                     rounded-full
                     overflow-hidden
                     bg-[#D0B8A8]
@@ -753,18 +778,18 @@ function Navbar() {
                     justify-center
                     text-[#8D493A]
                     font-semibold
+                    shrink-0
                 ">
 
-                        <img
-                            src={userData.displayPicture || "/muuv_display_picture.svg"}
-                            alt="Profile"
-                            className="
-                                w-full
-                                h-full
-                                object-cover
-                            "
-                        />
-
+                    <img
+                        src={userData.displayPicture || "/muuv_display_picture.svg"}
+                        alt="Profile"
+                        className="
+                            w-full
+                            h-full
+                            object-cover
+                        "
+                    />
 
                 </div>
 

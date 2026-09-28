@@ -10,7 +10,7 @@ function OtherUserProfilePage() {
 
             <Sidebar />
 
-            <main className="pt-16 ml-20">
+            <main className="pt-16 ml-0 md:ml-20 pb-16 lg:pb-0 px-3 sm:px-4 md:px-6 lg:px-8">
                 <OtherUserProfileContent />
             </main>
         </div>

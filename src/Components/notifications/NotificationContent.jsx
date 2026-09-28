@@ -21,6 +21,10 @@ function NotificationContent() {
         store => store.notification?.notifications || []
     )
 
+    const loaded = useSelector(
+        store => store.notification?.loaded || false
+    )
+
     const hasMore = useSelector(
         store => store.notification?.hasMore
     )
@@ -65,6 +69,10 @@ function NotificationContent() {
 
     useEffect(() => {
 
+        if (loaded) {
+            return
+        }
+
         const getNotificationData = async () => {
 
             try {
@@ -95,7 +103,7 @@ function NotificationContent() {
 
         getNotificationData()
 
-    }, [dispatch])
+    }, [dispatch, loaded])
 
     const handleLoadMore = async () => {
 
@@ -130,13 +138,13 @@ function NotificationContent() {
     return (
         <div className="w-full">
 
-            <h1 className="text-2xl font-semibold text-[#3C2A21] mb-6">
+            <h1 className="text-xl sm:text-2xl font-semibold text-[#3C2A21] mb-4 sm:mb-6">
                 Notifications
             </h1>
 
             {loading && notifications.length === 0 ? (
 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3 sm:gap-4">
 
                     {[1, 2, 3].map(item => (
                         <div
@@ -146,27 +154,29 @@ function NotificationContent() {
                                 rounded-2xl
                                 border
                                 border-[#FFE5BF]
-                                p-4
+                                p-3
+                                sm:p-4
                                 flex
                                 items-center
-                                gap-4
+                                gap-3
+                                sm:gap-4
                                 animate-pulse
                             "
                         >
 
-                            <div className="w-12 h-12 rounded-full bg-[#FFE5BF] shrink-0" />
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#FFE5BF] shrink-0" />
 
-                            <div className="flex-1 space-y-2">
+                            <div className="flex-1 min-w-0 space-y-2">
 
-                                <div className="h-4 w-40 bg-[#FFE5BF] rounded" />
+                                <div className="h-4 w-32 sm:w-40 bg-[#FFE5BF] rounded" />
 
-                                <div className="h-3 w-56 bg-[#FFE5BF] rounded" />
+                                <div className="h-3 w-40 sm:w-56 bg-[#FFE5BF] rounded" />
 
-                                <div className="h-3 w-24 bg-[#FFE5BF] rounded" />
+                                <div className="h-3 w-20 sm:w-24 bg-[#FFE5BF] rounded" />
 
                             </div>
 
-                            <div className="w-20 h-14 bg-[#FFE5BF] rounded-lg shrink-0" />
+                            <div className="w-16 h-12 sm:w-20 sm:h-14 bg-[#FFE5BF] rounded-lg shrink-0" />
 
                         </div>
                     ))}
@@ -181,7 +191,8 @@ function NotificationContent() {
                         rounded-2xl
                         border
                         border-[#3C2A21]
-                        py-12
+                        py-10
+                        sm:py-12
                         text-center
                         text-[#1A120B]
                         shadow-[0_3px_12px_rgba(141,73,58,0.07)]
@@ -192,7 +203,7 @@ function NotificationContent() {
 
             ) : (
 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3 sm:gap-4">
 
                     {notifications.map(notification => (
                         <NotificationCard
@@ -208,7 +219,8 @@ function NotificationContent() {
                             disabled={loading}
                             className="
                                 self-center
-                                px-5
+                                px-4
+                                sm:px-5
                                 py-2
                                 rounded-full
                                 bg-[#4E220F]

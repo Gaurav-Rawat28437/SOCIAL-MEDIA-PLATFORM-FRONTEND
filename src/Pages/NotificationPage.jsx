@@ -13,12 +13,18 @@ function NotificationPage() {
             <main
                 className="
                     pt-20
-                    ml-[336px]
-                    mr-5
-                    pb-10
+                    ml-0
+                    md:ml-20
+                    lg:ml-[336px]
+                    mr-0
+                    md:mr-5
+                    pb-20
+                    lg:pb-10
+                    px-3
+                    md:px-0
                 "
             >
-                <div className="w-[700px]">
+                <div className="w-full max-w-[700px]">
                     <NotificationContent />
                 </div>
             </main>

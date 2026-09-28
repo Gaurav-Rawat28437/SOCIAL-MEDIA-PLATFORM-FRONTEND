@@ -134,59 +134,64 @@ function PostContent({ userData }) {
         })
     }, [activeTab])
 
-
-
     return (
         <div className="border-t border-[#D0B8A8]">
 
-            <div className="flex border-b border-[#D0B8A8] sticky top-15 z-10 bg-white">
+            <div className="overflow-x-auto border-b border-[#D0B8A8] sticky top-16 z-10 bg-white [&::-webkit-scrollbar]:h-0 [scrollbar-width:none]">
 
-                <button
-                    type="button"
-                    onClick={() => setActiveTab("posts")}
-                    className={`px-6 py-4 text-sm font-semibold ${activeTab === "posts"
-                        ? "text-[#1A120B] border-b-2 border-[#8D493A]"
-                        : "text-[#8D493A]"
-                        }`}
-                >
-                    Posts
-                </button>
+                <div className="flex w-full">
 
-                <button
-                    type="button"
-                    onClick={() => setActiveTab("thoughts")}
-                    className={`px-6 py-4 text-sm font-semibold ${activeTab === "thoughts"
-                        ? "text-[#1A120B] border-b-2 border-[#8D493A]"
-                        : "text-[#8D493A]"
-                        }`}
-                >
-                    Thoughts
-                </button>
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab("posts")}
+                        className={`flex-1 px-2 sm:px-6 py-3 sm:py-4 text-sm font-semibold text-center whitespace-nowrap ${activeTab === "posts"
+                            ? "text-[#1A120B] border-b-2 border-[#8D493A]"
+                            : "text-[#8D493A]"
+                            }`}
+                    >
+                        Posts
+                    </button>
 
-                <button
-                    type="button"
-                    onClick={() => setActiveTab("replies")}
-                    className={`px-6 py-4 text-sm font-semibold ${activeTab === "replies"
-                        ? "text-[#1A120B] border-b-2 border-[#8D493A]"
-                        : "text-[#8D493A]"
-                        }`}
-                >
-                    Replies
-                </button>
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab("thoughts")}
+                        className={`flex-1 px-2 sm:px-6 py-3 sm:py-4 text-sm font-semibold text-center whitespace-nowrap ${activeTab === "thoughts"
+                            ? "text-[#1A120B] border-b-2 border-[#8D493A]"
+                            : "text-[#8D493A]"
+                            }`}
+                    >
+                        Thoughts
+                    </button>
 
-                <button type="button"
-                    onClick={() => setActiveTab("likes")}
-                    className={`px-6 py-4 text-sm font-semibold 
-                                    ${activeTab === "likes" ? "text-[#1A120B] border-b-2 border-[#8D493A]" : "text-[#8D493A]"}`}
-                >
-                    Likes
-                </button>
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab("replies")}
+                        className={`flex-1 px-2 sm:px-6 py-3 sm:py-4 text-sm font-semibold text-center whitespace-nowrap ${activeTab === "replies"
+                            ? "text-[#1A120B] border-b-2 border-[#8D493A]"
+                            : "text-[#8D493A]"
+                            }`}
+                    >
+                        Replies
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab("likes")}
+                        className={`flex-1 px-2 sm:px-6 py-3 sm:py-4 text-sm font-semibold text-center whitespace-nowrap ${activeTab === "likes"
+                            ? "text-[#1A120B] border-b-2 border-[#8D493A]"
+                            : "text-[#8D493A]"
+                            }`}
+                    >
+                        Likes
+                    </button>
+
+                </div>
 
             </div>
 
             {activeTab === "posts" && (
 
-                <div className="p-6">
+                <div className="p-3 sm:p-6">
 
                     {loading ? (
 
@@ -202,7 +207,7 @@ function PostContent({ userData }) {
 
                     ) : (
 
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
 
                             {posts.map(post => (
 
@@ -251,7 +256,8 @@ function PostContent({ userData }) {
             )}
 
             {activeTab === "likes" && (
-                <MyLikesContent userData={userData}
+                <MyLikesContent
+                    userData={userData}
                 />
             )}
 

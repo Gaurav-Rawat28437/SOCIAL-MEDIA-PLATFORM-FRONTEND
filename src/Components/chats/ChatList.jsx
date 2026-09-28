@@ -30,7 +30,6 @@ function ChatList({ setSelectedUser, chatUsers }) {
 
     const searchContainerRef = useRef(null)
 
-
     useEffect(() => {
 
         const handleClick = (e) => {
@@ -196,9 +195,9 @@ function ChatList({ setSelectedUser, chatUsers }) {
     return (
         <div className="w-full h-full bg-[#D5CEA3] flex flex-col">
 
-            <div className="px-5 py-2">
+            <div className="px-3 sm:px-4 lg:px-5 py-2 lg:py-3">
 
-                <h3 className="font-semibold text-[#1A120B] text-lg">
+                <h3 className="font-semibold text-[#1A120B] text-base sm:text-lg">
                     Chats
                 </h3>
 
@@ -206,9 +205,10 @@ function ChatList({ setSelectedUser, chatUsers }) {
 
             <div
                 ref={searchContainerRef}
-                className="px-5 relative">
+                className="px-3 sm:px-4 lg:px-5 relative"
+            >
 
-                <div className="flex items-center gap-2 bg-[#E5E5CB] border border-[#5A382A]/30 rounded-xl px-3 py-2.5 focus-within:border-[#1A120B] transition">
+                <div className="flex items-center gap-2 lg:gap-3 bg-[#E5E5CB] border border-[#5A382A]/30 rounded-xl px-3 py-2.5 lg:px-4 lg:py-3 focus-within:border-[#1A120B] transition">
 
                     <Search
                         size={18}
@@ -229,7 +229,7 @@ function ChatList({ setSelectedUser, chatUsers }) {
                         type="text"
                         value={search}
                         placeholder="Search people..."
-                        className="w-full bg-transparent text-sm text-[#1A120B] placeholder:text-[#5A382A]/50 outline-none"
+                        className="w-full min-w-0 bg-transparent text-sm text-[#1A120B] placeholder:text-[#5A382A]/50 outline-none"
                     />
 
                     {search && (
@@ -241,7 +241,7 @@ function ChatList({ setSelectedUser, chatUsers }) {
                                 setSearchResults([])
                                 setSearchLoading(false)
                             }}
-                            className="text-[#5A382A] hover:text-[#1A120B]"
+                            className="text-[#5A382A] hover:text-[#1A120B] shrink-0"
                         >
                             <X size={18} />
                         </button>
@@ -275,7 +275,7 @@ function ChatList({ setSelectedUser, chatUsers }) {
 
             </div>
 
-            <div className="flex-1 overflow-y-auto px-3 mt-2">
+            <div className="flex-1 overflow-y-auto px-2 sm:px-3 mt-2">
 
                 {chatUsers?.length > 0 ? (
 
@@ -290,29 +290,29 @@ function ChatList({ setSelectedUser, chatUsers }) {
                                     dispatch(decreaseTotalUnreadMessages(user.unreadCount))
                                 }
                             }}
-                            className="flex items-center gap-3 px-2 py-3 mt-1 bg-[#3C2A21] border-[#E5E5CB] hover:bg-[#3C2A21]/90 rounded-2xl cursor-pointer"
+                            className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 px-2 sm:px-2.5 lg:px-3 py-2.5 sm:py-3 mt-1 bg-[#3C2A21] border-[#E5E5CB] hover:bg-[#3C2A21]/90 rounded-xl sm:rounded-xl lg:rounded-2xl cursor-pointer"
                         >
 
                             <img
                                 src={user.displayPicture || "/muuv_pfp_dark.svg"}
                                 alt=""
-                                className="w-11 h-11 rounded-full object-cover"
+                                className="w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full object-cover shrink-0"
                             />
 
                             <div className="flex-1 min-w-0">
 
-                                <p className="font-semibold text-sm text-[#E5E5CB] truncate">
+                                <p className="font-semibold text-xs sm:text-sm text-[#E5E5CB] truncate">
                                     {user.username}
                                 </p>
 
-                                <p className="text-xs text-[#D5CEA3] truncate">
+                                <p className="text-[10px] sm:text-xs text-[#D5CEA3] truncate">
                                     {user.firstName} {user.lastName}
                                 </p>
 
                             </div>
 
                             {user.unreadCount > 0 && (
-                                <div className="min-w-5 h-5 mx-3 rounded-full bg-[#E5E5CB] text-[#1A120B] text-xs flex items-center justify-center">
+                                <div className="min-w-5 h-5 mx-1 sm:mx-2 lg:mx-3 rounded-full bg-[#E5E5CB] text-[#1A120B] text-xs flex items-center justify-center shrink-0">
                                     {user.unreadCount}
                                 </div>
                             )}

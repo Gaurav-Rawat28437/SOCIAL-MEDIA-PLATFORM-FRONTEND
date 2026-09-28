@@ -202,7 +202,8 @@ function LikeCard({ like }) {
                 bg-[#E5E5CB]
                 border
                 border-[#1A120B]
-                rounded-2xl
+                rounded-xl
+                sm:rounded-2xl
                 overflow-hidden
                 shadow-[0_3px_12px_rgba(141,73,58,0.08)]
                 hover:shadow-[0_7px_22px_rgba(141,73,58,0.14)]
@@ -210,11 +211,11 @@ function LikeCard({ like }) {
             "
         >
 
-            <div className="p-5">
+            <div className="p-3 sm:p-5">
 
-                <div className="flex items-start justify-between">
+                <div className="flex items-start justify-between gap-2">
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0">
 
                         <div
                             onClick={() => {
@@ -226,8 +227,10 @@ function LikeCard({ like }) {
                                 }
                             }}
                             className="
-                                w-11
-                                h-11
+                                w-9
+                                h-9
+                                sm:w-11
+                                sm:h-11
                                 rounded-full
                                 overflow-hidden
                                 shrink-0
@@ -253,7 +256,7 @@ function LikeCard({ like }) {
 
                         </div>
 
-                        <div>
+                        <div className="min-w-0">
 
                             <div
                                 onClick={() => {
@@ -264,12 +267,15 @@ function LikeCard({ like }) {
                                         nav(`/profile/${author._id}`)
                                     }
                                 }}
-                                className="flex items-center gap-2 flex-wrap cursor-pointer">
+                                className="flex items-center gap-1 sm:gap-2 flex-wrap cursor-pointer"
+                            >
 
                                 <p
                                     className="
                                         font-semibold
                                         text-[#1A120B]
+                                        text-sm
+                                        sm:text-base
                                     "
                                 >
                                     {author?.firstName}{" "}
@@ -278,8 +284,10 @@ function LikeCard({ like }) {
 
                                 <span
                                     className="
-                                        text-sm
+                                        text-xs
+                                        sm:text-sm
                                         text-[#1A120B]/60
+                                        truncate
                                     "
                                 >
                                     @{author?.username}
@@ -292,7 +300,8 @@ function LikeCard({ like }) {
                                     flex
                                     items-center
                                     gap-1
-                                    text-xs
+                                    text-[10px]
+                                    sm:text-xs
                                     text-[#1A120B]/60
                                     mt-0.5
                                 "
@@ -324,8 +333,10 @@ function LikeCard({ like }) {
                     <button
                         type="button"
                         className="
-                            w-9
-                            h-9
+                            w-8
+                            h-8
+                            sm:w-9
+                            sm:h-9
                             flex
                             items-center
                             justify-center
@@ -336,6 +347,7 @@ function LikeCard({ like }) {
                             hover:bg-[#D5CEA3]
                             hover:border-[#1A120B]
                             transition-all
+                            shrink-0
                         "
                     >
 
@@ -349,13 +361,14 @@ function LikeCard({ like }) {
 
                     <p
                         className={`
-                            mt-4
+                            mt-3
+                            sm:mt-4
                             text-[#1A120B]
                             whitespace-pre-wrap
                             break-words
                             ${isThought
-                                ? "text-[17px] leading-7"
-                                : "text-[16px] leading-6"
+                                ? "text-[16px] sm:text-[17px] leading-6 sm:leading-7"
+                                : "text-[15px] sm:text-[16px] leading-6"
                             }
                         `}
                     >
@@ -368,8 +381,11 @@ function LikeCard({ like }) {
 
                     <div
                         className="
-                            mt-4
-                            h-[400px]
+                            mt-3
+                            sm:mt-4
+                            h-[280px]
+                            sm:h-[350px]
+                            md:h-[400px]
                             rounded-xl
                             overflow-hidden
                             border
@@ -415,8 +431,10 @@ function LikeCard({ like }) {
                                             top-1/2
                                             -translate-x-1/2
                                             -translate-y-1/2
-                                            w-14
-                                            h-14
+                                            w-12
+                                            h-12
+                                            sm:w-14
+                                            sm:h-14
                                             rounded-full
                                             bg-black/60
                                             text-white
@@ -429,8 +447,8 @@ function LikeCard({ like }) {
                                     >
 
                                         <Play
-                                            size={27}
-                                            className="ml-1"
+                                            size={24}
+                                            className="ml-1 sm:size-[27px]"
                                         />
 
                                     </button>
@@ -445,9 +463,12 @@ function LikeCard({ like }) {
                                         right-0
                                         flex
                                         items-center
-                                        gap-3
-                                        px-4
-                                        py-3
+                                        gap-2
+                                        sm:gap-3
+                                        px-3
+                                        sm:px-4
+                                        py-2.5
+                                        sm:py-3
                                         bg-black/70
                                     "
                                 >
@@ -496,7 +517,8 @@ function LikeCard({ like }) {
                                         value={volume}
                                         onChange={handleVolume}
                                         className="
-                                            w-24
+                                            w-16
+                                            sm:w-24
                                             accent-[#8D493A]
                                         "
                                     />
@@ -528,8 +550,12 @@ function LikeCard({ like }) {
                         flex
                         items-center
                         justify-between
-                        mt-4
-                        pt-3
+                        gap-1
+                        sm:gap-2
+                        mt-3
+                        sm:mt-4
+                        pt-2
+                        sm:pt-3
                         border-t
                         border-[#1A120B]
                     "
@@ -543,10 +569,14 @@ function LikeCard({ like }) {
                             flex
                             items-center
                             justify-center
-                            gap-2
-                            min-w-[70px]
-                            h-10
-                            px-3
+                            gap-1
+                            sm:gap-2
+                            min-w-[55px]
+                            sm:min-w-[70px]
+                            h-9
+                            sm:h-10
+                            px-1.5
+                            sm:px-3
                             rounded-full
                             border
                             border-transparent
@@ -560,12 +590,12 @@ function LikeCard({ like }) {
                     >
 
                         <Heart
-                            size={20}
+                            size={18}
                             className="shrink-0 text-[#1A120B]"
                             fill="currentColor"
                         />
 
-                        <span className="text-sm text-[#1A120B]">
+                        <span className="text-xs sm:text-sm text-[#1A120B]">
                             {post?.likesCount || 0}
                         </span>
 
@@ -580,10 +610,14 @@ function LikeCard({ like }) {
                             flex
                             items-center
                             justify-center
-                            gap-2
-                            min-w-[70px]
-                            h-10
-                            px-3
+                            gap-1
+                            sm:gap-2
+                            min-w-[55px]
+                            sm:min-w-[70px]
+                            h-9
+                            sm:h-10
+                            px-1.5
+                            sm:px-3
                             rounded-full
                             border
                             border-transparent
@@ -595,11 +629,11 @@ function LikeCard({ like }) {
                     >
 
                         <MessageCircle
-                            size={20}
+                            size={18}
                             className="shrink-0"
                         />
 
-                        <span className="text-sm">
+                        <span className="text-xs sm:text-sm">
                             {post?.commentsCount || 0}
                         </span>
 
@@ -614,10 +648,14 @@ function LikeCard({ like }) {
                             flex
                             items-center
                             justify-center
-                            gap-2
-                            min-w-[70px]
-                            h-10
-                            px-3
+                            gap-1
+                            sm:gap-2
+                            min-w-[45px]
+                            sm:min-w-[70px]
+                            h-9
+                            sm:h-10
+                            px-1
+                            sm:px-3
                             rounded-full
                             border
                             border-transparent
@@ -629,11 +667,11 @@ function LikeCard({ like }) {
                     >
 
                         <Share
-                            size={20}
+                            size={18}
                             className="shrink-0"
                         />
 
-                        <span className="text-sm">
+                        <span className="text-xs sm:text-sm">
                             {post?.repostsCount || 0}
                         </span>
 
@@ -645,8 +683,10 @@ function LikeCard({ like }) {
                             setIsBookmarked(!isBookmarked)
                         }
                         className="
-                            w-10
-                            h-10
+                            w-9
+                            h-9
+                            sm:w-10
+                            sm:h-10
                             flex
                             items-center
                             justify-center
@@ -661,7 +701,7 @@ function LikeCard({ like }) {
                     >
 
                         <Bookmark
-                            size={20}
+                            size={18}
                             className="shrink-0"
                             fill={
                                 isBookmarked

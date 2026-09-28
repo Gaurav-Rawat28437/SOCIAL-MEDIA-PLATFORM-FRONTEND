@@ -70,7 +70,6 @@ function PostModal({
         }
     }
 
-
     const toggleMute = () => {
         if (!videoRef.current) return
 
@@ -176,7 +175,6 @@ function PostModal({
                 else {
                     dispatch(thoughtCount(loggedInUser?.thoughtCount - 1))
                 }
-
 
                 toast.success(
                     response.msg || "Post deleted successfully"
@@ -322,7 +320,6 @@ function PostModal({
 
     const isVideo = post.imgUrl?.includes("/video/upload/")
 
-
     const [showComments, setShowComments] = useState(false)
 
     const handleCommentAdded = (commentsCount) => {
@@ -376,21 +373,22 @@ function PostModal({
         }
     }
 
-
     return (
 
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
 
-            <div className="bg-white w-full max-w-2xl max-h-[85vh] rounded-2xl overflow-y-auto [&::-webkit-scrollbar]:hidden">
+            <div className="bg-white w-full max-w-2xl max-h-[95vh] sm:max-h-[85vh] rounded-xl sm:rounded-2xl overflow-y-auto [&::-webkit-scrollbar]:hidden">
 
-                <div className="sticky top-0 z-10 flex items-center justify-between p-4 bg-white border-b border-[#D0B8A8]">
+                <div className="sticky top-0 z-10 flex items-center justify-between p-3 sm:p-4 bg-white border-b border-[#D0B8A8]">
 
-                    <h2 className="font-semibold text-[#4E220F]">
+                    <h2 className="font-semibold text-sm sm:text-base text-[#4E220F]">
                         Post
                     </h2>
 
                     <div className="flex items-center gap-1">
+
                         {(loggedInUser._id === post.authorId || loggedInUser._id === post.authorId?._id) && (
+
                             <div className="relative">
 
                                 <button
@@ -398,14 +396,14 @@ function PostModal({
                                     onClick={() =>
                                         setShowOptions(!showOptions)
                                     }
-                                    className="p-2 rounded-full hover:bg-[#F8EDE3] text-[#4E220F]"
+                                    className="p-1.5 sm:p-2 rounded-full hover:bg-[#F8EDE3] text-[#4E220F]"
                                 >
-                                    <MoreVertical size={20} />
+                                    <MoreVertical size={19} className="sm:w-5 sm:h-5" />
                                 </button>
 
                                 {showOptions && (
 
-                                    <div className="absolute right-0 top-11 w-32 bg-white border border-[#D0B8A8] rounded-xl shadow-lg overflow-hidden">
+                                    <div className="absolute right-0 top-10 sm:top-11 w-28 sm:w-32 bg-white border border-[#D0B8A8] rounded-xl shadow-lg overflow-hidden">
 
                                         <button
                                             type="button"
@@ -413,7 +411,7 @@ function PostModal({
                                                 setShowOptions(false)
                                                 setShowEdit(true)
                                             }}
-                                            className="w-full px-4 py-2.5 text-left text-sm text-[#4A352C] hover:bg-[#F8EDE3]"
+                                            className="w-full px-3 sm:px-4 py-2.5 text-left text-xs sm:text-sm text-[#4A352C] hover:bg-[#F8EDE3]"
                                         >
                                             Edit
                                         </button>
@@ -424,7 +422,7 @@ function PostModal({
                                                 setShowOptions(false)
                                                 setShowDeleteConfirm(true)
                                             }}
-                                            className="w-full px-4 py-2.5 text-left text-sm text-red-500 hover:bg-[#F8EDE3]"
+                                            className="w-full px-3 sm:px-4 py-2.5 text-left text-xs sm:text-sm text-red-500 hover:bg-[#F8EDE3]"
                                         >
                                             Delete
                                         </button>
@@ -434,14 +432,15 @@ function PostModal({
                                 )}
 
                             </div>
+
                         )}
 
                         <button
                             type="button"
                             onClick={() => setSelectedPost(null)}
-                            className="p-2 rounded-full hover:bg-[#F8EDE3] text-[#4E220F]"
+                            className="p-1.5 sm:p-2 rounded-full hover:bg-[#F8EDE3] text-[#4E220F]"
                         >
-                            <X size={20} />
+                            <X size={19} className="sm:w-5 sm:h-5" />
                         </button>
 
                     </div>
@@ -449,17 +448,8 @@ function PostModal({
                 </div>
 
                 {post.imgUrl && (
-                    <div
-                        className="
-                        mt-4
-                        h-[400px]
-                        rounded-xl
-                        overflow-hidden
-                        border
-                        border-[#1A120B]
-                        bg-[#1A120B]
-                        "
-                    >
+
+                    <div className="mt-2 sm:mt-4 h-[260px] sm:h-[350px] md:h-[400px] rounded-lg sm:rounded-xl overflow-hidden border border-[#1A120B] bg-[#1A120B]">
 
                         {isVideo ? (
 
@@ -473,87 +463,47 @@ function PostModal({
                                     onPlay={() => setIsPlaying(true)}
                                     onPause={() => setIsPlaying(false)}
                                     onEnded={() => setIsPlaying(false)}
-                                    className="
-                                    w-full
-                                    h-full
-                                    object-contain
-                                    cursor-pointer
-                                    "
+                                    className="w-full h-full object-contain cursor-pointer"
                                 />
 
                                 {!isPlaying && (
+
                                     <button
                                         type="button"
                                         onClick={togglePlay}
-                                        className="
-                                        absolute
-                                        left-1/2
-                                        top-1/2
-                                        -translate-x-1/2
-                                        -translate-y-1/2
-                                        w-14
-                                        h-14
-                                        rounded-full
-                                        bg-black/60
-                                        text-white
-                                        flex
-                                        items-center
-                                        justify-center
-                                        hover:bg-black/80
-                                        transition
-                                        "
+                                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition"
                                     >
                                         <Play
-                                            size={27}
-                                            className="ml-1"
+                                            size={24}
+                                            className="ml-1 sm:w-[27px] sm:h-[27px]"
                                         />
                                     </button>
+
                                 )}
 
-                                <div
-                                    className="
-                                    absolute
-                                    bottom-0
-                                    left-0
-                                    right-0
-                                    flex
-                                    items-center
-                                    gap-3
-                                    px-4
-                                    py-3
-                                    bg-black/70
-                                    "
-                                >
+                                <div className="absolute bottom-0 left-0 right-0 flex items-center gap-2 sm:gap-3 px-2 sm:px-4 py-2 sm:py-3 bg-black/70">
 
                                     <button
                                         type="button"
                                         onClick={togglePlay}
-                                        className="
-                                        text-white
-                                        hover:text-[#D0B8A8]
-                                        transition
-                                        "
+                                        className="text-white hover:text-[#D0B8A8] transition shrink-0"
                                     >
                                         {isPlaying ? (
-                                            <Pause size={20} />
+                                            <Pause size={18} className="sm:w-5 sm:h-5" />
                                         ) : (
-                                            <Play size={20} />
+                                            <Play size={18} className="sm:w-5 sm:h-5" />
                                         )}
                                     </button>
 
                                     <button
                                         type="button"
                                         onClick={toggleMute}
-                                        className="
-                                        text-white
-                                        hover:text-[#D0B8A8]
-                                        transition
-                                        "
+                                        className="text-white hover:text-[#D0B8A8] transition shrink-0"
                                     >
                                         {isMuted ? (
-                                            <VolumeX size={20} />
+                                            <VolumeX size={18} className="sm:w-5 sm:h-5" />
                                         ) : (
-                                            <Volume2 size={20} />
+                                            <Volume2 size={18} className="sm:w-5 sm:h-5" />
                                         )}
                                     </button>
 
@@ -564,10 +514,7 @@ function PostModal({
                                         step="0.01"
                                         value={volume}
                                         onChange={handleVolume}
-                                        className="
-                                        w-24
-                                        accent-[#8D493A]
-                                        "
+                                        className="w-16 sm:w-24 accent-[#8D493A]"
                                     />
 
                                 </div>
@@ -579,19 +526,16 @@ function PostModal({
                             <img
                                 src={post.imgUrl}
                                 alt="Post"
-                                className="
-                                w-full
-                                h-full
-                                object-contain
-                                "
+                                className="w-full h-full object-contain"
                             />
 
                         )}
 
                     </div>
+
                 )}
 
-                <div className="p-5">
+                <div className="p-3 sm:p-5">
 
                     <div
                         onClick={() => {
@@ -602,8 +546,10 @@ function PostModal({
                             else {
                                 nav(`/profile/${userData._id}`)
                             }
+
                         }}
-                        className="flex items-center gap-3">
+                        className="flex items-center gap-2 sm:gap-3"
+                    >
 
                         <img
                             src={
@@ -611,16 +557,16 @@ function PostModal({
                                 "/muuv_pfp_dark.svg"
                             }
                             alt="Profile"
-                            className="w-10 h-10 rounded-full object-cover border border-[#D0B8A8]"
+                            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border border-[#D0B8A8]"
                         />
 
-                        <div>
+                        <div className="min-w-0">
 
-                            <p className="font-semibold text-[#4E220F]">
+                            <p className="font-semibold text-sm sm:text-base text-[#4E220F] truncate">
                                 {userData.firstName} {userData.lastName}
                             </p>
 
-                            <p className="text-sm text-[#8B6F61]">
+                            <p className="text-xs sm:text-sm text-[#8B6F61] truncate">
                                 @{userData.username}
                             </p>
 
@@ -630,54 +576,27 @@ function PostModal({
 
                     {post.content && (
 
-                        <p className="mt-4 text-[#4A352C] whitespace-pre-wrap break-words">
+                        <p className="mt-3 sm:mt-4 text-sm sm:text-base text-[#4A352C] whitespace-pre-wrap break-words">
                             {post.content}
                         </p>
 
                     )}
 
-                    <div
-                        className="
-                    flex
-                    items-center
-                    justify-between
-                    mt-4
-                    pt-3
-                    border-t
-                    border-[#1A120B]
-                    "
-                    >
+                    <div className="flex items-center justify-between gap-1 sm:gap-2 mt-3 sm:mt-4 pt-3 border-t border-[#1A120B]">
 
                         <button
                             type="button"
                             disabled={likeLoading}
                             onClick={handleLike}
-                            className="
-                                     flex
-                                     items-center
-                                     justify-center
-                                     gap-2
-                                     min-w-[70px]
-                                     h-10
-                                     px-3
-                                     rounded-full
-                                     border
-                                     border-transparent
-                                     text-[#1A120B]
-                                     hover:bg-[#D5CEA3]
-                                     hover:border-[#1A120B]
-                                     transition-all
-                                     disabled:opacity-50
-                                     disabled:cursor-not-allowed
-                                 "
+                            className="flex items-center justify-center gap-1 sm:gap-2 min-w-0 flex-1 h-9 sm:h-10 px-1.5 sm:px-3 rounded-full border border-transparent text-[#1A120B] hover:bg-[#D5CEA3] hover:border-[#1A120B] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <Heart
-                                size={20}
-                                className="shrink-0 text-[#1A120B]"
+                                size={18}
+                                className="shrink-0 text-[#1A120B] sm:w-5 sm:h-5"
                                 fill={isLiked ? "currentColor" : "none"}
                             />
 
-                            <span className="text-sm text-[#1A120B]">
+                            <span className="text-xs sm:text-sm text-[#1A120B]">
                                 {likesCount}
                             </span>
                         </button>
@@ -685,14 +604,14 @@ function PostModal({
                         <button
                             type="button"
                             onClick={() => setShowComments(true)}
-                            className=" flex items-center justify-center gap-2 min-w-[70px] h-10 px-3 rounded-full text-[#1A120B] border border-transparent hover:bg-[#D5CEA3] hover:border-[#1A120B] transition-all "
+                            className="flex items-center justify-center gap-1 sm:gap-2 min-w-0 flex-1 h-9 sm:h-10 px-1.5 sm:px-3 rounded-full text-[#1A120B] border border-transparent hover:bg-[#D5CEA3] hover:border-[#1A120B] transition-all"
                         >
                             <MessageCircle
-                                size={20}
-                                className="shrink-0"
+                                size={18}
+                                className="shrink-0 sm:w-5 sm:h-5"
                             />
 
-                            <span className="text-sm">
+                            <span className="text-xs sm:text-sm">
                                 {commentsCount}
                             </span>
                         </button>
@@ -700,29 +619,14 @@ function PostModal({
                         <button
                             type="button"
                             onClick={() => setShare(!isShare)}
-                            className="
-                        flex
-                        items-center
-                        justify-center
-                        gap-2
-                        min-w-[70px]
-                        h-10
-                        px-3
-                        rounded-full
-                        border
-                        border-transparent
-                        text-[#1A120B]
-                        hover:bg-[#D5CEA3]
-                        hover:border-[#1A120B]
-                        transition-all
-                        "
+                            className="flex items-center justify-center gap-1 sm:gap-2 min-w-0 flex-1 h-9 sm:h-10 px-1.5 sm:px-3 rounded-full border border-transparent text-[#1A120B] hover:bg-[#D5CEA3] hover:border-[#1A120B] transition-all"
                         >
                             <Share
-                                size={20}
-                                className="shrink-0 text-[#1A120B]"
+                                size={18}
+                                className="shrink-0 text-[#1A120B] sm:w-5 sm:h-5"
                             />
 
-                            <span className="text-sm text-[#1A120B]">
+                            <span className="text-xs sm:text-sm text-[#1A120B]">
                                 {post.repostsCount || 0}
                             </span>
 
@@ -731,24 +635,11 @@ function PostModal({
                         <button
                             type="button"
                             onClick={() => setIsBookmarked(!isBookmarked)}
-                            className="
-                        w-10
-                        h-10
-                        flex
-                        items-center
-                        justify-center
-                        rounded-full
-                        border
-                        border-transparent
-                        text-[#1A120B]
-                        hover:bg-[#D5CEA3]
-                        hover:border-[#1A120B]
-                        transition-all
-                        "
+                            className="w-9 sm:w-10 h-9 sm:h-10 flex items-center justify-center rounded-full border border-transparent text-[#1A120B] hover:bg-[#D5CEA3] hover:border-[#1A120B] transition-all shrink-0"
                         >
                             <Bookmark
-                                size={20}
-                                className="shrink-0 text-[#1A120B]"
+                                size={18}
+                                className="shrink-0 text-[#1A120B] sm:w-5 sm:h-5"
                                 fill={isBookmarked ? "#1A120B" : "none"}
                             />
                         </button>
@@ -761,19 +652,19 @@ function PostModal({
 
             {showDeleteConfirm && (
 
-                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4">
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-3 sm:p-4">
 
-                    <div className="bg-white w-full max-w-sm rounded-2xl p-6 shadow-xl">
+                    <div className="bg-white w-full max-w-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl">
 
-                        <h3 className="text-lg font-semibold text-[#4E220F]">
+                        <h3 className="text-base sm:text-lg font-semibold text-[#4E220F]">
                             Delete post?
                         </h3>
 
-                        <p className="mt-2 text-sm text-[#8B6F61]">
+                        <p className="mt-2 text-xs sm:text-sm text-[#8B6F61]">
                             This action cannot be undone.
                         </p>
 
-                        <div className="flex justify-end gap-3 mt-6">
+                        <div className="flex justify-end gap-2 sm:gap-3 mt-5 sm:mt-6">
 
                             <button
                                 type="button"
@@ -781,7 +672,7 @@ function PostModal({
                                 onClick={() =>
                                     setShowDeleteConfirm(false)
                                 }
-                                className="px-4 py-2 rounded-lg text-sm font-medium text-[#4A352C] hover:bg-[#F8EDE3] transition"
+                                className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-[#4A352C] hover:bg-[#F8EDE3] transition"
                             >
                                 Cancel
                             </button>
@@ -790,7 +681,7 @@ function PostModal({
                                 type="button"
                                 disabled={deleting}
                                 onClick={handleDelete}
-                                className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
                             >
                                 {deleting
                                     ? "Deleting..."
@@ -814,7 +705,6 @@ function PostModal({
                 />
 
             )}
-
 
             {showComments && (
                 <CommentModal

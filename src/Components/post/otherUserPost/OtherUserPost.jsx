@@ -74,10 +74,17 @@ function OtherUserPost({ userId, userData }) {
 
                 if (response.success) {
 
-                    setPosts(prevPosts => [
-                        ...prevPosts,
-                        ...(response.data || [])
-                    ])
+                    setPosts(prevPosts => {
+                        const existingIds = new Set(
+                            prevPosts.map(post => String(post._id))
+                        )
+
+                        const newPosts = (response.data || []).filter(
+                            post => !existingIds.has(String(post._id))
+                        )
+
+                        return [...prevPosts, ...newPosts]
+                    })
 
                     setHasMore(response.hasMore)
                     setPage(nextPage)
@@ -209,23 +216,23 @@ function OtherUserPost({ userId, userData }) {
     }
 
     return (
-        <div className="p-6">
+        <div className="p-3 sm:p-4 md:p-6">
 
             {loading ? (
 
-                <div className="text-center py-10 text-[#1A120B]">
+                <div className="text-center py-8 sm:py-10 text-[#1A120B]">
                     Loading posts...
                 </div>
 
             ) : posts.length === 0 ? (
 
-                <div className="text-center py-10 text-[#1A120B]">
+                <div className="text-center py-8 sm:py-10 text-[#1A120B]">
                     No posts yet
                 </div>
 
             ) : (
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
 
                     {posts.map(post => (
 
@@ -244,7 +251,7 @@ function OtherUserPost({ userId, userData }) {
 
             {loadingMore && (
 
-                <div className="text-center py-6 text-[#1A120B]">
+                <div className="text-center py-5 sm:py-6 text-[#1A120B]">
                     Loading more posts...
                 </div>
 
@@ -252,7 +259,7 @@ function OtherUserPost({ userId, userData }) {
 
             {!hasMore && posts.length > 0 && (
 
-                <div className="text-center py-6 text-[#1A120B]">
+                <div className="text-center py-5 sm:py-6 text-[#1A120B]">
                     No more posts
                 </div>
 

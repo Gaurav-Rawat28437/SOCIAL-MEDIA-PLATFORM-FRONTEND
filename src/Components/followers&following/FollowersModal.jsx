@@ -23,6 +23,14 @@ function FollowerModal({ userId, onClose }) {
     const loggedInUser = useSelector(store => store.User?.data)
 
     useEffect(() => {
+        document.body.style.overflow = "hidden"
+
+        return () => {
+            document.body.style.overflow = ""
+        }
+    }, [])
+
+    useEffect(() => {
 
         const fetchFollowers = async () => {
 
@@ -31,7 +39,6 @@ function FollowerModal({ userId, onClose }) {
                 setLoading(true)
 
                 const response = await getFollowers(userId, 1, 10)
-
 
                 if (response.success) {
                     setFollowers(response.data || [])
@@ -133,7 +140,6 @@ function FollowerModal({ userId, onClose }) {
                 response = await followUser(targetUserId)
             }
 
-
             if (response.success) {
 
                 if (!isFollowing) {
@@ -141,7 +147,6 @@ function FollowerModal({ userId, onClose }) {
                         notification: response.notification
                     })
                 }
-
 
                 setFollowers(prev =>
                     prev.map(item =>
@@ -181,23 +186,23 @@ function FollowerModal({ userId, onClose }) {
     }
 
     return (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-3 sm:p-4">
 
             <div
                 ref={modalRef}
-                className="bg-white w-full max-w-md max-h-[70vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden rounded-xl p-5"
+                className="bg-white w-full max-w-md max-h-[80vh] sm:max-h-[70vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden rounded-xl p-4 sm:p-5"
             >
 
-                <div className="flex justify-between items-center mb-5 sticky top-0 bg-white py-1">
+                <div className="flex justify-between items-center mb-4 sm:mb-5 sticky top-0 bg-white py-1">
 
-                    <h2 className="text-xl font-bold text-[#4E220F]">
+                    <h2 className="text-lg sm:text-xl font-bold text-[#4E220F]">
                         Followers
                     </h2>
 
                     <button
                         type="button"
                         onClick={onClose}
-                        className="text-xl text-[#4E220F]"
+                        className="text-xl sm:text-2xl text-[#4E220F] w-8 h-8 flex items-center justify-center"
                     >
                         ×
                     </button>
@@ -218,14 +223,13 @@ function FollowerModal({ userId, onClose }) {
 
                 ) : (
 
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-3 sm:gap-4">
 
                         {followers.map((item) => (
 
                             <div
-
                                 key={item.follower._id}
-                                className="flex items-center gap-3 cursor-pointer"
+                                className="flex items-center gap-2 sm:gap-3 cursor-pointer min-w-0"
                             >
 
                                 <img
@@ -243,7 +247,7 @@ function FollowerModal({ userId, onClose }) {
                                         "/muuv_pfp_dark.svg"
                                     }
                                     alt="Profile"
-                                    className="w-12 h-12 rounded-full object-cover"
+                                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover shrink-0"
                                 />
 
                                 <div
@@ -256,16 +260,18 @@ function FollowerModal({ userId, onClose }) {
                                         }
 
                                     }}
+                                    className="min-w-0 flex-1"
                                 >
 
-                                    <p className="font-semibold text-[#4E220F]">
+                                    <p className="font-semibold text-sm sm:text-base text-[#4E220F] truncate">
                                         {item.follower.firstName}{" "}
                                         {item.follower.lastName}
                                     </p>
 
-                                    <p className="text-sm text-[#8B6F61]">
+                                    <p className="text-xs sm:text-sm text-[#8B6F61] truncate">
                                         @{item.follower.username}
                                     </p>
+
                                 </div>
 
                                 {item.isFollowing !== null && (
@@ -279,7 +285,7 @@ function FollowerModal({ userId, onClose }) {
                                             )
 
                                         }}
-                                        className={`ml-auto px-4 py-2 rounded-lg text-sm font-semibold ${item.isFollowing
+                                        className={`shrink-0 ml-auto px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold ${item.isFollowing
                                             ? "bg-[#3C2A21] text-white"
                                             : "bg-[#D5CEA3] text-[#1A120B] border border:[#1A120B]"
                                             }`}
@@ -293,13 +299,13 @@ function FollowerModal({ userId, onClose }) {
                         ))}
 
                         {loadingMore && (
-                            <p className="text-center py-4 text-[#8B6F61]">
+                            <p className="text-center py-4 text-sm text-[#8B6F61]">
                                 Loading more followers...
                             </p>
                         )}
 
                         {!hasMore && followers.length > 0 && (
-                            <p className="text-center py-4 text-[#8B6F61]">
+                            <p className="text-center py-4 text-sm text-[#8B6F61]">
                                 No more followers
                             </p>
                         )}

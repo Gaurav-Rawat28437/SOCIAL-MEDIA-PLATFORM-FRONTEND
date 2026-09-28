@@ -1,4 +1,4 @@
-import { CheckCheck, ChevronDown, Smile, Reply, MoreVertical, X } from "lucide-react"
+import { CheckCheck, ChevronDown, Smile, Reply, MoreVertical, X, ArrowLeft } from "lucide-react"
 import React from "react"
 import { useRef } from "react"
 import { useEffect } from "react"
@@ -7,9 +7,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { getChatMessages, markChatMessagesAsSeen } from "../../services/chatService"
 import { moveChatUserToTop } from "../../Utils/ChatSlice"
 
-
-
-function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
+function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef, setSelectedUser }) {
 
     const loggedInUser = useSelector(store => store.User?.data)
 
@@ -105,7 +103,9 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
         socketRef.current.on("messages-seen", handleMessagesSeen)
 
         const markMessagesAsSeen = async () => {
+
             try {
+
                 await markChatMessagesAsSeen(selectedUser._id)
 
                 socketRef.current.emit("mark-seen", {
@@ -116,6 +116,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
             } catch (error) {
                 console.log(error)
             }
+
         }
 
         markMessagesAsSeen()
@@ -134,6 +135,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
         const getMessages = async () => {
 
             try {
+
                 setMessagesLoading(true)
                 setMessages([])
                 setCurrentPage(1)
@@ -180,8 +182,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                 console.log(error)
 
-            }
-            finally {
+            } finally {
                 setMessagesLoading(false)
             }
 
@@ -197,6 +198,7 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
             inputRef.current.value = ""
             inputRef.current.focus()
         }
+
         setReplyMessage(null)
         setShowScrollButton(false)
 
@@ -371,9 +373,11 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
                 behavior: "smooth"
             })
         })
+
     }
 
     const handleReply = (item) => {
+
         setReplyMessage(item)
 
         inputRef.current?.focus()
@@ -387,21 +391,29 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                 <div className="h-full flex flex-col">
 
-                    <div className="flex items-center gap-3 px-5 py-3 border-b border-[#5A382A]/20">
+                    <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2.5 sm:py-3 border-b border-[#5A382A]/20">
+
+                        <button
+                            type="button"
+                            onClick={() => setSelectedUser(null)}
+                            className="md:hidden w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#D5CEA3] text-[#3C2A21] shrink-0"
+                        >
+                            <ArrowLeft size={19} />
+                        </button>
 
                         <img
                             src={selectedUser.displayPicture || "/muuv_pfp_dark.svg"}
                             alt=""
-                            className="w-10 h-10 rounded-full object-cover border border-[#1A120B]"
+                            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border border-[#1A120B] shrink-0"
                         />
 
-                        <div>
+                        <div className="min-w-0">
 
-                            <p className="font-semibold text-[#1A120B]">
+                            <p className="font-semibold text-sm sm:text-base text-[#1A120B] truncate">
                                 {selectedUser.username}
                             </p>
 
-                            <p className="text-xs text-[#5A382A]/70">
+                            <p className="text-[10px] sm:text-xs text-[#5A382A]/70 truncate">
                                 {selectedUser.firstName} {selectedUser.lastName}
                             </p>
 
@@ -411,34 +423,41 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                     <div
                         onScroll={handleMessageScroll}
-                        className="relative flex-1 overflow-y-auto px-5 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                        className="relative flex-1 overflow-y-auto px-2 sm:px-5 py-3 sm:py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                     >
 
                         {!hasPreviousPage && messages.length > 0 && (
-                            <div className="flex flex-col items-center justify-center py-4">
+
+                            <div className="flex flex-col items-center justify-center py-3 sm:py-4">
 
                                 <img
                                     src={selectedUser.displayPicture || "/muuv_pfp_dark.svg"}
                                     alt=""
-                                    className="w-12 h-12 rounded-full object-cover border border-[#1A120B]"
+                                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border border-[#1A120B]"
                                 />
 
-                                <p className="mt-2 text-sm font-semibold text-[#1A120B]">
+                                <p className="mt-2 text-xs sm:text-sm font-semibold text-[#1A120B]">
                                     {selectedUser.username}
                                 </p>
 
                             </div>
+
                         )}
 
                         {messagesLoading ? (
+
                             <div className="h-full flex items-center justify-center">
+
                                 <div className="w-7 h-7 border-4 border-[#5A382A]/20 border-t-[#3C2A21] rounded-full animate-spin"></div>
+
                             </div>
+
                         ) : (
+
                             <>
 
                                 {loadingMore && (
-                                    <div className="text-center text-xs text-[#5A382A]/60 py-2">
+                                    <div className="text-center text-[10px] sm:text-xs text-[#5A382A]/60 py-2">
                                         Loading...
                                     </div>
                                 )}
@@ -447,56 +466,66 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                                     <div
                                         key={item._id || index}
-                                        className={` group flex mb-2 items-center ${item.sender === loggedInUser._id
-                                            ? "justify-end"
-                                            : "justify-start"
-                                            }`}
+                                        className={`group flex mb-2 items-center ${
+                                            item.sender === loggedInUser._id
+                                                ? "justify-end"
+                                                : "justify-start"
+                                        }`}
                                     >
-                                        {item.sender === loggedInUser._id && (<div className=" hidden group-hover:flex gap-1">
 
-                                            <button
-                                                type="button"
-                                                className=" w-6 h-6  flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
-                                            >
-                                                <Smile size={18} />
-                                            </button>
+                                        {item.sender === loggedInUser._id && (
 
-                                            <button
-                                                type="button"
-                                                onClick={() => handleReply(item)}
-                                                className=" w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
-                                            >
-                                                <Reply size={18} />
-                                            </button>
+                                            <div className="hidden group-hover:flex gap-0.5 sm:gap-1 shrink-0">
 
-                                            <button
-                                                type="button"
-                                                className=" w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
-                                            >
-                                                <MoreVertical size={18} />
-                                            </button>
+                                                <button
+                                                    type="button"
+                                                    className="w-6 h-6 flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
+                                                >
+                                                    <Smile size={18} />
+                                                </button>
 
-                                        </div>)}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleReply(item)}
+                                                    className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
+                                                >
+                                                    <Reply size={18} />
+                                                </button>
 
-                                        <div className="text-white px-4 py-2 rounded-xl max-w-[70%] break-words whitespace-pre-wrap bg-[#3C2A21]">
+                                                <button
+                                                    type="button"
+                                                    className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
+                                                >
+                                                    <MoreVertical size={18} />
+                                                </button>
+
+                                            </div>
+
+                                        )}
+
+                                        <div className="text-white px-3 sm:px-4 py-2 rounded-xl max-w-[85%] sm:max-w-[70%] break-words whitespace-pre-wrap bg-[#3C2A21]">
 
                                             {item.reply && (
-                                                <div className="mb-2 bg-[#E5E5CB] rounded-lg px-3 py-2 border-l-4 border-[#D5CEA3]">
-                                                    <p className="text-xs font-semibold text-[#1A120B] mb-1">
+
+                                                <div className="mb-2 bg-[#E5E5CB] rounded-lg px-2.5 sm:px-3 py-2 border-l-4 border-[#D5CEA3]">
+
+                                                    <p className="text-[10px] sm:text-xs font-semibold text-[#1A120B] mb-1">
                                                         Reply
                                                     </p>
 
-                                                    <p className="text-sm text-[#1A120B] truncate">
+                                                    <p className="text-xs sm:text-sm text-[#1A120B] truncate">
                                                         {item.reply.text}
                                                     </p>
+
                                                 </div>
+
                                             )}
 
                                             <p>{item.text}</p>
 
                                             <div className="flex items-center justify-end gap-1 mt-1">
 
-                                                <p className="text-[10px] text-white/60">
+                                                <p className="text-[9px] sm:text-[10px] text-white/60">
                                                     {item.time}
                                                 </p>
 
@@ -504,7 +533,11 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
                                                     item.sender === loggedInUser._id && (
                                                         <CheckCheck
                                                             size={13}
-                                                            className={item.isSeen ? "text-blue-400" : "text-white/60"}
+                                                            className={
+                                                                item.isSeen
+                                                                    ? "text-blue-400"
+                                                                    : "text-white/60"
+                                                            }
                                                         />
                                                     )
                                                 }
@@ -513,44 +546,48 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
                                         </div>
 
-                                        {item.sender !== loggedInUser._id && (<div className="hidden group-hover:flex gap-1">
+                                        {item.sender !== loggedInUser._id && (
 
-                                            <button
-                                                type="button"
-                                                className=" w-6 h-6  flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
-                                            >
-                                                <Smile size={18} />
-                                            </button>
+                                            <div className="hidden group-hover:flex gap-0.5 sm:gap-1 shrink-0">
 
-                                            <button
-                                                type="button"
-                                                onClick={() => handleReply(item)}
-                                                className="  w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
-                                            >
-                                                <Reply size={18} />
-                                            </button>
+                                                <button
+                                                    type="button"
+                                                    className="w-6 h-6 flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
+                                                >
+                                                    <Smile size={18} />
+                                                </button>
 
-                                            <button
-                                                type="button"
-                                                className=" w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
-                                            >
-                                                <MoreVertical size={18} />
-                                            </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleReply(item)}
+                                                    className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
+                                                >
+                                                    <Reply size={18} />
+                                                </button>
 
-                                        </div>)}
+                                                <button
+                                                    type="button"
+                                                    className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-[#D5CEA3] text-[#3C2A21]"
+                                                >
+                                                    <MoreVertical size={18} />
+                                                </button>
+
+                                            </div>
+
+                                        )}
 
                                     </div>
 
                                 ))}
 
                             </>
+
                         )}
-
-
 
                         <div ref={messagesEndRef}></div>
 
                         {showScrollButton && (
+
                             <button
                                 type="button"
                                 onClick={scrollToBottom}
@@ -558,38 +595,43 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
                             >
                                 <ChevronDown size={18} />
                             </button>
+
                         )}
 
                     </div>
 
                     {replyMessage && (
-                        <div className="px-5 py-2 border-t border-[#5A382A]/20 bg-transparent flex items-center gap-3">
 
-                            <div className="flex-1 min-w-0 border-l-4 border-[#3C2A21] pl-3">
-                                <p className="text-xs font-semibold text-[#3C2A21]">
+                        <div className="px-3 sm:px-5 py-2 border-t border-[#5A382A]/20 bg-transparent flex items-center gap-2 sm:gap-3">
+
+                            <div className="flex-1 min-w-0 border-l-4 border-[#3C2A21] pl-2 sm:pl-3">
+
+                                <p className="text-[10px] sm:text-xs font-semibold text-[#3C2A21]">
                                     {replyMessage.sender === loggedInUser._id
                                         ? "You"
                                         : selectedUser.username
                                     }
                                 </p>
 
-                                <p className="text-sm text-[#5A382A] truncate max-w-[500px]">
+                                <p className="text-xs sm:text-sm text-[#5A382A] truncate max-w-[500px]">
                                     {replyMessage.text}
                                 </p>
+
                             </div>
 
                             <button
                                 type="button"
                                 onClick={() => setReplyMessage(null)}
-                                className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-[#D5CEA3] text-[#3C2A21]"
+                                className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-[#D5CEA3] text-[#3C2A21] shrink-0"
                             >
                                 <X size={18} />
                             </button>
 
                         </div>
+
                     )}
 
-                    <div className="flex items-center gap-3 px-5 py-3 border-t border-[#5A382A]/20">
+                    <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2.5 sm:py-3 border-t border-[#5A382A]/20">
 
                         <textarea
                             ref={inputRef}
@@ -605,13 +647,13 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
                                 }
                             }}
                             placeholder="Type a message..."
-                            className="flex-1 resize-none bg-[#FFFAF3] border border-[#5A382A]/20 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1A120B] max-h-32 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                            className="flex-1 min-w-0 resize-none bg-[#FFFAF3] border border-[#5A382A]/20 rounded-xl px-3 sm:px-4 py-2.5 text-sm outline-none focus:border-[#1A120B] max-h-32 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                         />
 
                         <button
                             type="button"
                             onClick={sendMessage}
-                            className="px-4 py-2.5 bg-[#1A120B] text-white rounded-xl text-sm cursor-pointer"
+                            className="px-3 sm:px-4 py-2.5 bg-[#1A120B] text-white rounded-xl text-xs sm:text-sm cursor-pointer shrink-0"
                         >
                             Send
                         </button>
@@ -622,15 +664,15 @@ function ChatBox({ selectedUser, addChatUser, chatUsers, socketRef }) {
 
             ) : (
 
-                <div className="w-full h-full flex flex-col items-center justify-center text-[#5A382A]/60">
+                <div className="w-full h-full flex flex-col items-center justify-center text-[#5A382A]/60 px-4 text-center">
 
                     <img
                         src="/muuv_pfp_dark.svg"
                         alt=""
-                        className="w-24 h-24 rounded-full object-cover border-2 border-[#1A120B]"
+                        className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-[#1A120B]"
                     />
 
-                    <p className="mt-4 text-sm text-[#5A382A]">
+                    <p className="mt-4 text-xs sm:text-sm text-[#5A382A]">
                         Select a person to start chatting
                     </p>
 

@@ -168,13 +168,14 @@ function MyLikesContent({ userData }) {
 
     return (
 
-        <div className="p-6">
+        <div className="p-3 sm:p-4 md:p-6">
 
             {loading ? (
 
                 <div className="
                     text-center
-                    py-10
+                    py-8
+                    sm:py-10
                     text-[#8B6F61]
                 ">
                     Loading likes...
@@ -184,7 +185,8 @@ function MyLikesContent({ userData }) {
 
                 <div className="
                     text-center
-                    py-10
+                    py-8
+                    sm:py-10
                     text-[#8B6F61]
                 ">
                     No likes yet
@@ -192,7 +194,7 @@ function MyLikesContent({ userData }) {
 
             ) : (
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
 
                     {likes.map(like => (
 
@@ -213,7 +215,8 @@ function MyLikesContent({ userData }) {
 
                 <div className="
                     text-center
-                    py-6
+                    py-5
+                    sm:py-6
                     text-[#8B6F61]
                 ">
                     Loading more likes...
@@ -226,7 +229,8 @@ function MyLikesContent({ userData }) {
 
                 <div className="
                     text-center
-                    py-6
+                    py-5
+                    sm:py-6
                     text-[#8B6F61]
                 ">
                     No more likes

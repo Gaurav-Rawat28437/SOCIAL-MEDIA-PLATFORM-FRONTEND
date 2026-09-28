@@ -166,7 +166,7 @@ function ThoughtCard({
 
                 socket.emit("send-like-update", {
                     postId: thought._id,
-                    likesCount:response.likesCount,
+                    likesCount: response.likesCount,
                     userId: loggedInUser._id
                 })
 
@@ -287,10 +287,9 @@ function ThoughtCard({
         }
     }
 
-
     return (
         <>
-            <div className="relative bg-white border border-[#D0B8A8] rounded-xl p-3">
+            <div className="relative bg-white border border-[#D0B8A8] rounded-xl p-2.5 sm:p-3">
 
                 <div className="flex items-start justify-between">
 
@@ -302,7 +301,7 @@ function ThoughtCard({
                                 "/muuv_pfp_dark.svg"
                             }
                             alt="Profile"
-                            className="w-8 h-8 rounded-full object-cover border border-[#D0B8A8] shrink-0"
+                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-[#D0B8A8] shrink-0"
                         />
 
                         <div className="min-w-0">
@@ -397,10 +396,10 @@ function ThoughtCard({
                             flex
                             items-center
                             justify-center
-                            gap-2
-                            min-w-[70px]
-                            h-10
-                            px-3
+                            gap-1 sm:gap-2
+                            min-w-[55px] sm:min-w-[70px]
+                            h-9 sm:h-10
+                            px-2 sm:px-3
                             rounded-full
                             border
                             border-transparent
@@ -414,12 +413,12 @@ function ThoughtCard({
                     >
 
                         <Heart
-                            size={20}
+                            size={18}
                             className="shrink-0 text-[#1A120B]"
                             fill={thought.isLiked ? "currentColor" : "none"}
                         />
 
-                        <span className="text-sm text-[#1A120B]">
+                        <span className="text-xs sm:text-sm text-[#1A120B]">
                             {thought.likesCount || 0}
                         </span>
 
@@ -432,10 +431,10 @@ function ThoughtCard({
                             flex
                             items-center
                             justify-center
-                            gap-2
-                            min-w-[70px]
-                            h-10
-                            px-3
+                            gap-1 sm:gap-2
+                            min-w-[55px] sm:min-w-[70px]
+                            h-9 sm:h-10
+                            px-2 sm:px-3
                             rounded-full
                             border
                             border-transparent
@@ -447,11 +446,11 @@ function ThoughtCard({
                     >
 
                         <MessageCircle
-                            size={20}
+                            size={18}
                             className="shrink-0 text-[#1A120B]"
                         />
 
-                        <span className="text-sm text-[#1A120B]">
+                        <span className="text-xs sm:text-sm text-[#1A120B]">
                             {thought.commentsCount || 0}
                         </span>
 
@@ -465,9 +464,9 @@ function ThoughtCard({
                             items-center
                             justify-center
                             gap-1
-                            min-w-[40px]
+                            min-w-[35px] sm:min-w-[40px]
                             h-7
-                            px-1.5
+                            px-1 sm:px-1.5
                             rounded-full
                             border
                             border-transparent
@@ -479,11 +478,11 @@ function ThoughtCard({
                     >
 
                         <Share
-                            size={16}
+                            size={15}
                             className="shrink-0 text-[#1A120B]"
                         />
 
-                        <span className="text-[11px] text-[#1A120B]">
+                        <span className="text-[10px] sm:text-[11px] text-[#1A120B]">
                             {thought.repostsCount || 0}
                         </span>
 
@@ -509,7 +508,7 @@ function ThoughtCard({
                     >
 
                         <Bookmark
-                            size={16}
+                            size={15}
                             className="shrink-0 text-[#1A120B]"
                             fill={isBookmarked ? "#1A120B" : "none"}
                         />
@@ -521,13 +520,13 @@ function ThoughtCard({
             </div>
 
             {showEdit && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
 
-                    <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl">
+                    <div className="bg-white w-full max-w-lg max-h-[95vh] overflow-y-auto rounded-xl sm:rounded-2xl shadow-xl">
 
-                        <div className="flex items-center justify-between px-5 py-4 border-b border-[#D0B8A8]">
+                        <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-[#D0B8A8]">
 
-                            <h2 className="text-xl font-semibold text-[#4A352C]">
+                            <h2 className="text-lg sm:text-xl font-semibold text-[#4A352C]">
                                 Edit Thought
                             </h2>
 
@@ -544,7 +543,7 @@ function ThoughtCard({
 
                         <form onSubmit={handleUpdate}>
 
-                            <div className="p-5">
+                            <div className="p-4 sm:p-5">
 
                                 <textarea
                                     value={content}
@@ -554,7 +553,7 @@ function ThoughtCard({
                                     maxLength={500}
                                     rows={6}
                                     disabled={loading}
-                                    className="w-full resize-none outline-none text-[#4A352C] border border-[#D0B8A8] rounded-xl p-4"
+                                    className="w-full resize-none outline-none text-[#4A352C] border border-[#D0B8A8] rounded-xl p-3 sm:p-4"
                                 />
 
                                 <div className="text-right text-xs text-[#8B6F61] mt-1">
@@ -563,13 +562,13 @@ function ThoughtCard({
 
                             </div>
 
-                            <div className="px-5 py-4 border-t border-[#D0B8A8] flex justify-end gap-3">
+                            <div className="px-4 sm:px-5 py-3 sm:py-4 border-t border-[#D0B8A8] flex justify-end gap-2 sm:gap-3">
 
                                 <button
                                     type="button"
                                     disabled={loading}
                                     onClick={() => setShowEdit(false)}
-                                    className="px-5 py-2.5 rounded-full border border-[#D0B8A8] text-[#4A352C]"
+                                    className="px-4 sm:px-5 py-2.5 rounded-full border border-[#D0B8A8] text-[#4A352C]"
                                 >
                                     Cancel
                                 </button>
@@ -577,7 +576,7 @@ function ThoughtCard({
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="px-6 py-2.5 rounded-full bg-[#3C2A21] text-white font-semibold disabled:opacity-50"
+                                    className="px-5 sm:px-6 py-2.5 rounded-full bg-[#3C2A21] text-white font-semibold disabled:opacity-50"
                                 >
                                     {loading ? "Saving..." : "Save"}
                                 </button>
@@ -593,9 +592,9 @@ function ThoughtCard({
 
             {showDeleteConfirm && (
 
-                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4">
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-2 sm:p-4">
 
-                    <div className="bg-white w-full max-w-sm rounded-2xl p-6 shadow-xl">
+                    <div className="bg-white w-full max-w-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl">
 
                         <h3 className="text-lg font-semibold text-[#4E220F]">
                             Delete thought?
@@ -605,7 +604,7 @@ function ThoughtCard({
                             This action cannot be undone.
                         </p>
 
-                        <div className="flex justify-end gap-3 mt-6">
+                        <div className="flex justify-end gap-2 sm:gap-3 mt-5 sm:mt-6">
 
                             <button
                                 type="button"

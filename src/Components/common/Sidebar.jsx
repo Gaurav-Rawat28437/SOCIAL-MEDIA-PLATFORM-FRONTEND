@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Home, User, LogOut, MessageCircle, Bell } from "lucide-react"
-import { NavLink, useNavigate } from "react-router-dom"
+import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { logout } from "../../services/authService"
 import toast from "react-hot-toast"
 import { useDispatch, useSelector } from "react-redux"
@@ -10,6 +10,7 @@ function Sidebar() {
 
   const nav = useNavigate()
   const dispatch = useDispatch()
+  const location = useLocation()
 
   const totalUnreadMessages = useSelector(store => store.globalData.totalUnreadMessages)
   const unreadCount = useSelector(store => store.notification?.unreadCount)
@@ -43,36 +44,68 @@ function Sidebar() {
     <aside
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`fixed top-16 left-0 ${expanded ? "w-64" : "w-20"
-        } h-[calc(100vh-4rem)] border-r border-[#5A382A] bg-[#E5E5CB] p-3 transition-all duration-300 overflow-hidden flex flex-col z-40`}
+      className={`
+        fixed
+        bottom-0
+        left-0
+        right-0
+        lg:top-16
+        lg:bottom-auto
+        lg:right-auto
+        ${expanded ? "lg:w-64" : "lg:w-20"}
+        h-16
+        lg:h-[calc(100vh-4rem)]
+        border-t
+        lg:border-t-0
+        lg:border-r
+        border-[#5A382A]
+        bg-[#E5E5CB]
+        p-2
+        lg:p-3
+        transition-all
+        duration-300
+        overflow-hidden
+        flex
+        flex-row
+        lg:flex-col
+        z-40
+      `}
     >
 
-      <div className="space-y-2">
+      <div className="
+        flex
+        flex-1
+        items-center
+        justify-around
+        lg:block
+        lg:space-y-2
+      ">
 
         <NavLink
           to="/home"
           className={({ isActive }) =>
-            `w-full flex items-center gap-3 px-3 py-3 rounded-xl font-semibold whitespace-nowrap ${isActive
+            `w-full lg:w-full flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 lg:py-3 rounded-xl font-semibold whitespace-nowrap 
+              ${isActive || location.pathname === "/"
               ? "bg-[#3C2A21] text-[#D5CEA3]"
               : "text-[#1A120B]"
             }`
           }
         >
-          <Home size={24} className="shrink-0 ml-1" />
-          {expanded && <span>Home</span>}
+          <Home size={24} className="shrink-0" />
+          {expanded && <span className="hidden lg:inline">Home</span>}
         </NavLink>
 
         <NavLink
           to="/chat"
           className={({ isActive }) =>
-            `w-full flex items-center gap-3 px-3 py-3 rounded-xl whitespace-nowrap ${isActive
+            `w-full lg:w-full flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 lg:py-3 rounded-xl whitespace-nowrap ${isActive
               ? "bg-[#3C2A21] text-[#D5CEA3]"
               : "text-[#1A120B]"
             }`
           }
         >
           <div className="relative">
-            <MessageCircle size={24} className="shrink-0 ml-1" />
+            <MessageCircle size={24} className="shrink-0" />
 
             {totalUnreadMessages > 0 && (
               <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs min-w-5 h-5 px-1 rounded-full flex items-center justify-center">
@@ -81,20 +114,20 @@ function Sidebar() {
             )}
           </div>
 
-          {expanded && <span>Chat</span>}
+          {expanded && <span className="hidden lg:inline">Chat</span>}
         </NavLink>
 
         <NavLink
           to="/notification"
           className={({ isActive }) =>
-            `w-full flex items-center gap-3 px-3 py-3 rounded-xl whitespace-nowrap ${isActive
+            `w-full lg:w-full flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 lg:py-3 rounded-xl whitespace-nowrap ${isActive
               ? "bg-[#3C2A21] text-[#D5CEA3]"
               : "text-[#1A120B]"
             }`
           }
         >
           <div className="relative">
-            <Bell size={24} className="shrink-0 ml-1" />
+            <Bell size={24} className="shrink-0" />
 
             {unreadCount > 0 && (
               <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs min-w-5 h-5 px-1 rounded-full flex items-center justify-center">
@@ -103,21 +136,21 @@ function Sidebar() {
             )}
           </div>
 
-          {expanded && <span>Notifications</span>}
+          {expanded && <span className="hidden lg:inline">Notifications</span>}
         </NavLink>
 
         <NavLink
           to="/profile"
           end
           className={({ isActive }) =>
-            `w-full flex items-center gap-3 px-3 py-3 rounded-xl whitespace-nowrap ${isActive
+            `w-full lg:w-full flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 lg:py-3 rounded-xl whitespace-nowrap ${isActive
               ? "bg-[#3C2A21] text-[#D5CEA3]"
               : "text-[#1A120B]"
             }`
           }
         >
-          <User size={24} className="shrink-0 ml-1" />
-          {expanded && <span>Profile</span>}
+          <User size={24} className="shrink-0" />
+          {expanded && <span className="hidden lg:inline">Profile</span>}
         </NavLink>
 
       </div>
@@ -125,7 +158,39 @@ function Sidebar() {
       <button
         onClick={logoutHandler}
         type="button"
-        className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-[#1A120B] hover:text-[#E5E5CB] text-[#1A120B] whitespace-nowrap mt-auto"
+        className="
+          lg:hidden
+          flex
+          items-center
+          justify-center
+          w-12
+          h-12
+          rounded-xl
+          text-[#1A120B]
+          shrink-0
+        "
+      >
+        <LogOut size={24} className="shrink-0" />
+      </button>
+
+      <button
+        onClick={logoutHandler}
+        type="button"
+        className="
+          hidden
+          lg:flex
+          w-full
+          items-center
+          gap-3
+          px-3
+          py-3
+          rounded-xl
+          hover:bg-[#1A120B]
+          hover:text-[#E5E5CB]
+          text-[#1A120B]
+          whitespace-nowrap
+          mt-auto
+        "
       >
         <LogOut size={24} className="shrink-0" />
         {expanded && <span>Logout</span>}
