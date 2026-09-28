@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react"
 import ChatList from "./ChatList"
 import ChatBox from "./ChatBox"
 import { useDispatch, useSelector } from "react-redux"
-import { addChatUserInRedux, chatListThunk, increaseUnreadCount, moveChatUserToTop } from "../../Utils/ChatSlice"
+import { addChatUserInRedux, chatListThunk, decreaseUnreadCount, increaseUnreadCount, moveChatUserToTop } from "../../Utils/ChatSlice"
 import { addUserInChatList } from "../../services/chatService"
 import socket from "../../socket.io/socket"
 import { decreaseTotalUnreadMessages } from "../../Utils/globalDataSlice"
@@ -39,6 +39,7 @@ function ChatContent() {
 
             if (sender === selectedUserRef.current?._id) {
                 dispatch(decreaseTotalUnreadMessages(1))
+                dispatch(decreaseUnreadCount(sender))
                 return
             }
 
@@ -47,7 +48,6 @@ function ChatContent() {
                 dispatch(addChatUserInRedux(senderUser))
             }
             dispatch(moveChatUserToTop(sender))
-            dispatch(increaseUnreadCount(sender))
         }
 
         socketRef.current.on("receive-global-listener", receiveGlobalListener)
@@ -59,7 +59,7 @@ function ChatContent() {
             )
         }
 
-    }, [loggedInUser, dispatch])
+    }, [loggedInUser, dispatch,selectedUserRef])
 
     useEffect(() => {
         selectedUserRef.current = selectedUser

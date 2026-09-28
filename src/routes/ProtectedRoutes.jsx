@@ -14,6 +14,7 @@ import { updateThoughtComments, updateThoughtLikeCount } from '../Utils/thoughts
 import { updateReplyLikeCount } from '../Utils/myRepliesSlice'
 import { updatePostComments, updatePostLikeCount } from '../Utils/postsSlice'
 import { updateLikeComments, updateLikeCount } from '../Utils/myLikesSlice'
+import { increaseUnreadCount } from '../Utils/ChatSlice'
 
 
 
@@ -85,6 +86,7 @@ function ProtectedRoutes() {
 
     const receiveGlobalListener = ({ sender, receiver, senderUser }) => {
       dispatch(increaseTotalUnreadMessages())
+      dispatch(increaseUnreadCount(sender))
     }
 
     const receiveLikeUpdate = ({ postId, likesCount }) => {

@@ -34,6 +34,19 @@ const chatSlice = createSlice({
                     : user
             )
         },
+        decreaseUnreadCount: (state, action) => {
+
+            if (!state.data?.chatList) return
+
+            state.data.chatList = state.data.chatList.map(user =>
+                user._id === action.payload
+                    ? {
+                        ...user,
+                        unreadCount: Math.max((user.unreadCount || 0) - 1, 0)
+                    }
+                    : user
+            )
+        },
 
         clearUnreadCount: (state, action) => {
 
@@ -112,6 +125,7 @@ const chatSlice = createSlice({
 })
 export const {
     increaseUnreadCount,
+    decreaseUnreadCount,
     clearUnreadCount,
     moveChatUserToTop,
     addChatUserInRedux
